@@ -7,6 +7,7 @@ import { routes } from './app.config';
 import { CalendarDemo } from './calendar-demo';
 import { FeaturesPage } from './features-page';
 import { PricingPage } from './pricing-page';
+import { DocsPage } from './docs-page';
 import {
   DEMOS,
   LIST_VIEWS,
@@ -26,6 +27,18 @@ beforeAll(() => {
 });
 
 describe('Showcase contract', () => {
+  it('links mirrored guides to the same branch that publishes the portal', () => {
+    const page = new DocsPage();
+    const root =
+      'https://github.com/wts-calendar/wts-calendar.github.io/blob/wts/source/package-docs/';
+    expect(page.docs).toBe(root + 'core/');
+    expect(page.frameworks.find((framework) => framework.name === 'Angular')?.url).toBe(
+      root + 'angular/README.md',
+    );
+    expect(page.frameworks.find((framework) => framework.name === 'JavaScript')?.url).toBe(
+      root + 'core/README.md',
+    );
+  });
   it('keeps configuration migration available under Premium', () => {
     const migration = FEATURES.find(
       (feature) => feature.title === 'Configuration migration assistant',
@@ -47,7 +60,7 @@ describe('Showcase contract', () => {
       }
     }
   });
-  it('provides a distinct guide and illustration definition for every Premium feature', () => {
+  it('provides a distinct guide and capture title for every Premium feature', () => {
     expect(new Set(premiumContent.map((guide) => guide.id))).toEqual(
       new Set(PREMIUM_FEATURES.map((feature) => feature.id)),
     );
@@ -69,7 +82,7 @@ describe('Showcase contract', () => {
 });
 
 describe('Feature catalogue', () => {
-  it('renders Premium illustrations and individual guide links, with no runtime demos or code', async () => {
+  it('renders actual-package screenshots and individual guide links, with no runtime demos or code', async () => {
     await TestBed.configureTestingModule({
       imports: [FeaturesPage],
       providers: [provideRouter([])],
@@ -86,7 +99,7 @@ describe('Feature catalogue', () => {
       const feature = PREMIUM_FEATURES.find((item) => item.title === title)!;
       expect(card.querySelector('a')?.getAttribute('href')).toBe('/premium/' + feature.id);
       expect(card.querySelector('img')?.getAttribute('src')).toBe(
-        'previews/premium/' + feature.id + '.svg',
+        'previews/premium/' + feature.id + '.jpg',
       );
       expect(card.querySelector('img')?.getAttribute('alt')).toContain(feature.title);
       expect(card.querySelector('pre, code, wts-calendar-angular')).toBeNull();
@@ -120,148 +133,275 @@ describe('Feature catalogue', () => {
 
 describe('Free examples', () => {
   for (const demo of DEMOS) {
-    it('mounts ' + demo.id + ' using the published calendar', async () => {
-      await TestBed.configureTestingModule({ imports: [CalendarDemo] }).compileComponents();
-      const fixture = TestBed.createComponent(CalendarDemo);
-      fixture.componentRef.setInput('demo', demo);
-      fixture.detectChanges();
-      await vi.waitFor(() => {
+    it(
+      'mounts ' + demo.id + ' using the published calendar',
+      async () => {
+        await TestBed.configureTestingModule({ imports: [CalendarDemo] }).compileComponents();
+        const fixture = TestBed.createComponent(CalendarDemo);
+        fixture.componentRef.setInput('demo', demo);
         fixture.detectChanges();
-        expect(fixture.componentInstance.error()).toBe('');
-        expect(fixture.componentInstance.controller.ready()).toBe(true);
-      });
-      const api = fixture.componentInstance.controller.getApi()!;
-      await api.whenIdle();
-      fixture.detectChanges();
-      expect(api.getView().type).toBe(demo.view);
-      expect(fixture.nativeElement.querySelector('.wts-calender')).toBeTruthy();
-      expect(api.getEvents().length).toBeGreaterThan(0);
-      if (demo.id === 'list' || demo.id === 'interactions') {
-        const root = fixture.nativeElement.querySelector('.wts-calender');
-        const eventIds = api.getEvents().map((event) => event.id);
-        const clickToolbar = async (action: string) => {
-          const button = fixture.nativeElement.querySelector(
-            '[data-calendar-toolbar-action="' + action + '"]',
-          ) as HTMLButtonElement;
-          expect(button).toBeTruthy();
-          button.click();
-          await api.whenIdle();
+        await vi.waitFor(() => {
           fixture.detectChanges();
-        };
-        const views = demo.id === 'list' ? LIST_VIEWS : ['month', 'week', 'day'];
-        for (const view of views) {
-          await clickToolbar(view);
-          expect(api.getView().type).toBe(view);
-          expect(fixture.nativeElement.querySelector('.wts-calender')).toBe(root);
+          expect(fixture.componentInstance.error()).toBe('');
+          expect(fixture.componentInstance.controller.ready()).toBe(true);
+        });
+        const api = fixture.componentInstance.controller.getApi()!;
+        await api.whenIdle();
+        fixture.detectChanges();
+        expect(api.getView().type).toBe(demo.view);
+        expect(fixture.nativeElement.querySelector('.wts-calender')).toBeTruthy();
+        expect(api.getEvents().length).toBeGreaterThan(0);
+        if (demo.id === 'list' || demo.id === 'interactions' || demo.group === 'Customization') {
+          const root = fixture.nativeElement.querySelector('.wts-calender');
+          const eventIds = api.getEvents().map((event) => event.id);
+          const eventStarts = api.getEvents().map((event) => String(event.start));
+          if (demo.id === 'themes')
+            fixture.componentInstance.option({
+              theme: 'breezy',
+              colorScheme: 'dark',
+              weekends: false,
+            });
+          if (demo.id === 'locale-rtl') fixture.componentInstance.setLocale('ar');
+          if (demo.id === 'time-zones') fixture.componentInstance.setTimeZone('Asia/Kolkata');
+          const clickToolbar = async (action: string) => {
+            const button = fixture.nativeElement.querySelector(
+              '[data-calendar-toolbar-action="' + action + '"]',
+            ) as HTMLButtonElement;
+            expect(button).toBeTruthy();
+            button.click();
+            await api.whenIdle();
+            fixture.detectChanges();
+          };
+          const views =
+            demo.id === 'list'
+              ? LIST_VIEWS
+              : ['interactions', 'background'].includes(demo.id)
+                ? ['month', 'week', 'day']
+                : ['month', 'week', 'day', 'list-week'];
           expect(
-            fixture.nativeElement.querySelectorAll(
-              '[data-calendar-toolbar-view][aria-pressed="true"]',
-            ).length,
-          ).toBe(1);
-          expect(
-            fixture.nativeElement
-              .querySelector('[data-calendar-toolbar-view="' + view + '"]')
-              .getAttribute('aria-pressed'),
-          ).toBe('true');
-          expect(
-            fixture.nativeElement.querySelector('[data-calendar-toolbar-title]').textContent,
-          ).toBe(api.getView().title);
-          expect(api.getEvents().map((event) => event.id)).toEqual(eventIds);
-          if (demo.id === 'interactions') {
-            expect(api.getOption('editable')).toBe(true);
-            expect(api.getOption('selectable')).toBe(true);
+            [...fixture.nativeElement.querySelectorAll('[data-calendar-toolbar-view]')].map(
+              (button: Element) => button.getAttribute('data-calendar-toolbar-view'),
+            ),
+          ).toEqual(views);
+          for (const view of views) {
+            await clickToolbar(view);
+            expect(api.getView().type).toBe(view);
+            expect(fixture.nativeElement.querySelector('.wts-calender')).toBe(root);
             expect(
-              api.select({
-                start: '2026-09-07T12:00:00Z',
-                end: '2026-09-07T13:00:00Z',
-                allDay: view === 'month',
-              }),
-            ).toBeTruthy();
+              [...root.children].indexOf(root.querySelector('.wts-calender-header')),
+            ).toBeLessThan([...root.children].indexOf(root.querySelector('.wts-calender-body')));
             expect(
-              fixture.componentInstance.activity().some((entry) => entry.includes('select:')),
-            ).toBe(true);
-            api.unselect();
+              fixture.nativeElement.querySelectorAll(
+                '[data-calendar-toolbar-view][aria-pressed="true"]',
+              ).length,
+            ).toBe(1);
+            expect(
+              fixture.nativeElement
+                .querySelector('[data-calendar-toolbar-view="' + view + '"]')
+                .getAttribute('aria-pressed'),
+            ).toBe('true');
+            expect(
+              fixture.nativeElement.querySelector('[data-calendar-toolbar-title]').textContent,
+            ).toBe(api.getView().title);
+            expect(api.getEvents().map((event) => event.id)).toEqual(eventIds);
+            expect(api.getEvents().map((event) => String(event.start))).toEqual(eventStarts);
+            if (demo.id === 'themes') {
+              expect(api.getOption('theme')).toBe('breezy');
+              expect(api.getOption('colorScheme')).toBe('dark');
+              expect(api.getOption('weekends')).toBe(false);
+            }
+            if (demo.id === 'locale-rtl') {
+              expect(api.getOption('locale')).toBe('ar');
+              expect(api.getOption('direction')).toBe('rtl');
+              expect(root.style.direction).toBe('rtl');
+              expect(fixture.componentInstance.selectedLocale()).toBe('ar');
+            }
+            if (demo.id === 'time-zones') {
+              expect(api.getOption('timeZone')).toBe('Asia/Kolkata');
+              expect(api.formatIso(api.getDate(), { omitTime: true })).toBe('2026-09-07');
+              expect(fixture.componentInstance.selectedTimeZone()).toBe('Asia/Kolkata');
+              expect(api.getOption('slotMinTime')).toBe('00:00');
+              expect(api.getOption('slotMaxTime')).toBe('24:00');
+            }
+            if (demo.id === 'background') {
+              expect(api.getEvents().find((event) => event.id === 'quiet-time')?.display).toBe(
+                'background',
+              );
+              expect(
+                fixture.nativeElement.querySelector('.calendar-background-event'),
+              ).toBeTruthy();
+            }
+            if (demo.id === 'render-hooks') {
+              expect(root.textContent).toContain('◆ Roadmap review');
+              expect(
+                fixture.componentInstance
+                  .activity()
+                  .some((entry) => entry.includes('eventDidMount:')),
+              ).toBe(true);
+            }
+            if (demo.id === 'accessibility') expect(api.getOption('editable')).toBe(true);
+            if (demo.id === 'interactions') {
+              expect(api.getOption('editable')).toBe(true);
+              expect(api.getOption('selectable')).toBe(true);
+              expect(
+                api.select({
+                  start: '2026-09-07T12:00:00Z',
+                  end: '2026-09-07T13:00:00Z',
+                  allDay: view === 'month',
+                }),
+              ).toBeTruthy();
+              expect(
+                fixture.componentInstance.activity().some((entry) => entry.includes('select:')),
+              ).toBe(true);
+              api.unselect();
+            }
           }
+          await clickToolbar(demo.id === 'list' ? 'list-week' : 'week');
+          const initialTitle = api.getView().title;
+          const initialDate = api.getDate().getTime();
+          await clickToolbar('next');
+          expect(api.getView().title).not.toBe(initialTitle);
+          expect(api.getDate().getTime()).toBe(initialDate + 7 * 24 * 60 * 60 * 1000);
+          await clickToolbar('prev');
+          expect(api.getDate().getTime()).toBe(initialDate);
+          await clickToolbar('next');
+          await clickToolbar('sampleDates');
+          expect(api.getView().title).toBe(initialTitle);
+          expect(fixture.nativeElement.querySelectorAll('[role="toolbar"]').length).toBe(1);
+          expect(
+            fixture.nativeElement.querySelector('.calendar-demo > .calendar-toolbar'),
+          ).toBeNull();
+          expect(fixture.componentInstance.code()).toContain('headerToolbar');
+          expect(fixture.componentInstance.code()).toContain(views.join(','));
+          expect(fixture.componentInstance.code()).toContain(
+            'options.customButtons.sampleDates.click',
+          );
+          // Further assertions below exercise controls from the example's initial state.
+          if (demo.id === 'locale-rtl') fixture.componentInstance.setLocale('en-US');
+          if (demo.id === 'time-zones') fixture.componentInstance.setTimeZone('UTC');
+          await clickToolbar(demo.view);
         }
-        await clickToolbar(demo.id === 'list' ? 'list-week' : 'week');
-        const initialTitle = api.getView().title;
-        await clickToolbar('next');
-        expect(api.getView().title).not.toBe(initialTitle);
-        await clickToolbar('sampleDates');
-        expect(api.getView().title).toBe(initialTitle);
-        expect(fixture.nativeElement.querySelectorAll('[role="toolbar"]').length).toBe(1);
-        expect(fixture.componentInstance.code()).toContain('headerToolbar');
-        expect(fixture.componentInstance.code()).toContain(
-          demo.id === 'list' ? 'list-day,list-week,list-month,list-year' : 'month,week,day',
-        );
-      }
-      expect(api.getOption('weekDaysFormat')).toBe('EEE');
-      expect(api.getOption('footerScrollbarSticky')).toBe(false);
-      if (
-        ['multi-month', 'year', 'day-grid-week', 'day-grid-day', 'work-week'].includes(demo.view)
-      ) {
-        expect(api.getOption('height')).toBe('auto');
-        expect(fixture.nativeElement.querySelector('.calendar-height-constrained')).toBeNull();
-      }
-      if (demo.view === 'multi-month' || demo.view === 'year') {
-        expect(api.getOption('dayMaxEvents')).toBe(1);
-        expect(api.getOption('moreLinkClick')).toBe('popover');
-        expect(fixture.componentInstance.code()).toContain(
-          "options.moreLinkContent = info => '+' + info.count",
-        );
-        const more = fixture.nativeElement.querySelector(
-          '.multi-month-panel .btn-more-events',
-        ) as HTMLButtonElement;
-        expect(more.textContent).toBe('+1');
-        expect(more.getAttribute('aria-label')).toContain('Show 1 more events');
-        more.focus();
-        more.click();
-        const popover = document.querySelector('[role="dialog"]');
-        expect(popover?.textContent).toContain('Design workshop');
-        expect(popover?.textContent).toContain('Customer catch-up');
-        (popover?.querySelector('[aria-label="Close event list"]') as HTMLButtonElement).click();
+        expect(api.getOption('weekDaysFormat')).toBe('EEE');
+        expect(api.getOption('footerScrollbarSticky')).toBe(false);
+        if (
+          ['multi-month', 'year', 'day-grid-week', 'day-grid-day', 'work-week'].includes(demo.view)
+        ) {
+          expect(api.getOption('height')).toBe('auto');
+          expect(fixture.nativeElement.querySelector('.calendar-height-constrained')).toBeNull();
+        }
+        if (demo.view === 'multi-month' || demo.view === 'year') {
+          expect(api.getOption('dayMaxEvents')).toBe(1);
+          expect(api.getOption('moreLinkClick')).toBe('popover');
+          expect(fixture.componentInstance.code()).toContain(
+            "options.moreLinkContent = info => '+' + info.count",
+          );
+          const more = fixture.nativeElement.querySelector(
+            '.multi-month-panel .btn-more-events',
+          ) as HTMLButtonElement;
+          expect(more.textContent).toBe('+1');
+          expect(more.getAttribute('aria-label')).toContain('Show 1 more events');
+          more.focus();
+          more.click();
+          const popover = document.querySelector('[role="dialog"]');
+          expect(popover?.textContent).toContain('Design workshop');
+          expect(popover?.textContent).toContain('Customer catch-up');
+          (popover?.querySelector('[aria-label="Close event list"]') as HTMLButtonElement).click();
+          expect(document.querySelector('[role="dialog"]')).toBeNull();
+          expect(document.activeElement).toBe(more);
+          expect(api.getEvents().length).toBe(8);
+        }
+        if (demo.id === 'event-sources') {
+          expect(fixture.componentInstance.requests()).toBeGreaterThan(0);
+          const prior = fixture.componentInstance.requests();
+          await fixture.componentInstance.refresh();
+          expect(fixture.componentInstance.requests()).toBeGreaterThan(prior);
+        }
+        if (demo.id === 'ics') {
+          fixture.componentInstance.importIcs();
+          expect(fixture.componentInstance.error()).toBe('');
+          expect(api.getEvents().some((event) => event.title === 'Imported workshop')).toBe(true);
+          expect(api.exportICalendar()).toContain('Imported workshop');
+        }
+        if (demo.id === 'themes') {
+          fixture.componentInstance.option({
+            theme: 'breezy',
+            colorScheme: 'dark',
+            weekends: false,
+          });
+          expect(api.getOption('theme')).toBe('breezy');
+          expect(api.getOption('weekends')).toBe(false);
+        }
+        if (demo.id === 'locale-rtl') {
+          expect(fixture.componentInstance.localeChoices().length).toBeGreaterThan(200);
+          expect(fixture.nativeElement.querySelector('[role="combobox"]')).toBeTruthy();
+          expect(fixture.nativeElement.querySelectorAll('#demo-locale').length).toBe(1);
+          expect(fixture.nativeElement.querySelector('label[for="demo-locale"]').control).toBe(
+            fixture.nativeElement.querySelector('[role="combobox"]'),
+          );
+          fixture.componentInstance.setLocale('ar');
+          expect(api.getOption('direction')).toBe('rtl');
+          fixture.componentInstance.setLocale('he');
+          expect(api.getOption('direction')).toBe('rtl');
+          fixture.componentInstance.setLocale('fa');
+          expect(api.getOption('direction')).toBe('rtl');
+          fixture.componentInstance.setLocale('bn');
+          expect(api.getOption('locale')).toBe('bn');
+          expect(api.getOption('direction')).toBe('ltr');
+          fixture.componentInstance.setLocale('en-US');
+          expect(api.getOption('direction')).toBe('ltr');
+          fixture.componentInstance.setLocale('not_an_offered_locale');
+          expect(api.getOption('locale')).toBe('en-US');
+          expect(fixture.componentInstance.selectedLocale()).toBe('en-US');
+        }
+        if (demo.id === 'time-zones') {
+          expect(fixture.componentInstance.timeZoneChoices().length).toBeGreaterThan(300);
+          expect(api.getOption('slotMinTime')).toBe('00:00');
+          expect(api.getOption('slotMaxTime')).toBe('24:00');
+          const instants = api.getEvents().map((event) => String(event.start));
+          const visibleDate = api.formatIso(api.getDate(), { omitTime: true });
+          for (const zone of [
+            'America/New_York',
+            'Pacific/Auckland',
+            'Asia/Kolkata',
+            'local',
+            'UTC',
+          ]) {
+            fixture.componentInstance.setTimeZone(zone);
+            await api.whenIdle();
+            expect(api.getOption('timeZone')).toBe(zone);
+            expect(fixture.componentInstance.selectedTimeZone()).toBe(zone);
+            expect(api.formatIso(api.getDate(), { omitTime: true })).toBe(visibleDate);
+            expect(api.formatIso(api.getView().currentStart, { omitTime: true })).toBe(
+              '2026-09-07',
+            );
+            expect(api.getEvents().map((event) => String(event.start))).toEqual(instants);
+          }
+          fixture.componentInstance.setTimeZone('Not/A_Zone');
+          expect(api.getOption('timeZone')).toBe('UTC');
+          fixture.componentInstance.navigate('next');
+          const nextDate = api.formatIso(api.getDate(), { omitTime: true });
+          fixture.componentInstance.setTimeZone('America/New_York');
+          expect(api.formatIso(api.getDate(), { omitTime: true })).toBe(nextDate);
+        }
+        if (demo.id === 'event-editor') {
+          await vi.waitFor(() => expect(fixture.componentInstance.editorReady()).toBe(true));
+          // Apply the async ready signal before clicking the formerly disabled button.
+          fixture.detectChanges();
+          const button = fixture.nativeElement.querySelector(
+            '.demo-tools button',
+          ) as HTMLButtonElement;
+          expect(button.disabled).toBe(false);
+          button.click();
+          fixture.detectChanges();
+          expect(document.querySelector('[role="dialog"]')).toBeTruthy();
+        }
+        fixture.destroy();
         expect(document.querySelector('[role="dialog"]')).toBeNull();
-        expect(document.activeElement).toBe(more);
-        expect(api.getEvents().length).toBe(8);
-      }
-      if (demo.id === 'event-sources') {
-        expect(fixture.componentInstance.requests()).toBeGreaterThan(0);
-        const prior = fixture.componentInstance.requests();
-        await fixture.componentInstance.refresh();
-        expect(fixture.componentInstance.requests()).toBeGreaterThan(prior);
-      }
-      if (demo.id === 'ics') {
-        fixture.componentInstance.importIcs();
-        expect(fixture.componentInstance.error()).toBe('');
-        expect(api.getEvents().some((event) => event.title === 'Imported workshop')).toBe(true);
-        expect(api.exportICalendar()).toContain('Imported workshop');
-      }
-      if (demo.id === 'themes') {
-        fixture.componentInstance.option({ theme: 'breezy', colorScheme: 'dark', weekends: false });
-        expect(api.getOption('theme')).toBe('breezy');
-        expect(api.getOption('weekends')).toBe(false);
-      }
-      if (demo.id === 'locale-rtl') {
-        fixture.componentInstance.setLocale('ar');
-        expect(api.getOption('direction')).toBe('rtl');
-        fixture.componentInstance.setLocale('en-US');
-        expect(api.getOption('direction')).toBe('ltr');
-      }
-      if (demo.id === 'event-editor') {
-        await vi.waitFor(() => expect(fixture.componentInstance.editorReady()).toBe(true));
-        // Apply the async ready signal before clicking the formerly disabled button.
-        fixture.detectChanges();
-        const button = fixture.nativeElement.querySelector(
-          '.demo-tools button',
-        ) as HTMLButtonElement;
-        expect(button.disabled).toBe(false);
-        button.click();
-        fixture.detectChanges();
-        expect(document.querySelector('[role="dialog"]')).toBeTruthy();
-      }
-      fixture.destroy();
-      expect(document.querySelector('[role="dialog"]')).toBeNull();
-    });
+        // This case rebuilds every view and several full-day IANA time zones.
+        // Allow the complete integration flow to run alongside the other suites.
+      },
+      demo.id === 'time-zones' ? 15000 : 5000,
+    );
   }
 });
 

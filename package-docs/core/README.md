@@ -126,6 +126,7 @@ Plugin authors can copy the private reference package in
 | Import | Contents |
 | --- | --- |
 | `@wts-calendar/core` | Calendar core, DayGrid/month views, event APIs, sources, selection, time zones, and licensing |
+| `@wts-calendar/core/native` | DOM-free controller, recurrence, navigation, event CRUD, and snapshots used by `@wts-calendar/react-native` |
 | `@wts-calendar/core/time-grid` | Day, week, and custom TimeGrid views |
 | `@wts-calendar/core/multi-month` | MultiMonth, year, and custom multi-month views |
 | `@wts-calendar/core/list` | List day/week/month/year and custom list views |
@@ -148,6 +149,27 @@ Plugin authors can copy the private reference package in
 | `@wts-calendar/core/web-component` | Standards-based custom-element adapter |
 | `@wts-calendar/core/styles/calendar.css` | Required standard-view stylesheet |
 | `@wts-calendar/core/all` | Core plus every built-in optional module |
+
+### React Native
+
+Install the official native renderer with the same core package:
+
+```bash
+npm install @wts-calendar/core @wts-calendar/react-native
+```
+
+```tsx
+import { WtsCalendarNative } from '@wts-calendar/react-native';
+
+<WtsCalendarNative
+  initialOptions={{ view: 'month', firstDay: 1 }}
+  events={[{ id: 'launch', title: 'Launch', start: '2026-09-10T10:00:00' }]}
+/>;
+```
+
+This renders native iOS/Android controls for month, week, day, and virtualized
+list views. It does not create another core package, mount HTML, or use a
+WebView.
 
 `AdvancedResourcePlanner` is protected by the independent signed
 `advanced-resource-planning` entitlement. It operates entirely on the runtime

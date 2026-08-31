@@ -2,7 +2,7 @@
 
 The canonical constructor, methods, callbacks, emitted events, plugins, and
 TypeScript examples are maintained in [README.md](../README.md). The public npm
-entry points are `.`, `time-grid`, `multi-month`, `list`, `interaction`,
+entry points are `.`, `native`, `time-grid`, `multi-month`, `list`, `interaction`,
 `rrule`, `icalendar`, `google-calendar`, `format-moment`, `format-luxon3`,
 `resource-scheduling`, `advanced-resource-planning`, `repeated-tasks`,
 `premium-interoperability`, `enterprise-workflow`, `developer-tools`, `testing`,
@@ -10,6 +10,11 @@ entry points are `.`, `time-grid`, `multi-month`, `list`, `interaction`,
 `all`. The packed-artifact gate
 loads every entry through both ESM and CommonJS and verifies its declaration
 file.
+
+The `native` entry exports `NativeCalendarController`,
+`createNativeCalendar`, and self-contained native event, day, range, option,
+and snapshot types. It is the shared engine for `@wts-calendar/react-native`
+and does not expose `HTMLElement`, `Document`, CSS, or browser events.
 
 The premium `advanced-resource-planning` entry exports
 `AdvancedResourcePlanner` and its planning contracts. Its APIs cover capacity

@@ -1,6 +1,7 @@
 import { Component, computed, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { DOCS_BASE, FEATURES, FEATURE_GROUPS } from './site-data';
+import { premiumScreenshot } from './premium-screenshots';
 @Component({
   selector: 'app-features-page',
   imports: [RouterLink],
@@ -50,11 +51,11 @@ import { DOCS_BASE, FEATURES, FEATURE_GROUPS } from './site-data';
                 @if (feature.tier === 'Premium') {
                   <img
                     class="feature-preview"
-                    [src]="'previews/premium/' + feature.id + '.svg'"
-                    [alt]="feature.title + ' — static illustrative preview'"
+                    [src]="'previews/premium/' + screenshot(feature.id).file"
+                    [alt]="feature.title + ' — ' + screenshot(feature.id).caption"
                     loading="lazy"
-                    width="1120"
-                    height="640"
+                    [width]="screenshot(feature.id).width"
+                    [height]="screenshot(feature.id).height"
                   />
                 }
                 <div class="card-heading">
@@ -88,13 +89,14 @@ import { DOCS_BASE, FEATURES, FEATURE_GROUPS } from './site-data';
         </div>
       }
       <p class="fine-print">
-        Premium guides include feature-specific illustrations and documentation. Illustrations use
-        sample data and are not product screenshots. This website does not run Premium examples or
-        collect license tokens.
+        Premium guides include actual package screenshots and documentation. API-only features show
+        real results in clearly labeled capture tables; provider adapters use local test responses.
+        This website does not run Premium examples or collect license tokens.
       </p>
     </section>`,
 })
 export class FeaturesPage {
+  readonly screenshot = premiumScreenshot;
   readonly docs = DOCS_BASE;
   readonly groups = FEATURE_GROUPS;
   readonly query = signal('');

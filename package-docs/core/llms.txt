@@ -1,50 +1,51 @@
 # WTS Calendar
 
-> WTS Calendar is a framework-agnostic TypeScript scheduling library. The core package is `@wts-calendar/core`; official React, Vue, and Angular wrappers use the same `@wts-calendar` scope.
+> WTS Calendar is a framework-agnostic TypeScript scheduling library. The core package is `@wts-calendar/core`; official React, React Native, Vue, and Angular wrappers use the same `@wts-calendar` scope.
 
 Use the smallest documented entry point for each feature. Standard scheduling is free; advanced resource planning, interoperability, and enterprise workflow APIs require their named premium entitlement. Dates are native `Date` values unless a documented adapter says otherwise. Never invent or embed provider credentials.
 
 ## Start Here
 
-- [README](https://github.com/Suman201/angular-librerias-v-17/blob/main/projects/calendar/README.md): installation, examples, options, events, views, and integrations
-- [API reference](https://github.com/Suman201/angular-librerias-v-17/blob/main/projects/calendar/docs/API.md): public classes and entry points
-- [Configuration](https://github.com/Suman201/angular-librerias-v-17/blob/main/projects/calendar/docs/CONFIGURATION.md): configuration guidance
-- [Package structure](https://github.com/Suman201/angular-librerias-v-17/blob/main/projects/calendar/docs/PACKAGE-STRUCTURE.md): bundle boundaries and optional modules
-- [AI integration guide](https://github.com/Suman201/angular-librerias-v-17/blob/main/projects/calendar/docs/LLM-INTEGRATION.md): rules for generating safe, valid integrations
+- [README](https://github.com/Suman201/wts-calendar-angular-example/blob/main/projects/calendar/README.md): installation, examples, options, events, views, and integrations
+- [API reference](https://github.com/Suman201/wts-calendar-angular-example/blob/main/projects/calendar/docs/API.md): public classes and entry points
+- [Configuration](https://github.com/Suman201/wts-calendar-angular-example/blob/main/projects/calendar/docs/CONFIGURATION.md): configuration guidance
+- [Package structure](https://github.com/Suman201/wts-calendar-angular-example/blob/main/projects/calendar/docs/PACKAGE-STRUCTURE.md): bundle boundaries and optional modules
+- [AI integration guide](https://github.com/Suman201/wts-calendar-angular-example/blob/main/projects/calendar/docs/LLM-INTEGRATION.md): rules for generating safe, valid integrations
 
 ## Packages
 
-- [Core](https://github.com/Suman201/angular-librerias-v-17/tree/main/projects/calendar): `@wts-calendar/core`
-- [React wrapper](https://github.com/Suman201/angular-librerias-v-17/tree/main/projects/wts-calendar-react): `@wts-calendar/react`
-- [Vue wrapper](https://github.com/Suman201/angular-librerias-v-17/tree/main/projects/wts-calendar-vue): `@wts-calendar/vue`
-- [Angular wrapper](https://github.com/Suman201/angular-librerias-v-17/tree/main/projects/wts-calendar-angular): `@wts-calendar/angular`
+- [Core](https://github.com/Suman201/wts-calendar-angular-example/tree/main/projects/calendar): `@wts-calendar/core`
+- [React wrapper](https://github.com/Suman201/wts-calendar-angular-example/tree/main/projects/wts-calendar-react): `@wts-calendar/react`
+- [React Native wrapper](https://github.com/Suman201/wts-calendar-angular-example/tree/main/projects/wts-calendar-react-native): `@wts-calendar/react-native`
+- [Vue wrapper](https://github.com/Suman201/wts-calendar-angular-example/tree/main/projects/wts-calendar-vue): `@wts-calendar/vue`
+- [Angular wrapper](https://github.com/Suman201/wts-calendar-angular-example/tree/main/projects/wts-calendar-angular): `@wts-calendar/angular`
 
 ## Developer Integration
 
-- [Plugin SDK](https://github.com/Suman201/angular-librerias-v-17/blob/main/projects/calendar/docs/PLUGIN-SDK.md): third-party plugins, lifecycle, dependencies, and conformance
-- [Data adapter SDK](https://github.com/Suman201/angular-librerias-v-17/blob/main/projects/calendar/docs/DATA-ADAPTER-SDK.md): REST, GraphQL, storage, and WebSocket adapters
-- [Event editor](https://github.com/Suman201/angular-librerias-v-17/blob/main/projects/calendar/docs/EVENT-EDITOR.md): accessible opt-in editing UI
-- [Developer tools](https://github.com/Suman201/angular-librerias-v-17/blob/main/projects/calendar/docs/DEVELOPER-TOOLS.md): diagnostics, profiling, and theme tooling
-- [Testing toolkit](https://github.com/Suman201/angular-librerias-v-17/blob/main/projects/calendar/docs/TESTING-TOOLKIT.md): deterministic fixtures and test drivers
+- [Plugin SDK](https://github.com/Suman201/wts-calendar-angular-example/blob/main/projects/calendar/docs/PLUGIN-SDK.md): third-party plugins, lifecycle, dependencies, and conformance
+- [Data adapter SDK](https://github.com/Suman201/wts-calendar-angular-example/blob/main/projects/calendar/docs/DATA-ADAPTER-SDK.md): REST, GraphQL, storage, and WebSocket adapters
+- [Event editor](https://github.com/Suman201/wts-calendar-angular-example/blob/main/projects/calendar/docs/EVENT-EDITOR.md): accessible opt-in editing UI
+- [Developer tools](https://github.com/Suman201/wts-calendar-angular-example/blob/main/projects/calendar/docs/DEVELOPER-TOOLS.md): diagnostics, profiling, and theme tooling
+- [Testing toolkit](https://github.com/Suman201/wts-calendar-angular-example/blob/main/projects/calendar/docs/TESTING-TOOLKIT.md): deterministic fixtures and test drivers
 
 ## Credentials and Interoperability
 
-- [API keys, OAuth, and browser credentials](https://github.com/Suman201/angular-librerias-v-17/blob/main/projects/calendar/docs/CREDENTIALS.md): safe acquisition, restriction, storage, and runtime use
-- [Premium licensing](https://github.com/Suman201/angular-librerias-v-17/blob/main/projects/calendar/docs/PREMIUM-LICENSING.md): how developers request a signed WTS entitlement and enable premium modules safely
-- [Premium interoperability](https://github.com/Suman201/angular-librerias-v-17/blob/main/projects/calendar/docs/PREMIUM-INTEROPERABILITY.md): Google Calendar, Microsoft 365, CalDAV, ICS reconciliation, and migration tools
-- [Enterprise workflow](https://github.com/Suman201/angular-librerias-v-17/blob/main/projects/calendar/docs/ENTERPRISE-WORKFLOW.md): approvals, state machines, policies, audit history, and offline queues
-- [Advanced resource planning](https://github.com/Suman201/angular-librerias-v-17/blob/main/projects/calendar/docs/ADVANCED-RESOURCE-PLANNING.md): capacity, shifts, dependencies, forecasting, and critical paths
+- [API keys, OAuth, and browser credentials](https://github.com/Suman201/wts-calendar-angular-example/blob/main/projects/calendar/docs/CREDENTIALS.md): safe acquisition, restriction, storage, and runtime use
+- [Premium licensing](https://github.com/Suman201/wts-calendar-angular-example/blob/main/projects/calendar/docs/PREMIUM-LICENSING.md): how developers request a signed WTS entitlement and enable premium modules safely
+- [Premium interoperability](https://github.com/Suman201/wts-calendar-angular-example/blob/main/projects/calendar/docs/PREMIUM-INTEROPERABILITY.md): Google Calendar, Microsoft 365, CalDAV, ICS reconciliation, and migration tools
+- [Enterprise workflow](https://github.com/Suman201/wts-calendar-angular-example/blob/main/projects/calendar/docs/ENTERPRISE-WORKFLOW.md): approvals, state machines, policies, audit history, and offline queues
+- [Advanced resource planning](https://github.com/Suman201/wts-calendar-angular-example/blob/main/projects/calendar/docs/ADVANCED-RESOURCE-PLANNING.md): capacity, shifts, dependencies, forecasting, and critical paths
 
 ## Quality and Safety
 
-- [Accessibility](https://github.com/Suman201/angular-librerias-v-17/blob/main/projects/calendar/docs/ACCESSIBILITY.md): keyboard and assistive-technology behavior
-- [Security review](https://github.com/Suman201/angular-librerias-v-17/blob/main/projects/calendar/docs/SECURITY-REVIEW.md): trust boundaries and mitigations
-- [Migration](https://github.com/Suman201/angular-librerias-v-17/blob/main/projects/calendar/docs/MIGRATION.md): package and API migration guidance
-- [Troubleshooting](https://github.com/Suman201/angular-librerias-v-17/blob/main/projects/calendar/docs/TROUBLESHOOTING.md): common failures and fixes
+- [Accessibility](https://github.com/Suman201/wts-calendar-angular-example/blob/main/projects/calendar/docs/ACCESSIBILITY.md): keyboard and assistive-technology behavior
+- [Security review](https://github.com/Suman201/wts-calendar-angular-example/blob/main/projects/calendar/docs/SECURITY-REVIEW.md): trust boundaries and mitigations
+- [Migration](https://github.com/Suman201/wts-calendar-angular-example/blob/main/projects/calendar/docs/MIGRATION.md): package and API migration guidance
+- [Troubleshooting](https://github.com/Suman201/wts-calendar-angular-example/blob/main/projects/calendar/docs/TROUBLESHOOTING.md): common failures and fixes
 
 ## Optional
 
-- [FullCalendar comparison](https://github.com/Suman201/angular-librerias-v-17/blob/main/projects/calendar/docs/FULLCALENDAR-COMPARISON.md): measured capability and payload comparison
-- [Performance](https://github.com/Suman201/angular-librerias-v-17/blob/main/projects/calendar/docs/PERFORMANCE.md): benchmarks and bundle budgets
-- [Capability ledger](https://github.com/Suman201/angular-librerias-v-17/blob/main/projects/calendar/docs/CAPABILITY-LEDGER.md): scored feature evidence
-- [Changelog](https://github.com/Suman201/angular-librerias-v-17/blob/main/projects/calendar/CHANGELOG.md): release history
+- [FullCalendar comparison](https://github.com/Suman201/wts-calendar-angular-example/blob/main/projects/calendar/docs/FULLCALENDAR-COMPARISON.md): measured capability and payload comparison
+- [Performance](https://github.com/Suman201/wts-calendar-angular-example/blob/main/projects/calendar/docs/PERFORMANCE.md): benchmarks and bundle budgets
+- [Capability ledger](https://github.com/Suman201/wts-calendar-angular-example/blob/main/projects/calendar/docs/CAPABILITY-LEDGER.md): scored feature evidence
+- [Changelog](https://github.com/Suman201/wts-calendar-angular-example/blob/main/projects/calendar/CHANGELOG.md): release history

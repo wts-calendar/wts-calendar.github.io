@@ -1,9 +1,10 @@
 import { Component, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { DOCS_BASE, REPOSITORY } from './site-data';
+import { DOCS_BASE, DOCS_ROOT } from './site-data';
+import { CodeCard } from './code-card';
 @Component({
   selector: 'app-docs-page',
-  imports: [RouterLink],
+  imports: [RouterLink, CodeCard],
   template: ` <section class="page-heading container">
       <span class="eyebrow">DEVELOPER DOCUMENTATION</span>
       <h1>Your first calendar.<br /><em>Your own stack.</em></h1>
@@ -26,10 +27,7 @@ import { DOCS_BASE, REPOSITORY } from './site-data';
             </button>
           }
         </div>
-        <div class="code-panel">
-          <span>Terminal</span>
-          <pre><code>{{framework().install}}</code></pre>
-        </div>
+        <app-code-card label="Install command" [code]="framework().install" />
         <p>{{ framework().note }}</p>
         <a [href]="framework().url" class="text-link">Read {{ framework().name }} setup guide ↗</a>
         <h2>2. Start with the core</h2>
@@ -37,10 +35,7 @@ import { DOCS_BASE, REPOSITORY } from './site-data';
           This minimal JavaScript example uses only Standard features. Framework components manage
           mounting and teardown for you.
         </p>
-        <div class="code-panel">
-          <span>JavaScript / TypeScript</span>
-          <pre><code>{{quickStart}}</code></pre>
-        </div>
+        <app-code-card label="JavaScript / TypeScript" [code]="quickStart" />
         <h2>3. Explore one feature at a time</h2>
         <p>
           The examples directory shows the feature options and runtime behavior together. Optional
@@ -85,7 +80,7 @@ export class DocsPage {
     {
       name: 'Angular',
       install: 'npm install @wts-calendar/core @wts-calendar/angular',
-      url: REPOSITORY + '/blob/main/package-docs/angular/README.md',
+      url: DOCS_ROOT + 'angular/README.md',
       note: 'A standalone component with typed options, events, outputs, and a controller.',
     },
     {

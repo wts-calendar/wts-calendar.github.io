@@ -1,27 +1,48 @@
-import { Component, Input, OnInit, OnDestroy, PLATFORM_ID, inject, signal } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnInit,
+  OnDestroy,
+  PLATFORM_ID,
+  inject,
+  signal,
+  computed,
+} from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import {
   WtsCalendarAngularComponent,
   WtsCalendarAngularController,
   type WtsCalendarAngularInitialOptions,
 } from '@wts-calendar/angular';
-import type {
-  CalendarEventInput,
-  CalendarOptionChanges,
-  CalendarThemeName,
-  WtsCalendar,
-} from '@wts-calendar/core';
+import type { CalendarEventInput, CalendarOptionChanges, WtsCalendar } from '@wts-calendar/core';
 import type { CalendarEventEditor } from '@wts-calendar/core/event-editor';
-import { createDemoSetup, SAMPLE_ICS } from './demo-setup';
+import { createDemoSetup, DEMO_HEADER_VIEWS, SAMPLE_ICS, type DemoSetup } from './demo-setup';
+import { demoCode, runtimeCode } from './demo-code';
+import {
+  CODE_FRAMEWORKS,
+  frameworkCode,
+  type CodeContext,
+  type CodeFramework,
+} from './framework-code';
+import { RuntimeOptions } from './runtime-options';
+import { CodeCard } from './code-card';
+import {
+  changedRuntimeOptions,
+  pickRuntimeOptions,
+  readRuntimeOptions,
+  type RuntimeSnapshot,
+} from './runtime-option-schema';
 import { DEMO_DATE, sampleEvents } from './sample-data';
 import type { Demo } from './site-data';
+import { SearchableSelect, type SearchChoice } from './searchable-select';
+import type { LocaleChoice } from './intl-options';
 
 @Component({
   selector: 'app-calendar-demo',
   host: { ngSkipHydration: 'true' },
-  imports: [WtsCalendarAngularComponent],
+  imports: [WtsCalendarAngularComponent, SearchableSelect, RuntimeOptions, CodeCard],
   template: ` <div class="calendar-demo" [class.compact]="compact">
-    @if (demo.id !== 'list' && demo.id !== 'interactions') {
+    @if (!hasViewToolbar) {
       <div class="calendar-toolbar">
         <div class="calendar-nav">
           <button
@@ -46,48 +67,36 @@ import type { Demo } from './site-data';
     }
     @if (!compact) {
       <div class="demo-tools">
-        @if (demo.id === 'themes') {
-          <label
-            >Theme<select (change)="option({ theme: $any($event.target).value })">
-              <option>forma</option>
-              <option>breezy</option>
-              <option>monarch</option>
-              <option>pulse</option>
-            </select></label
-          >
-          <label
-            >Appearance<select (change)="option({ colorScheme: $any($event.target).value })">
-              <option>light</option>
-              <option>dark</option>
-              <option>auto</option>
-            </select></label
-          >
-          <label class="checkbox-label"
-            ><input
-              type="checkbox"
-              checked
-              (change)="option({ weekends: $any($event.target).checked })"
-            />
-            Weekends</label
-          >
-        }
         @if (demo.id === 'time-zones') {
-          <label
-            >Display time zone<select (change)="option({ timeZone: $any($event.target).value })">
-              <option>UTC</option>
-              <option>America/New_York</option>
-              <option>Asia/Kolkata</option>
-            </select></label
-          >
+          <app-searchable-select
+            controlId="demo-time-zone"
+            label="Display time zone"
+            placeholder="Search a city or time-zone ID…"
+            [choices]="timeZoneChoices()"
+            [value]="selectedTimeZone()"
+            [disabled]="!controller.ready()"
+            (valueChange)="setTimeZone($event)"
+          />
+          <p class="intl-demo-note">
+            All time zones supported by your browser, plus UTC and browser local time. Event
+            instants stay the same; their displayed times change.
+          </p>
         }
         @if (demo.id === 'locale-rtl') {
-          <label
-            >Language<select (change)="setLocale($any($event.target).value)">
-              <option value="en-US">English</option>
-              <option value="fr">Français</option>
-              <option value="ar">العربية</option>
-            </select></label
-          >
+          <app-searchable-select
+            controlId="demo-locale"
+            label="Language / locale"
+            placeholder="Search a language or locale code…"
+            [choices]="localeChoices()"
+            [value]="selectedLocale()"
+            [disabled]="!controller.ready()"
+            (valueChange)="setLocale($event)"
+          />
+          <p class="intl-demo-note">
+            {{ localePackCount() }} package language packs, plus browser-supported date locales from
+            Unicode CLDR. Other locales keep English UI labels. Text direction follows the selected
+            locale; sample event titles remain unchanged.
+          </p>
         }
         @if (demo.id === 'event-editor') {
           <button
@@ -114,6 +123,14 @@ import type { Demo } from './site-data';
           ><span>Tab into the calendar. Use its keyboard hints to navigate; Escape cancels.</span>
         }
       </div>
+      <app-runtime-options
+        [demoId]="demo.id"
+        [view]="activeView() || demo.view"
+        [options]="runtimeOptions()"
+        [changed]="hasRuntimeChanges()"
+        (apply)="option($event)"
+        (reset)="resetOptions()"
+      />
     }
     @if (error()) {
       <p class="notice error" role="alert">{{ error() }}</p>
@@ -142,14 +159,49 @@ import type { Demo } from './site-data';
         </ol>
       </details>
       <details class="configuration">
-        <summary>Initial core configuration</summary>
+        <summary>Current configuration & code</summary>
         <p>
-          JavaScript setup for this example. Site navigation and callback logging are separate from
-          this configuration.
+          Updates with the active view, date, and options. The setup includes the original sample
+          events; event edits are not exported. Site navigation and callback logging are separate.
         </p>
-        <div class="code-panel">
-          <pre><code>{{code()}}</code></pre>
+        <div class="framework-tabs" role="group" aria-label="Code framework">
+          @for (framework of frameworks; track framework.id) {
+            <button
+              type="button"
+              [attr.aria-pressed]="selectedFramework() === framework.id"
+              (click)="selectFramework(framework.id)"
+            >
+              {{ framework.label }}
+            </button>
+          }
         </div>
+        @if (selectedCode(); as snippet) {
+          <ul class="framework-notes">
+            @for (note of snippet.notes; track note) {
+              <li>{{ note }}</li>
+            }
+          </ul>
+          @if (snippet.supported) {
+            <app-code-card
+              label="Runtime changes"
+              kind="runtime"
+              [code]="snippet.runtime"
+              [disabled]="!controller.ready()"
+            />
+            <app-code-card label="Install command" kind="install" [code]="snippet.install" />
+            <app-code-card
+              label="Current setup"
+              kind="setup"
+              [code]="snippet.setup"
+              [disabled]="!controller.ready()"
+            />
+          } @else {
+            <div class="notice">
+              This example has no equivalent native implementation. No incompatible browser code is
+              generated for React Native.
+            </div>
+          }
+        }
       </details>
     }
   </div>`,
@@ -157,6 +209,9 @@ import type { Demo } from './site-data';
 export class CalendarDemo implements OnInit, OnDestroy {
   @Input({ required: true }) demo!: Demo;
   @Input() compact = false;
+  get hasViewToolbar(): boolean {
+    return Boolean(DEMO_HEADER_VIEWS[this.demo.id]);
+  }
   readonly controller = new WtsCalendarAngularController();
   readonly options = signal<WtsCalendarAngularInitialOptions | null>(null);
   readonly events = signal<readonly CalendarEventInput[]>([]);
@@ -167,8 +222,27 @@ export class CalendarDemo implements OnInit, OnDestroy {
   readonly imported = signal(false);
   readonly activity = signal<string[]>([]);
   readonly code = signal('');
+  readonly changesCode = signal('');
+  readonly frameworks = CODE_FRAMEWORKS;
+  readonly selectedFramework = signal<CodeFramework>('javascript');
+  private readonly codeContext = signal<CodeContext | null>(null);
+  readonly selectedCode = computed(() => {
+    const context = this.codeContext();
+    return context ? frameworkCode(this.selectedFramework(), context) : null;
+  });
+  readonly activeView = signal('');
+  readonly runtimeOptions = signal<RuntimeSnapshot | null>(null);
+  readonly runtimeChanges = signal<CalendarOptionChanges>({});
+  readonly hasRuntimeChanges = computed(() => Object.keys(this.runtimeChanges()).length > 0);
   readonly editorReady = signal(false);
+  readonly localeChoices = signal<LocaleChoice[]>([]);
+  readonly timeZoneChoices = signal<SearchChoice[]>([]);
+  readonly selectedLocale = signal('en-US');
+  readonly selectedTimeZone = signal('UTC');
+  readonly localePackCount = signal(0);
   private editor?: CalendarEventEditor;
+  private setup?: DemoSetup;
+  private initialRuntime?: RuntimeSnapshot;
   private destroyed = false;
   private readonly platformId = inject(PLATFORM_ID);
   async ngOnInit(): Promise<void> {
@@ -177,59 +251,29 @@ export class CalendarDemo implements OnInit, OnDestroy {
       return;
     }
     try {
+      if (this.demo.id === 'locale-rtl' || this.demo.id === 'time-zones') {
+        const catalogs = await import('./intl-options');
+        if (this.destroyed) return;
+        if (this.demo.id === 'locale-rtl') {
+          const { calendarLocales } = await import('@wts-calendar/core');
+          if (this.destroyed) return;
+          this.localePackCount.set(calendarLocales.length);
+          this.localeChoices.set(
+            catalogs.createLocaleChoices(calendarLocales, navigator.languages),
+          );
+        } else this.timeZoneChoices.set(catalogs.createTimeZoneChoices());
+      }
       const setup = await createDemoSetup(this.demo.id, this.demo.view, () =>
         this.navigate('sample'),
       );
       if (this.destroyed) return;
       const config = setup.options;
+      this.setup = setup;
       if (this.compact) config.height = 490;
       this.events.set(this.demo.id === 'event-sources' ? [] : setup.events);
-      const displayConfig = { ...config, plugins: undefined, events: setup.events };
-      this.code.set(
-        [
-          "import { WtsCalendar } from '@wts-calendar/core';",
-          "import '@wts-calendar/core/styles/calendar.css';",
-          ...setup.imports,
-          '',
-          'const options = ' +
-            JSON.stringify(
-              displayConfig,
-              (_key, value: unknown) => (typeof value === 'function' ? undefined : value),
-              2,
-            ) +
-            ';',
-          this.demo.id === 'list' || this.demo.id === 'interactions'
-            ? "options.customButtons.sampleDates.click = () => calendar.gotoDate('" +
-              DEMO_DATE +
-              "');"
-            : '',
-          this.demo.id === 'render-hooks'
-            ? "options.eventContent = info => '◆ ' + info.event.title;"
-            : '',
-          this.demo.view === 'multi-month' || this.demo.view === 'year'
-            ? "options.moreLinkContent = info => '+' + info.count;"
-            : '',
-          this.demo.id === 'event-sources'
-            ? 'const data = options.events;\noptions.events = [];\noptions.eventSources = [{ id: "sample", loader: async () => data }];\noptions.lazyFetching = true;'
-            : '',
-          'const calendar = new WtsCalendar({ ...options,',
-          "  container: document.querySelector('#calendar'),",
-          '  plugins: [' + setup.pluginNames.join(', ') + '],',
-          '});',
-          this.demo.id === 'ics'
-            ? '// calendar.importICalendar(icsText);\n// const exported = calendar.exportICalendar();'
-            : '',
-          this.demo.id === 'event-editor'
-            ? "\nimport { createCalendarEventEditor } from '@wts-calendar/core/event-editor';\nconst editor = createCalendarEventEditor(calendar, { presentation: 'dialog' });\n// editor.openCreate();\n// Destroy the editor before destroying the calendar."
-            : '',
-          '\n// On unmount: calendar.destroy();',
-        ]
-          .filter((line) => line !== '')
-          .join('\n'),
-      );
       config.datesSet = () => {
         const api = this.controller.getApi();
-        if (api) this.title.set(api.getView().title);
+        if (api) this.syncRuntimeState(api);
       };
       config.dateClick = (info) => this.log('dateClick: ' + info.date.toISOString());
       config.eventClick = (info) => {
@@ -263,7 +307,8 @@ export class CalendarDemo implements OnInit, OnDestroy {
     }
   }
   async ready(api: WtsCalendar): Promise<void> {
-    this.title.set(api.getView().title);
+    this.initialRuntime = readRuntimeOptions(api);
+    this.syncRuntimeState(api);
     this.log(api.getEvents().length + ' events loaded · sample dates in September 2026');
     if (this.demo.id === 'event-editor') {
       try {
@@ -285,19 +330,76 @@ export class CalendarDemo implements OnInit, OnDestroy {
     if (direction === 'previous') api.previous();
     if (direction === 'next') api.next();
     if (direction === 'sample') api.gotoDate(DEMO_DATE);
-    this.title.set(api.getView().title);
+    this.syncRuntimeState(api);
     this.log('Navigated to ' + this.title());
   }
-  option(changes: CalendarOptionChanges): void {
+  option(changes: CalendarOptionChanges): boolean {
     try {
-      this.controller.getApi()?.setOptions(changes);
+      const api = this.controller.getApi();
+      if (!api) return false;
+      const update = api.setOptions(changes);
+      this.syncRuntimeState(api, pickRuntimeOptions(update.current));
+      this.error.set('');
       this.log('Options updated: ' + Object.keys(changes).join(', '));
+      return true;
     } catch (error) {
       this.failed(error);
+      return false;
     }
   }
+  private syncRuntimeState(api: WtsCalendar, updated?: RuntimeSnapshot): void {
+    if (!this.setup || !this.initialRuntime || this.destroyed) return;
+    // Option transactions already return a public snapshot. Navigation only
+    // changes the view/date, so avoid repeatedly cloning every option getter.
+    const current = updated ?? this.runtimeOptions() ?? this.initialRuntime;
+    const changes = changedRuntimeOptions(current, this.initialRuntime);
+    const view = api.getView();
+    const date = api.formatIso(api.getDate(), { omitTime: true });
+    this.title.set(view.title);
+    this.activeView.set(view.type);
+    this.runtimeOptions.set(current);
+    this.runtimeChanges.set(changes);
+    this.selectedLocale.set(
+      typeof current.locale === 'string' ? current.locale : (current.locale?.code ?? 'en-US'),
+    );
+    this.selectedTimeZone.set(current.timeZone ?? 'UTC');
+    this.code.set(demoCode(this.setup, this.demo, changes, view.type, date));
+    this.changesCode.set(runtimeCode(changes, view.type, date, this.demo.view));
+    this.codeContext.set({
+      setup: this.setup,
+      demo: this.demo,
+      changes,
+      view: view.type,
+      date,
+    });
+  }
+  selectFramework(framework: CodeFramework): void {
+    this.selectedFramework.set(framework);
+  }
+  resetOptions(): void {
+    const api = this.controller.getApi();
+    if (!api || !this.initialRuntime) return;
+    const keys = Object.keys(this.runtimeChanges()) as (keyof CalendarOptionChanges)[];
+    if (!keys.length) return;
+    const changes = Object.fromEntries(
+      keys.map((key) => [key, this.initialRuntime![key]]),
+    ) as CalendarOptionChanges;
+    if (keys.includes('timeZone'))
+      changes.viewDate = api.formatIso(api.getDate(), { omitTime: true });
+    if (this.option(changes))
+      this.log('Options reset · current view, date, and event edits preserved');
+  }
   setLocale(locale: string): void {
-    this.option({ locale, direction: locale === 'ar' ? 'rtl' : 'ltr' });
+    const choice = this.localeChoices().find((item) => item.value === locale);
+    if (choice && this.option({ locale, direction: choice.direction }))
+      this.selectedLocale.set(locale);
+  }
+  setTimeZone(timeZone: string): void {
+    const api = this.controller.getApi();
+    if (!api || !this.timeZoneChoices().some((item) => item.value === timeZone)) return;
+    // Preserve the displayed calendar date, not the old zone's midnight instant.
+    const viewDate = api.formatIso(api.getDate(), { omitTime: true });
+    if (this.option({ timeZone, viewDate })) this.selectedTimeZone.set(timeZone);
   }
   openEditor(event: Event): void {
     this.editor?.openCreate({

@@ -1,0 +1,322 @@
+{
+  "schema": 1,
+  "presentation": "content-only",
+  "package": "@wts-calendar/core",
+  "version": "1.1.0",
+  "build": "local-unpublished",
+  "distSha256": "251d203c508280c6b1db89c45315d2bcf4f7c398c40ceeb491e0ef4f5b7f4885",
+  "fixtureSha256": "d9feee37fee3dd28c6f6854a020a0e162b4f994569e62b4b08f0cc6ca7b28736",
+  "capturedAt": "2026-08-31T12:14:57.826Z",
+  "captures": [
+    {
+      "id": "resource-grid",
+      "file": "resource-grid.jpg",
+      "kind": "package-ui",
+      "module": "resource-scheduling",
+      "width": 1311,
+      "height": 552,
+      "sha256": "b6668c8c3577869adda7249331496ba988a97373dc1a30411c68d872609d822a",
+      "caption": "Screenshot of the actual WTS Calendar package with sample data. Static image, not a live demo. Preview build: @wts-calendar/core@1.1.0 (unpublished)."
+    },
+    {
+      "id": "resource-daygrid",
+      "file": "resource-daygrid.jpg",
+      "kind": "package-ui",
+      "module": "resource-scheduling",
+      "width": 1311,
+      "height": 552,
+      "sha256": "e1af56883a72da69ceed7cb39829ffc0820c07fc89910a6170b2e2bcf84ef89c",
+      "caption": "Screenshot of the actual WTS Calendar package with sample data. Static image, not a live demo. Preview build: @wts-calendar/core@1.1.0 (unpublished)."
+    },
+    {
+      "id": "resource-timegrid",
+      "file": "resource-timegrid.jpg",
+      "kind": "package-ui",
+      "module": "resource-scheduling",
+      "width": 1311,
+      "height": 552,
+      "sha256": "f5d1f3e6dbf7c2f404c59c1c93ab6a3534d00bf2b4b0d74551fd6963b77bffc9",
+      "caption": "Screenshot of the actual WTS Calendar package with sample data. Static image, not a live demo. Preview build: @wts-calendar/core@1.1.0 (unpublished)."
+    },
+    {
+      "id": "resource-non-resource-timeline",
+      "file": "resource-non-resource-timeline.jpg",
+      "kind": "package-ui",
+      "module": "resource-scheduling",
+      "width": 1311,
+      "height": 552,
+      "sha256": "65165d005a5c284efdb619fe2834ff80eb1bae0d031d37a56789b970d4721da8",
+      "caption": "Screenshot of the actual WTS Calendar package with sample data. Static image, not a live demo. Preview build: @wts-calendar/core@1.1.0 (unpublished)."
+    },
+    {
+      "id": "dates-above-resources",
+      "file": "dates-above-resources.jpg",
+      "kind": "package-ui",
+      "module": "resource-scheduling",
+      "width": 1311,
+      "height": 870,
+      "sha256": "29a138ba04bf9c0969337ec44a2459aa6c453e59899157c4f4d94c884d89db49",
+      "caption": "Screenshot of the actual WTS Calendar package with sample data. Static image, not a live demo. Preview build: @wts-calendar/core@1.1.0 (unpublished)."
+    },
+    {
+      "id": "resource-crud-sources",
+      "file": "resource-crud-sources.jpg",
+      "kind": "package-ui",
+      "module": "resource-scheduling",
+      "width": 1311,
+      "height": 882,
+      "sha256": "36d24537b198ba47e482cc19667a02aaa52d101cdb1edab89c2d1cc94ccaada9",
+      "caption": "Screenshot of the actual WTS Calendar package with sample data. Static image, not a live demo. The supplementary API result table is application-owned. Preview build: @wts-calendar/core@1.1.0 (unpublished)."
+    },
+    {
+      "id": "resource-hierarchy",
+      "file": "resource-hierarchy.jpg",
+      "kind": "package-ui",
+      "module": "resource-scheduling",
+      "width": 1311,
+      "height": 552,
+      "sha256": "0bdae9cca76a42e7b740d525214e4820d5904f74cac75bfc0d52aa572c02cdfb",
+      "caption": "Screenshot of the actual WTS Calendar package with sample data. Static image, not a live demo. Preview build: @wts-calendar/core@1.1.0 (unpublished)."
+    },
+    {
+      "id": "resource-grouping-ordering-filtering",
+      "file": "resource-grouping-ordering-filtering.jpg",
+      "kind": "package-ui",
+      "module": "resource-scheduling",
+      "width": 1311,
+      "height": 552,
+      "sha256": "f2e5237e6a8fc68773118f6665a34989593ab4bb874e69b405dfcf7ffd5dde0d",
+      "caption": "Screenshot of the actual WTS Calendar package with sample data. Static image, not a live demo. Preview build: @wts-calendar/core@1.1.0 (unpublished)."
+    },
+    {
+      "id": "resource-columns-render-hooks",
+      "file": "resource-columns-render-hooks.jpg",
+      "kind": "package-ui",
+      "module": "resource-scheduling",
+      "width": 1311,
+      "height": 552,
+      "sha256": "ee2e62d217b63e6814b941d0a17007ca0e22e91352543a834a5b5107b7a7af75",
+      "caption": "Screenshot of the actual WTS Calendar package with sample data. Static image, not a live demo. Preview build: @wts-calendar/core@1.1.0 (unpublished)."
+    },
+    {
+      "id": "resource-availability-assignment",
+      "file": "resource-availability-assignment.jpg",
+      "kind": "package-ui",
+      "module": "resource-scheduling",
+      "width": 1311,
+      "height": 552,
+      "sha256": "2f6097dfc496600d94f2e6e30da58b20e971ccd9830f0da5b9b621a8b9bad5d4",
+      "caption": "Screenshot of the actual WTS Calendar package with sample data. Static image, not a live demo. Preview build: @wts-calendar/core@1.1.0 (unpublished)."
+    },
+    {
+      "id": "capacity-skills-roles",
+      "file": "capacity-skills-roles.jpg",
+      "kind": "package-ui",
+      "module": "resource-scheduling",
+      "width": 1311,
+      "height": 831,
+      "sha256": "a510a02313788a710fd505abbc5acd0fdf45fd40365776e143677b98508c8eae",
+      "caption": "Screenshot of the actual WTS Calendar package with sample data. Static image, not a live demo. The supplementary API result table is application-owned. Preview build: @wts-calendar/core@1.1.0 (unpublished)."
+    },
+    {
+      "id": "resource-virtualization-print",
+      "file": "resource-virtualization-print.jpg",
+      "kind": "package-ui",
+      "module": "resource-scheduling",
+      "width": 1311,
+      "height": 552,
+      "sha256": "1f4a8afcfdf48772adc67dbff7e837d8a4eede24f9eb377b4555c3d1a7cda8f5",
+      "caption": "Screenshot of the actual WTS Calendar package with sample data. Static image, not a live demo. Preview build: @wts-calendar/core@1.1.0 (unpublished)."
+    },
+    {
+      "id": "repeated-task-views",
+      "file": "repeated-task-views.jpg",
+      "kind": "package-ui",
+      "module": "repeated-tasks",
+      "width": 1311,
+      "height": 674,
+      "sha256": "289e95bea68a55c498f19485b0714f7b0fd0e3b5386523cbf313b47ddcf23f4b",
+      "caption": "Screenshot of the actual WTS Calendar package with sample data. Static image, not a live demo. Preview build: @wts-calendar/core@1.1.0 (unpublished)."
+    },
+    {
+      "id": "utilization-capacity-heatmaps",
+      "file": "utilization-capacity-heatmaps.jpg",
+      "kind": "api-output",
+      "module": "advanced-resource-planning",
+      "width": 1311,
+      "height": 792,
+      "sha256": "e48d23c511753b98af2a3c8692a485445e4525b388aed95eb7c6bfb0f3a0b036",
+      "caption": "Screenshot of actual package API results with sample data. The read-only result table is application-owned; this feature does not provide this screen as built-in UI. Preview build: @wts-calendar/core@1.1.0 (unpublished)."
+    },
+    {
+      "id": "split-shifts-rotating-schedules",
+      "file": "split-shifts-rotating-schedules.jpg",
+      "kind": "api-output",
+      "module": "advanced-resource-planning",
+      "width": 1311,
+      "height": 484,
+      "sha256": "dba4bed2885e9312eb5a0b07899da44c2ec5e23d22c5c5ec57cea61224365f10",
+      "caption": "Screenshot of actual package API results with sample data. The read-only result table is application-owned; this feature does not provide this screen as built-in UI. Preview build: @wts-calendar/core@1.1.0 (unpublished)."
+    },
+    {
+      "id": "resource-dependencies-substitutes",
+      "file": "resource-dependencies-substitutes.jpg",
+      "kind": "api-output",
+      "module": "advanced-resource-planning",
+      "width": 1311,
+      "height": 391,
+      "sha256": "13977623de05d32e4253b8eedf69d1244392c5adbbad236f30f7dbd0e45f82ac",
+      "caption": "Screenshot of actual package API results with sample data. The read-only result table is application-owned; this feature does not provide this screen as built-in UI. Preview build: @wts-calendar/core@1.1.0 (unpublished)."
+    },
+    {
+      "id": "overbooking-policies",
+      "file": "overbooking-policies.jpg",
+      "kind": "api-output",
+      "module": "advanced-resource-planning",
+      "width": 1311,
+      "height": 331,
+      "sha256": "94908dc0f796963e35fffab60c7a465e8826375e04724acb2298761f242eb728",
+      "caption": "Screenshot of actual package API results with sample data. The read-only result table is application-owned; this feature does not provide this screen as built-in UI. Preview build: @wts-calendar/core@1.1.0 (unpublished)."
+    },
+    {
+      "id": "demand-availability-forecasting",
+      "file": "demand-availability-forecasting.jpg",
+      "kind": "api-output",
+      "module": "advanced-resource-planning",
+      "width": 1311,
+      "height": 552,
+      "sha256": "2634101c64c74e56615107df3a8a544998ae54355befb860dd9ce203b43651d0",
+      "caption": "Screenshot of actual package API results with sample data. The read-only result table is application-owned; this feature does not provide this screen as built-in UI. Preview build: @wts-calendar/core@1.1.0 (unpublished)."
+    },
+    {
+      "id": "dependencies-critical-paths",
+      "file": "dependencies-critical-paths.jpg",
+      "kind": "api-output",
+      "module": "advanced-resource-planning",
+      "width": 1311,
+      "height": 450,
+      "sha256": "3ef522357eda065c30314a7037ff91b667350db15ee0c8c692c27218b88275b7",
+      "caption": "Screenshot of actual package API results with sample data. The read-only result table is application-owned; this feature does not provide this screen as built-in UI. Preview build: @wts-calendar/core@1.1.0 (unpublished)."
+    },
+    {
+      "id": "two-way-google-calendar-synchronization",
+      "file": "two-way-google-calendar-synchronization.jpg",
+      "kind": "adapter-output",
+      "module": "premium-interoperability",
+      "width": 1311,
+      "height": 442,
+      "sha256": "abf6a32c884cf125dee81238d597b590a74c5eb9fad5d49f4a0e2777d9307070",
+      "caption": "Screenshot of actual package adapter results using local test responses. The result table is application-owned, not a built-in screen or a live provider connection. Preview build: @wts-calendar/core@1.1.0 (unpublished)."
+    },
+    {
+      "id": "microsoft-365-outlook-adapter",
+      "file": "microsoft-365-outlook-adapter.jpg",
+      "kind": "adapter-output",
+      "module": "premium-interoperability",
+      "width": 1311,
+      "height": 442,
+      "sha256": "cde50eaa23aeca449553ab96a76c7c774b97b743a5940020f1c50d4197d6708e",
+      "caption": "Screenshot of actual package adapter results using local test responses. The result table is application-owned, not a built-in screen or a live provider connection. Preview build: @wts-calendar/core@1.1.0 (unpublished)."
+    },
+    {
+      "id": "caldav-adapter",
+      "file": "caldav-adapter.jpg",
+      "kind": "adapter-output",
+      "module": "premium-interoperability",
+      "width": 1311,
+      "height": 442,
+      "sha256": "b245e50ef89574aa332684b159b3fcab9303c0a90124f5c2332a8b5de4d691bb",
+      "caption": "Screenshot of actual package adapter results using local test responses. The result table is application-owned, not a built-in screen or a live provider connection. Preview build: @wts-calendar/core@1.1.0 (unpublished)."
+    },
+    {
+      "id": "ics-change-detection-reconciliation",
+      "file": "ics-change-detection-reconciliation.jpg",
+      "kind": "api-output",
+      "module": "premium-interoperability",
+      "width": 1311,
+      "height": 544,
+      "sha256": "1b53b162c67a423519b0c7934bb6891a5674ba3ccae27cc1b359cfc2ccba4216",
+      "caption": "Screenshot of actual package API results with sample data. The read-only result table is application-owned; this feature does not provide this screen as built-in UI. Preview build: @wts-calendar/core@1.1.0 (unpublished)."
+    },
+    {
+      "id": "moment-luxon-migration-toolkit",
+      "file": "moment-luxon-migration-toolkit.jpg",
+      "kind": "api-output",
+      "module": "premium-interoperability",
+      "width": 1311,
+      "height": 280,
+      "sha256": "584921aed44a4182017b4719e6f6b707e084bc2c500dbef18a143cde1ddafcd1",
+      "caption": "Screenshot of actual package API results with sample data. The read-only result table is application-owned; this feature does not provide this screen as built-in UI. Preview build: @wts-calendar/core@1.1.0 (unpublished)."
+    },
+    {
+      "id": "configuration-migration-assistant",
+      "file": "configuration-migration-assistant.jpg",
+      "kind": "api-output",
+      "module": "premium-interoperability",
+      "width": 1311,
+      "height": 596,
+      "sha256": "748d4449176f84ffeed6bf7b4217e84fce6a61035cfa3a8278b3d87ce4f4e564",
+      "caption": "Screenshot of actual package API results with sample data. The read-only result table is application-owned; this feature does not provide this screen as built-in UI. Preview build: @wts-calendar/core@1.1.0 (unpublished)."
+    },
+    {
+      "id": "multi-stage-approvals",
+      "file": "multi-stage-approvals.jpg",
+      "kind": "api-output",
+      "module": "enterprise-workflow",
+      "width": 1311,
+      "height": 398,
+      "sha256": "453721c12d74ec7871df0a7aec4dc207f076eb3664d6a9321171b5a4dfd91e21",
+      "caption": "Screenshot of actual package API results with sample data. The read-only result table is application-owned; this feature does not provide this screen as built-in UI. Preview build: @wts-calendar/core@1.1.0 (unpublished)."
+    },
+    {
+      "id": "configurable-event-state-machines",
+      "file": "configurable-event-state-machines.jpg",
+      "kind": "api-output",
+      "module": "enterprise-workflow",
+      "width": 1311,
+      "height": 398,
+      "sha256": "7b4dfcc5f50f4f599d58c3a47c5bc37d8eb5976d4f9c6b6abb77bea981a21a17",
+      "caption": "Screenshot of actual package API results with sample data. The read-only result table is application-owned; this feature does not provide this screen as built-in UI. Preview build: @wts-calendar/core@1.1.0 (unpublished)."
+    },
+    {
+      "id": "immutable-audit-history",
+      "file": "immutable-audit-history.jpg",
+      "kind": "api-output",
+      "module": "enterprise-workflow",
+      "width": 1311,
+      "height": 450,
+      "sha256": "03e457d92fd35055305573605b734b84d9087d6e258e8e43b90b3021772dde50",
+      "caption": "Screenshot of actual package API results with sample data. The read-only result table is application-owned; this feature does not provide this screen as built-in UI. Preview build: @wts-calendar/core@1.1.0 (unpublished)."
+    },
+    {
+      "id": "permissions-field-level-policies",
+      "file": "permissions-field-level-policies.jpg",
+      "kind": "api-output",
+      "module": "enterprise-workflow",
+      "width": 1311,
+      "height": 484,
+      "sha256": "df76f62d1ad4b17f5b80acf5e018b5f6259bd3c676345a794e37dde0bbf2cfc7",
+      "caption": "Screenshot of actual package API results with sample data. The read-only result table is application-owned; this feature does not provide this screen as built-in UI. Preview build: @wts-calendar/core@1.1.0 (unpublished)."
+    },
+    {
+      "id": "optimistic-offline-mutation-queues",
+      "file": "optimistic-offline-mutation-queues.jpg",
+      "kind": "api-output",
+      "module": "enterprise-workflow",
+      "width": 1311,
+      "height": 280,
+      "sha256": "192273ada747491af1b3141eae2136dd29162940aca01ea569bc87ce5921d7ac",
+      "caption": "Screenshot of actual package API results with sample data. The read-only result table is application-owned; this feature does not provide this screen as built-in UI. Uses an in-memory test backend; no external service is connected. Preview build: @wts-calendar/core@1.1.0 (unpublished)."
+    },
+    {
+      "id": "existing-backend-interfaces",
+      "file": "existing-backend-interfaces.jpg",
+      "kind": "api-output",
+      "module": "enterprise-workflow",
+      "width": 1311,
+      "height": 391,
+      "sha256": "8e0d5184bafbe79d20d90eaae0d0f5b10570b0349268140cd371735938cfbac1",
+      "caption": "Screenshot of actual package API results with sample data. The read-only result table is application-owned; this feature does not provide this screen as built-in UI. Uses an in-memory test backend; no external service is connected. Preview build: @wts-calendar/core@1.1.0 (unpublished)."
+    }
+  ]
+}

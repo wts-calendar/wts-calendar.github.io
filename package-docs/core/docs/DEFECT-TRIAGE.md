@@ -1,8 +1,20 @@
 # Release-candidate defect triage
 
-Candidate: `@wts-calendar/core@1.0.0`
+Candidate: `@wts-calendar/core@1.1.1`
 
-Triage date: 2026-08-26
+Triage date: 2026-08-31
+
+## Current patch qualification
+
+An authenticated live query of the configured public repository,
+`Suman201/wts-calendar-angular-example`, confirmed Issues is enabled and found
+zero open `P0`/`P1` issues on 2026-08-31. The current
+`artifacts/defect-triage.json` records `repositoryVisibility: "public"`,
+`queryAuthenticated: true`, `openBlockerCount: 0`, and `passed: true`.
+All 338 core tests pass for 1.1.1. The patch includes RTL spans, localized
+digits, event spacing, resize-target appearance, and toolbar lifecycle/theme fixes.
+
+## Historical 1.0.0 qualification
 
 Baseline commit at the start of review:
 `a80bc1932abd68bc2392031f108844486c8d7cad`. The final release SHA is captured
@@ -25,7 +37,7 @@ must be committed before that artifact is treated as release evidence.
 
 The intended release query is:
 
-<https://github.com/Suman201/angular-librerias-v-17/issues?q=is%3Aissue%20state%3Aopen%20%28label%3AP0%20OR%20label%3AP1%29>
+<https://github.com/Suman201/wts-calendar-angular-example/issues?q=is%3Aissue%20state%3Aopen%20%28label%3AP0%20OR%20label%3AP1%29>
 
 On 2026-08-26, the local gate used the existing Git credential to authenticate
 to the configured private repository. It confirmed GitHub Issues is enabled and

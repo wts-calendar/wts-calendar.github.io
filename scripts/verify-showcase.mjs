@@ -1,6 +1,7 @@
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { resolve } from 'node:path';
 import assert from 'node:assert/strict';
+import './verify-premium-integration.mjs';
 
 const root = resolve(import.meta.dirname, '..');
 const read = (path) => readFileSync(resolve(root, path), 'utf8');
@@ -50,21 +51,17 @@ function previewFiles(directory) {
 }
 const previews = previewFiles('public/previews');
 for (const file of previews) {
-  assert.ok(file.endsWith('.svg'), 'Unexpected preview type: ' + file);
-  const svg = read(file);
-  assert.ok(!/full[\s-]*calend[ae]r/i.test(svg), 'Competitor branding in preview: ' + file);
-  assert.ok(
-    !/<script|<foreignObject|\bon\w+=|https?:\/\//i.test(
-      svg.replace('http://www.w3.org/2000/svg', ''),
-    ),
-    'Unsafe preview: ' + file,
+  assert.ok(file.endsWith('.jpg'), 'Unexpected preview type: ' + file);
+  assert.equal(
+    readFileSync(resolve(root, file)).readUInt16BE(0),
+    0xffd8,
+    'Invalid screenshot: ' + file,
   );
-  assert.ok(svg.includes('Static illustration'), 'Preview must not pretend to be a screenshot');
 }
 const premium = JSON.parse(premiumContent);
 assert.equal(new Set(premium.map((feature) => feature.id)).size, premium.length);
 for (const feature of premium) {
-  assert.ok(existsSync(resolve(root, 'public/previews/premium', feature.id + '.svg')));
+  assert.ok(existsSync(resolve(root, 'public/previews/premium', feature.id + '.jpg')));
   assert.ok(feature.configuration.length >= 3 && feature.steps.length >= 3);
   assert.ok(feature.behavior.length >= 2 && feature.limits.length >= 2);
   assert.ok(existsSync(resolve(root, 'package-docs/core', feature.guide)));

@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>WTS Calendar — local package capture</title>
+  <link rel="stylesheet" href="/package/styles/calendar.css">
+  <script type="importmap">{"imports":{"@wts-calendar/core":"/package/index.esm.js","@js-temporal/polyfill":"/vendor/@js-temporal/polyfill/dist/index.esm.js","jsbi":"/vendor/jsbi/dist/jsbi.mjs","moment":"/vendor/moment/dist/moment.js","luxon":"/vendor/luxon/build/es6/luxon.mjs"}}</script>
+  <style>
+    *{box-sizing:border-box}html{background:white}body{margin:0;padding:0;font:15px/1.5 Arial,Helvetica,sans-serif;color:#192d3b}
+    main{width:100%;max-width:1180px;margin:0;padding:24px;background:white;display:flow-root}
+    #content{display:flow-root;padding:0}h1{font-size:20px;line-height:1.25;margin:8px 0}p{margin:6px 0;color:#536575}
+    #capture-info{max-width:1180px;margin:28px auto 0;padding:16px 20px;border:1px solid #d9e2e8;border-radius:8px;background:#fafcfd;font-size:12px}
+    .calendar{height:560px;--calendar-height:560px;--calendar-body-height:480px;--month-day-cell-height:60px}
+    .calendar.short{height:320px;--calendar-height:320px;--calendar-body-height:250px}
+    h2{font-size:16px;margin:12px 0}table{border-collapse:collapse;width:100%;font-size:14px;margin:10px 0 20px;table-layout:fixed}
+    th,td{text-align:left;padding:12px 14px;border:1px solid #d9e2e8;overflow-wrap:anywhere}th{background:#edf3f7;color:#324e63;font-size:12px}
+    tbody tr:nth-child(even){background:#f8fafc}.result{background:#eaf5ef;padding:12px 16px;border-left:3px solid #247358;margin:14px 0}
+    .warning{background:#fff7e6;border-left-color:#a87721}.caption{font-size:12px;color:#647687;margin:8px 0 14px}
+    #capture-status{font-size:12px}#capture-status[data-status="error"]{color:#b12525;white-space:pre-wrap}
+  </style>
+</head>
+<body>
+  <main id="capture" data-presentation="content-only"><section id="content"></section></main>
+  <aside id="capture-info" aria-label="Capture verification, excluded from screenshot">
+    <h1 id="title">Loading package</h1><p id="subtitle"></p>
+    <div id="provenance"></div><div id="capture-status" role="status">Rendering…</div>
+  </aside>
+  <script type="module" src="/fixture.mjs"></script>
+</body>
+</html>

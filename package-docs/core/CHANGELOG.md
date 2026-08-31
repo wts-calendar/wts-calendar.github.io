@@ -3,6 +3,65 @@
 All notable changes are documented here. This project follows Semantic
 Versioning.
 
+## [Unreleased]
+
+## [1.1.1] - 2026-08-31
+
+### Changed
+
+- Package homepage metadata now links to the hosted resource-grid example at
+  https://wts-calendar.github.io/premium/resource-grid.
+
+### Fixed
+
+- Declarative toolbar buttons no longer interpolate through low-contrast colors
+  on hover; the no-transition rule now also overrides legacy grouped-button styles.
+- Header and footer date titles explicitly use the calendar text theme token,
+  keeping dark and automatic color schemes readable under host heading styles.
+  Applications can override them with `--calendar-toolbar-title-color`.
+- Native header/footer buttons remain interactive after changing locale, theme,
+  time zone, or other options, including rollback. Rebuilt headers stay above
+  the calendar body in both visual and keyboard order. Toolbar listeners are released
+  when their toolbar is replaced or the calendar is destroyed, not on view rebuild.
+- Stacked Month/DayGrid events have a consistent 4 px vertical gap, adjustable
+  through `--month-event-gap`. Multi-day continuation lanes and overflow links
+  track the same gap, including when applications change it at runtime.
+- Numeric date/time tokens now honor locale numbering systems, including Bengali
+  digits and explicit `-u-nu-latn` overrides. ISO dates and event identifiers remain
+  locale-independent; installed Moment/Luxon formatters retain control of their output.
+- Month/DayGrid resize targets stay visually hidden, including on hover, under
+  application button styles. Consistent label/target height prevents overlap;
+  edge resizing and visible keyboard focus remain available in LTR and RTL.
+- Resource views now default to Previous, date title, and Next, without unrelated
+  List/Month/Week/Day or repeated-task switches. Explicit toolbar layouts remain
+  supported, and switching view families updates the default without stale listeners.
+- Month, DayGrid, and multi-month event spans now extend toward the correct
+  RTL edge, including resize handles, pointer previews, and keyboard resizing.
+- Event labels resolve their own text direction independently of calendar
+  geometry, keeping mixed English/Arabic text and ellipses readable.
+- Cancelling a month resize restores the original event bars and removes
+  temporary segments, including previews that cross into other month panels.
+
+## [1.1.0] - 2026-08-28
+
+### Added
+
+- Added the DOM-free `@wts-calendar/core/native` entry with time-zone-aware
+  navigation, event CRUD, recurrence expansion, selection, immutable
+  snapshots, and subscriptions.
+- Added the official `@wts-calendar/react-native` package with accessible
+  native month, week, day, and virtualized list views, themes, callbacks,
+  custom event rendering, and imperative controller access.
+
+## [1.0.1] - 2026-08-26
+
+### Fixed
+
+- Corrected repository, homepage, and issue-tracker metadata for the core and
+  framework wrapper packages.
+- Removed `llms.txt` promotion from public READMEs and repaired stale Markdown
+  links in the release and capability documentation.
+
 ## [1.0.0] - 2026-08-26
 
 ### Added

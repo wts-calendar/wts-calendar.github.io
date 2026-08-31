@@ -9,8 +9,8 @@ tests pass.
 
 The maintained scoped core is `@wts-calendar/core`. Replace legacy
 `wts-calendar-v2` dependency declarations and imports with the scoped package.
-The official wrappers are `@wts-calendar/react`, `@wts-calendar/vue`, and
-`@wts-calendar/angular`. Do not use the misspelled `wts-calender` name or
+The official wrappers are `@wts-calendar/react`, `@wts-calendar/react-native`,
+`@wts-calendar/vue`, and `@wts-calendar/angular`. Do not use the misspelled `wts-calender` name or
 organization. Version `1.0.0` begins the scoped package line; it does not imply
 API compatibility with an unrelated unscoped `1.x` package.
 
@@ -65,6 +65,15 @@ Install `@wts-calendar/vue`, render `WtsCalendarVue`, and call the exposed
 `getApi()`. The adapter constructs in `onMounted`, holds the core in a shallow
 ref, watches only `options`, `events`, and `resources`, and destroys in
 `onBeforeUnmount`. It is safe to import during SSR.
+
+## React Native
+
+Install `@wts-calendar/core` and `@wts-calendar/react-native`, then render
+`WtsCalendarNative`. Native applications use the same core date, recurrence,
+event, and navigation logic through `@wts-calendar/core/native`; they do not
+mount the browser calendar or use a WebView. Month, week, day, and list views
+are native controls. Use `WtsCalendarNativeHandle.getApi()` for event CRUD,
+selection, and navigation.
 
 ## Important contract differences
 

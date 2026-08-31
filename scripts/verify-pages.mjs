@@ -61,7 +61,7 @@ for (const file of indexFiles()) {
     assert.ok(article, 'Missing feature-specific guide: ' + route);
     assert.equal(
       article.querySelector('.premium-feature-figure img')?.getAttribute('src'),
-      'previews/premium/' + id + '.svg',
+      'previews/premium/' + id + '.jpg',
     );
     assert.ok(article.querySelector('.premium-feature-figure img')?.getAttribute('alt'));
     for (const section of ['configuration', 'integration', 'behavior', 'boundaries', 'licensing'])
@@ -70,8 +70,18 @@ for (const file of indexFiles()) {
         'Empty Premium section: ' + route + '#' + section,
       );
     assert.ok(
-      !article.querySelector('wts-calendar-angular,input,form,pre,code'),
-      'Premium runtime, credential form, or code sample: ' + route,
+      !article.querySelector('wts-calendar-angular,.wts-calender,input,form'),
+      'Premium runtime or credential form: ' + route,
+    );
+    assert.ok(
+      article
+        .querySelector('#integration pre[data-code-kind="premium-integration"] code')
+        ?.textContent.includes('YOUR_WTS_LICENSE_KEY'),
+      'Missing static integration code: ' + route,
+    );
+    assert.ok(
+      article.querySelector('#integration button.copy-code-button'),
+      'Missing integration copy button: ' + route,
     );
     assert.ok(
       article.querySelector('a[href^="mailto:"]'),
@@ -83,7 +93,7 @@ for (const file of indexFiles()) {
     );
   }
   for (const card of document.querySelectorAll('.feature-card[data-tier="Premium"]')) {
-    assert.ok(card.querySelector('img.feature-preview'), 'Premium card needs an illustration');
+    assert.ok(card.querySelector('img.feature-preview'), 'Premium card needs a package screenshot');
     assert.ok(
       card
         .querySelector('a')

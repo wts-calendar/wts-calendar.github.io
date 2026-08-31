@@ -55,7 +55,7 @@ export const SEO_PAGES: readonly PageSeo[] = [
     title: feature.title + ' — Premium Guide | WTS Calendar',
     description:
       feature.description +
-      ' Read the WTS Calendar Premium guide, view the illustration, and review integration requirements.',
+      ' View actual WTS Calendar package output, read the Premium guide, and review integration requirements.',
   })),
 ];
 

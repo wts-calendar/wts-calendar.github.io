@@ -3,6 +3,22 @@ import type { WtsCalendarAngularInitialOptions } from '@wts-calendar/angular';
 import { DEMOS, LIST_VIEWS } from './site-data';
 import { DEMO_DATE, sampleEvents } from './sample-data';
 
+const GRID_VIEWS = ['month', 'week', 'day'] as const;
+const STANDARD_VIEWS = [...GRID_VIEWS, 'list-week'] as const;
+// Feature demos switch the same calendar instance; dedicated layout examples
+// stay focused on their named view. List has its own range controls.
+export const DEMO_HEADER_VIEWS: Readonly<Record<string, readonly string[]>> = {
+  list: LIST_VIEWS,
+  interactions: GRID_VIEWS,
+  // List views intentionally omit background shading.
+  background: GRID_VIEWS,
+  themes: STANDARD_VIEWS,
+  'time-zones': STANDARD_VIEWS,
+  'locale-rtl': STANDARD_VIEWS,
+  'render-hooks': STANDARD_VIEWS,
+  accessibility: STANDARD_VIEWS,
+};
+
 export interface DemoSetup {
   options: WtsCalendarAngularInitialOptions;
   events: CalendarEventInput[];
@@ -16,6 +32,8 @@ export async function createDemoSetup(
 ): Promise<DemoSetup> {
   const demo = DEMOS.find((item) => item.id === id);
   if (!demo) throw new Error('Unknown example');
+  const headerViews = DEMO_HEADER_VIEWS[id];
+  const availableViews = headerViews ?? [demo.view];
   const plugins: NonNullable<CalendarOptions['plugins']>[number][] = [];
   const imports: string[] = [];
   const pluginNames: string[] = [];
@@ -28,7 +46,7 @@ export async function createDemoSetup(
     pluginNames.push(name);
     plugins.push(plugin);
   };
-  if (['day', 'week'].includes(demo.view)) {
+  if (availableViews.some((view) => view === 'day' || view === 'week')) {
     use(
       'timeGridModule',
       'time-grid',
@@ -42,7 +60,7 @@ export async function createDemoSetup(
       (await import('@wts-calendar/core/multi-month')).multiMonthModule,
     );
   }
-  if (demo.view.startsWith('list')) {
+  if (availableViews.some((view) => view.startsWith('list'))) {
     use('listModule', 'list', (await import('@wts-calendar/core/list')).listModule);
   }
   if (['interactions', 'constraints', 'event-editor', 'accessibility'].includes(id)) {
@@ -72,8 +90,7 @@ export async function createDemoSetup(
     theme: 'forma',
     colorScheme: 'light',
     height: 640,
-    // Fixed-height previews use natural rows: the installed package's expandRows
-    // rule also expands the month header, pushing events below the viewport.
+    // Natural rows keep the month header compact inside fixed-height previews.
     headerToolbar: false,
     expandRows: false,
     // Each view keeps its native scrollbar; a second floating scrollbar is
@@ -88,11 +105,11 @@ export async function createDemoSetup(
   if (id === 'list') {
     options.view = LIST_VIEWS.find((view) => view === initialListView) ?? demo.view;
   }
-  if (id === 'list' || id === 'interactions') {
+  if (headerViews) {
     options.headerToolbar = {
       start: onSampleDates ? 'prev,next sampleDates' : 'prev,next today',
       center: 'title',
-      end: id === 'list' ? LIST_VIEWS.join(',') : 'month,week,day',
+      end: headerViews.join(','),
     };
     options.headerToolbarClass = 'example-native-toolbar';
     options.buttonClass = 'example-native-button';
@@ -103,7 +120,7 @@ export async function createDemoSetup(
       week: 'Week',
       day: 'Day',
       'list-day': 'Day',
-      'list-week': 'Week',
+      'list-week': id === 'list' ? 'Week' : 'List',
       'list-month': 'Month',
       'list-year': 'Year',
     };
@@ -120,12 +137,24 @@ export async function createDemoSetup(
     };
     if (onSampleDates) {
       options.customButtons = {
-        sampleDates: { text: 'Sample dates', hint: 'Return to sample dates', click: onSampleDates },
+        sampleDates: {
+          text: 'Sample dates',
+          hint: 'Return to sample dates',
+          click: () => onSampleDates(),
+        },
       };
     }
+    if (id === 'locale-rtl') {
+      // Let the selected package language pack translate the native view labels.
+      options.buttonText = { prev: '‹', next: '›' };
+    }
   }
-  if (demo.view === 'day' || demo.view === 'week') {
+  if (availableViews.some((view) => view === 'day' || view === 'week')) {
     Object.assign(options, { slotMinTime: '07:00', slotMaxTime: '20:00', scrollTime: '08:00' });
+  }
+  if (id === 'time-zones') {
+    // A full-day range keeps shifted events reachable in every display zone.
+    Object.assign(options, { slotMinTime: '00:00', slotMaxTime: '24:00' });
   }
   // Galleries and single-row DayGrids follow their content. Only month and
   // hourly/list previews need a full-height frame.
@@ -186,8 +215,8 @@ export async function createDemoSetup(
     events.push({
       id: 'quiet-time',
       title: 'Quiet work window',
-      start: '2026-09-09T12:00:00Z',
-      end: '2026-09-09T17:00:00Z',
+      start: DEMO_DATE + 'T12:00:00Z',
+      end: DEMO_DATE + 'T17:00:00Z',
       display: 'background',
       color: '#bce1cf',
     });

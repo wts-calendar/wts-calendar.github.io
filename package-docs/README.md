@@ -2,6 +2,11 @@
 
 This directory mirrors the Markdown documentation used by the two published packages installed by this example. Relative paths from the package READMEs are preserved.
 
+Current dependencies: `@wts-calendar/core@1.1.1` and `@wts-calendar/angular@1.0.1`.
+Release qualification notes are mirrored from the corresponding package repository;
+they are not shipped inside the npm tarball. Static preview capture metadata keeps
+its original version and is not relabeled as a new screenshot.
+
 ## Angular adapter
 
 - [Angular adapter README](angular/README.md)

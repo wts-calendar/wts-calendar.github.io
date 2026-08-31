@@ -1,0 +1,30 @@
+import { readFileSync, readdirSync } from 'node:fs';
+import { resolve } from 'node:path';
+import { createHash } from 'node:crypto';
+import assert from 'node:assert/strict';
+const root = resolve(import.meta.dirname, '..');
+const read = path => readFileSync(resolve(root, path));
+const hash = data => createHash('sha256').update(data).digest('hex');
+const guides = JSON.parse(read('src/app/premium-feature-data.json'));
+const manifest = JSON.parse(read('src/app/premium-screenshot-manifest.json'));
+assert.equal(manifest.package, '@wts-calendar/core');
+assert.equal(manifest.presentation, 'content-only');
+assert.match(manifest.distSha256, /^[a-f0-9]{64}$/);
+assert.equal(manifest.fixtureSha256, hash(['fixture.html', 'fixture.mjs'].map(name => read('scripts/premium-previews/' + name).toString()).join('\n')), 'Capture fixture changed; recapture and finalize the screenshots');
+assert.deepEqual(new Set(manifest.captures.map(c => c.id)), new Set(guides.map(g => g.id)));
+assert.equal(manifest.captures.length, guides.length);
+assert.equal(new Set(manifest.captures.map(c => c.sha256)).size, guides.length, 'Every feature needs its own screenshot');
+for (const capture of manifest.captures) {
+  assert.equal(capture.file, capture.id + '.jpg');
+  const bytes = read('public/previews/premium/' + capture.file);
+  assert.equal(bytes.readUInt16BE(0), 0xffd8, 'Expected actual JPEG bytes');
+  assert.equal(hash(bytes), capture.sha256, 'Screenshot integrity mismatch: ' + capture.id);
+  assert.ok(capture.width >= 1000 && capture.height >= 100);
+  assert.ok(capture.caption.includes(`@wts-calendar/core@${manifest.version} (unpublished)`));
+  assert.ok(['package-ui', 'api-output', 'adapter-output'].includes(capture.kind));
+  assert.match(capture.caption, /actual (WTS Calendar package|package)/);
+  if (capture.kind !== 'package-ui') assert.match(capture.caption, /application-owned/);
+  if (capture.kind === 'adapter-output') assert.match(capture.caption, /local test responses/);
+}
+assert.deepEqual(new Set(readdirSync(resolve(root, 'public/previews/premium'))), new Set(manifest.captures.map(c => c.file)), 'Remove obsolete illustrations and untracked preview assets');
+console.log('Verified ' + manifest.captures.length + ' actual-package screenshots, provenance, unique images, and honest UI/API captions.');

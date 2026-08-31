@@ -5,6 +5,8 @@ import { describe, expect, it } from 'vitest';
 import { routes } from './app.config';
 import { PREMIUM_CONTACT_EMAIL, PREMIUM_FEATURES } from './site-data';
 import premiumContent from './premium-feature-data.json';
+import { premiumScreenshot } from './premium-screenshots';
+import integrations from './premium-integration-data.json';
 
 describe('Premium feature documentation', () => {
   for (const feature of PREMIUM_FEATURES) {
@@ -19,9 +21,17 @@ describe('Premium feature documentation', () => {
       expect(article.querySelector('h1')?.textContent).toBe(feature.title);
       expect(article.querySelector('.badge.premium')?.textContent).toBe('Premium');
       expect(article.querySelector('img')?.getAttribute('src')).toBe(
-        'previews/premium/' + feature.id + '.svg',
+        'previews/premium/' + feature.id + '.jpg',
       );
-      expect(article.querySelector('figcaption')?.textContent).toContain('not a live demo');
+      expect(article.querySelector('figcaption')?.textContent?.trim()).toBe(
+        premiumScreenshot(feature.id).caption,
+      );
+      expect(article.querySelector('img')?.getAttribute('width')).toBe(
+        String(premiumScreenshot(feature.id).width),
+      );
+      expect(article.querySelector('img')?.getAttribute('height')).toBe(
+        String(premiumScreenshot(feature.id).height),
+      );
       expect(article.querySelectorAll('#configuration dt').length).toBe(guide.configuration.length);
       expect(article.querySelectorAll('#integration li').length).toBe(guide.steps.length);
       expect(article.querySelectorAll('#behavior li').length).toBe(guide.behavior.length);
@@ -32,7 +42,21 @@ describe('Premium feature documentation', () => {
         PREMIUM_CONTACT_EMAIL,
       );
       expect(article.textContent).not.toContain(PREMIUM_CONTACT_EMAIL);
-      expect(article.querySelector('input,form,pre,code,wts-calendar-angular')).toBeNull();
+      expect(article.querySelector('input,form,wts-calendar-angular,.wts-calender')).toBeNull();
+      const integration = integrations.find((item) => item.id === feature.id)!;
+      expect(
+        article.querySelector('[data-code-kind="premium-integration"] code')?.textContent,
+      ).toBe(integration.code);
+      expect(article.querySelector('[data-code-kind="premium-install"] code')?.textContent).toBe(
+        integration.install,
+      );
+      expect(article.querySelectorAll('#integration .copy-code-button').length).toBe(
+        integration.markup ? 4 : 2,
+      );
+      expect(article.querySelector('#integration')?.textContent).toContain('YOUR_WTS_LICENSE_KEY');
+      expect(article.querySelector('#integration')?.textContent).toContain(
+        'never execute on this page',
+      );
       expect(article.querySelector('a[href="/pricing"]')).toBeNull();
       const selectedLink = root.querySelector('.premium-guide-navigation a[aria-current="page"]');
       expect(selectedLink?.getAttribute('href')).toBe('/premium/' + feature.id);
@@ -41,7 +65,7 @@ describe('Premium feature documentation', () => {
       );
     });
   }
-  it('updates the guide and illustration when navigating between Premium features', async () => {
+  it('updates the guide, screenshot, and provenance when navigating between Premium features', async () => {
     TestBed.configureTestingModule({ providers: [provideRouter(routes)] });
     const harness = await RouterTestingHarness.create();
     await harness.navigateByUrl('/premium/resource-grid');
@@ -52,8 +76,13 @@ describe('Premium feature documentation', () => {
       'Immutable audit history',
     );
     expect(harness.routeNativeElement?.querySelector('img')?.getAttribute('src')).toContain(
-      'immutable-audit-history.svg',
+      'immutable-audit-history.jpg',
     );
+    const code = harness.routeNativeElement?.querySelector(
+      '[data-code-kind="premium-integration"] code',
+    )?.textContent;
+    expect(code).toContain('verifyAuditHistory');
+    expect(code).not.toContain('resourceSchedulingModule');
     const configuration = harness.routeNativeElement?.querySelector(
       '.premium-section-links a',
     ) as HTMLAnchorElement;

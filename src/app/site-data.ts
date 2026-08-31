@@ -1,5 +1,7 @@
 export const REPOSITORY = 'https://github.com/Suman201/wts-calendar-angular-example';
-export const DOCS_BASE = REPOSITORY + '/blob/main/package-docs/core/';
+export const DOCS_ROOT =
+  'https://github.com/wts-calendar/wts-calendar.github.io/blob/wts/source/package-docs/';
+export const DOCS_BASE = DOCS_ROOT + 'core/';
 // Set only to the owner's confirmed public licensing contact.
 export const PREMIUM_CONTACT_EMAIL: string = 'suman.mandal@webskitters.com';
 export const LICENSE_REQUEST = PREMIUM_CONTACT_EMAIL
@@ -7,16 +9,16 @@ export const LICENSE_REQUEST = PREMIUM_CONTACT_EMAIL
   : '';
 export const PREMIUM_PREVIEWS: Readonly<Record<string, { src: string; alt: string }>> = {
   'Resources & planning': {
-    src: 'previews/resource-planning.svg',
-    alt: 'Illustration of resource assignments and a utilization bar',
+    src: 'previews/premium/resource-non-resource-timeline.jpg',
+    alt: 'Screenshot of the actual WTS Calendar resource timeline with sample assignments',
   },
   'Premium interoperability': {
-    src: 'previews/interoperability.svg',
-    alt: 'Illustration of Google, Microsoft, CalDAV and ICS adapter connections',
+    src: 'previews/premium/ics-change-detection-reconciliation.jpg',
+    alt: 'Actual ICS comparison API results displayed in an application-owned capture table',
   },
   'Enterprise workflow': {
-    src: 'previews/enterprise-workflow.svg',
-    alt: 'Illustration of draft, review and approval states with workflow capabilities',
+    src: 'previews/premium/multi-stage-approvals.jpg',
+    alt: 'Actual approval API results displayed in an application-owned capture table',
   },
 };
 export interface Demo {
@@ -133,42 +135,42 @@ export const DEMOS: readonly Demo[] = [
     'Background events',
     'Customization',
     'week',
-    'Shade a time range while keeping foreground appointments readable.',
+    'Shade a time range and compare month, week, and day grids using the calendar header.',
   ],
   [
     'themes',
     'Themes & appearance',
     'Customization',
     'month',
-    'Switch the calendar theme, color scheme, and weekend visibility.',
+    'Compare themes, color schemes, and weekend visibility across month, week, day, and list views.',
   ],
   [
     'time-zones',
     'Time zones',
     'Customization',
     'week',
-    'View the same UTC events in New York, Kolkata, or UTC.',
+    'Search browser-supported time zones and compare the same events across month, week, day, and list views.',
   ],
   [
     'locale-rtl',
     'Localization & RTL',
     'Customization',
     'month',
-    'Switch between English, French, and Arabic, including right-to-left layout.',
+    'Search languages and date locales, then compare month, week, day, and list views with automatic text direction.',
   ],
   [
     'render-hooks',
     'Event render hooks',
     'Customization',
     'month',
-    'Customize event content with safe text and observe mount and unmount lifecycle callbacks.',
+    'Customize event content and observe mount and unmount callbacks as you switch month, week, day, and list views.',
   ],
   [
     'accessibility',
     'Keyboard & print',
     'Customization',
     'month',
-    'Explore keyboard focus, event activation, live feedback, and a print-friendly calendar.',
+    'Explore keyboard focus, event activation, and printing across month, week, day, and list views.',
   ],
 ].map(([id, title, group, view, description]) => ({ id, title, group, view, description }));
 

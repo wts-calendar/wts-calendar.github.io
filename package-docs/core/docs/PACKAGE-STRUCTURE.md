@@ -15,6 +15,7 @@ Credential acquisition and browser safety are covered in
 │   ├── named time zones and DST handling
 │   ├── public resource data contracts and APIs
 │   └── license verification
+├── native (DOM-free state/date entry used by @wts-calendar/react-native)
 ├── time-grid (day, week, and custom TimeGrid)
 ├── multi-month (multi-month, year, and custom multi-month)
 ├── list (list day/week/month/year and custom list)
@@ -79,6 +80,18 @@ import { WtsCalendar } from '@wts-calendar/core';
 import '@wts-calendar/core/styles/calendar.css';
 ```
 
+React Native applications use the same package's native entry through the
+official renderer—there is no second core package and no WebView:
+
+```tsx
+import { WtsCalendarNative } from '@wts-calendar/react-native';
+
+<WtsCalendarNative
+  initialOptions={{ view: 'month', timeZone: 'local' }}
+  events={[{ id: 'planning', title: 'Planning', start: new Date() }]}
+/>;
+```
+
 Add only meaningful feature modules:
 
 ```ts
@@ -127,6 +140,11 @@ Angular, React, Vue, and Web Component adapters accept the shared
 `CalendarFactory` contract. Supplying `createPluginCalendar` gives every adapter
 the optional ecosystem runtime while leaving the default construction path and
 standard bundle unchanged.
+
+The React Native renderer instead uses `NativeCalendarController` from
+`@wts-calendar/core/native`. That entry has no browser DOM declarations and
+provides month/week/day/list ranges, time-zone date math, recurrence, event
+CRUD, navigation, selection, immutable snapshots, and subscriptions.
 
 The standards-based custom element is available without adding adapter code to
 the standard JavaScript bundle:

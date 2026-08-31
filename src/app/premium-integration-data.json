@@ -1,0 +1,321 @@
+[
+  {
+    "id": "resource-grid",
+    "install": "npm install @wts-calendar/core",
+    "code": "import { WtsCalendar, verifyCalendarLicense } from '@wts-calendar/core';\nimport { resourceSchedulingModule } from '@wts-calendar/core/resource-scheduling';\n\nconst license = await verifyCalendarLicense('YOUR_WTS_LICENSE_KEY');\nconst container = document.querySelector<HTMLElement>('#calendar');\nif (!container) throw new Error('Calendar container not found');\n\nconst calendar = new WtsCalendar({\n  container,\n  license,\n  plugins: [resourceSchedulingModule],\n  viewDate: '2026-09-07',\n  timeZone: 'UTC',\n  startOfWeek: 1,\n  height: 560,\n  headerToolbar: { start: 'prev,next', center: 'title', end: '' },\n  view: 'resource',\n  resources: [\n    { id: 'design', title: 'Design studio', capacity: 2 },\n    { id: 'engineering', title: 'Engineering', capacity: 4 },\n  ],\n  events: [\n    {\n      id: 'offsite',\n      title: 'Team offsite',\n      resourceId: 'design',\n      start: '2026-09-07',\n      end: '2026-09-09',\n      isAllDay: true,\n    },\n  ],\n});\nawait calendar.whenIdle();\n\n// Call from your component's unmount/destroy hook.\nexport function dispose() {\n  calendar.destroy();\n}",
+    "notes": [
+      "Mount after the host element exists. For Angular, React or Vue, pass these options and plugins to the web wrapper and use its calendar API for the calls below; let the wrapper own destruction.",
+      "Add the stylesheet once to your global CSS/SCSS file using a bundler that resolves npm package imports. Keep it separate from component TypeScript."
+    ],
+    "markup": "<div id=\"calendar\"></div>",
+    "stylesheet": "@import '@wts-calendar/core/styles/calendar.css';"
+  },
+  {
+    "id": "resource-daygrid",
+    "install": "npm install @wts-calendar/core",
+    "code": "import { WtsCalendar, verifyCalendarLicense } from '@wts-calendar/core';\nimport { resourceSchedulingModule } from '@wts-calendar/core/resource-scheduling';\n\nconst license = await verifyCalendarLicense('YOUR_WTS_LICENSE_KEY');\nconst container = document.querySelector<HTMLElement>('#calendar');\nif (!container) throw new Error('Calendar container not found');\n\nconst calendar = new WtsCalendar({\n  container,\n  license,\n  plugins: [resourceSchedulingModule],\n  viewDate: '2026-09-07',\n  timeZone: 'UTC',\n  startOfWeek: 1,\n  height: 560,\n  headerToolbar: { start: 'prev,next', center: 'title', end: '' },\n  view: 'resource-day-grid-day',\n  resources: [\n    { id: 'design', title: 'Design studio', capacity: 2 },\n    { id: 'engineering', title: 'Engineering', capacity: 4 },\n  ],\n  events: [\n    {\n      id: 'review',\n      title: 'Design review',\n      resourceId: 'design',\n      start: '2026-09-07T09:00:00Z',\n      end: '2026-09-07T10:30:00Z',\n    },\n  ],\n});\nawait calendar.whenIdle();\n\n// Call from your component's unmount/destroy hook.\nexport function dispose() {\n  calendar.destroy();\n}",
+    "notes": [
+      "Mount after the host element exists. For Angular, React or Vue, pass these options and plugins to the web wrapper and use its calendar API for the calls below; let the wrapper own destruction.",
+      "Switch to resource-day-grid-week with calendar.setView() when a week range is needed.",
+      "Add the stylesheet once to your global CSS/SCSS file using a bundler that resolves npm package imports. Keep it separate from component TypeScript."
+    ],
+    "markup": "<div id=\"calendar\"></div>",
+    "stylesheet": "@import '@wts-calendar/core/styles/calendar.css';"
+  },
+  {
+    "id": "resource-timegrid",
+    "install": "npm install @wts-calendar/core",
+    "code": "import { WtsCalendar, verifyCalendarLicense } from '@wts-calendar/core';\nimport { resourceSchedulingModule } from '@wts-calendar/core/resource-scheduling';\n\nconst license = await verifyCalendarLicense('YOUR_WTS_LICENSE_KEY');\nconst container = document.querySelector<HTMLElement>('#calendar');\nif (!container) throw new Error('Calendar container not found');\n\nconst calendar = new WtsCalendar({\n  container,\n  license,\n  plugins: [resourceSchedulingModule],\n  viewDate: '2026-09-07',\n  timeZone: 'UTC',\n  startOfWeek: 1,\n  height: 560,\n  headerToolbar: { start: 'prev,next', center: 'title', end: '' },\n  view: 'resource-time-grid-day',\n  slotMinTime: '08:00',\n  slotMaxTime: '18:00',\n  resourceTimeGrid: { columnWidth: 240 },\n  resources: [\n    { id: 'design', title: 'Design studio', capacity: 2 },\n    { id: 'engineering', title: 'Engineering', capacity: 4 },\n  ],\n  events: [\n    {\n      id: 'review',\n      title: 'Design review',\n      resourceId: 'design',\n      start: '2026-09-07T09:00:00Z',\n      end: '2026-09-07T10:30:00Z',\n    },\n  ],\n});\nawait calendar.whenIdle();\n\n// Call from your component's unmount/destroy hook.\nexport function dispose() {\n  calendar.destroy();\n}",
+    "notes": [
+      "Mount after the host element exists. For Angular, React or Vue, pass these options and plugins to the web wrapper and use its calendar API for the calls below; let the wrapper own destruction.",
+      "Add the stylesheet once to your global CSS/SCSS file using a bundler that resolves npm package imports. Keep it separate from component TypeScript."
+    ],
+    "markup": "<div id=\"calendar\"></div>",
+    "stylesheet": "@import '@wts-calendar/core/styles/calendar.css';"
+  },
+  {
+    "id": "resource-non-resource-timeline",
+    "install": "npm install @wts-calendar/core",
+    "code": "import { WtsCalendar, verifyCalendarLicense } from '@wts-calendar/core';\nimport { resourceSchedulingModule } from '@wts-calendar/core/resource-scheduling';\n\nconst license = await verifyCalendarLicense('YOUR_WTS_LICENSE_KEY');\nconst container = document.querySelector<HTMLElement>('#calendar');\nif (!container) throw new Error('Calendar container not found');\n\nconst calendar = new WtsCalendar({\n  container,\n  license,\n  plugins: [resourceSchedulingModule],\n  viewDate: '2026-09-07',\n  timeZone: 'UTC',\n  startOfWeek: 1,\n  height: 560,\n  headerToolbar: { start: 'prev,next', center: 'title', end: '' },\n  view: 'resource-timeline',\n  resourceTimeline: { durationDays: 7, slotWidth: 120, rowMinHeight: 56 },\n  resources: [\n    { id: 'design', title: 'Design studio', capacity: 2 },\n    { id: 'engineering', title: 'Engineering', capacity: 4 },\n  ],\n  events: [\n    {\n      id: 'delivery',\n      title: 'Delivery',\n      resourceId: 'engineering',\n      start: '2026-09-07',\n      end: '2026-09-10',\n      isAllDay: true,\n    },\n  ],\n});\nawait calendar.whenIdle();\n\n// Optional: display the same dates without separate resource lanes.\nexport function showSingleLane() {\n  calendar.setView('timeline');\n}\n\n// Call from your component's unmount/destroy hook.\nexport function dispose() {\n  calendar.destroy();\n}",
+    "notes": [
+      "Mount after the host element exists. For Angular, React or Vue, pass these options and plugins to the web wrapper and use its calendar API for the calls below; let the wrapper own destruction.",
+      "Add the stylesheet once to your global CSS/SCSS file using a bundler that resolves npm package imports. Keep it separate from component TypeScript."
+    ],
+    "markup": "<div id=\"calendar\"></div>",
+    "stylesheet": "@import '@wts-calendar/core/styles/calendar.css';"
+  },
+  {
+    "id": "dates-above-resources",
+    "install": "npm install @wts-calendar/core",
+    "code": "import { WtsCalendar, verifyCalendarLicense } from '@wts-calendar/core';\nimport { resourceSchedulingModule } from '@wts-calendar/core/resource-scheduling';\n\nconst license = await verifyCalendarLicense('YOUR_WTS_LICENSE_KEY');\nconst container = document.querySelector<HTMLElement>('#calendar');\nif (!container) throw new Error('Calendar container not found');\n\nconst calendar = new WtsCalendar({\n  container,\n  license,\n  plugins: [resourceSchedulingModule],\n  viewDate: '2026-09-07',\n  timeZone: 'UTC',\n  startOfWeek: 1,\n  height: 560,\n  headerToolbar: { start: 'prev,next', center: 'title', end: '' },\n  view: 'resource-time-grid-week',\n  datesAboveResources: true,\n  resourceTimeGrid: { columnWidth: 180 },\n  resources: [\n    { id: 'design', title: 'Design studio', capacity: 2 },\n    { id: 'engineering', title: 'Engineering', capacity: 4 },\n  ],\n  events: [\n    {\n      id: 'review',\n      title: 'Design review',\n      resourceId: 'design',\n      start: '2026-09-07T09:00:00Z',\n      end: '2026-09-07T10:30:00Z',\n    },\n  ],\n});\nawait calendar.whenIdle();\n\nexport function groupByResource() {\n  calendar.setOptions({ datesAboveResources: false });\n}\n\n// Call from your component's unmount/destroy hook.\nexport function dispose() {\n  calendar.destroy();\n}",
+    "notes": [
+      "Mount after the host element exists. For Angular, React or Vue, pass these options and plugins to the web wrapper and use its calendar API for the calls below; let the wrapper own destruction.",
+      "Add the stylesheet once to your global CSS/SCSS file using a bundler that resolves npm package imports. Keep it separate from component TypeScript."
+    ],
+    "markup": "<div id=\"calendar\"></div>",
+    "stylesheet": "@import '@wts-calendar/core/styles/calendar.css';"
+  },
+  {
+    "id": "resource-crud-sources",
+    "install": "npm install @wts-calendar/core",
+    "code": "import { WtsCalendar, verifyCalendarLicense } from '@wts-calendar/core';\nimport { resourceSchedulingModule } from '@wts-calendar/core/resource-scheduling';\n\nconst license = await verifyCalendarLicense('YOUR_WTS_LICENSE_KEY');\nconst container = document.querySelector<HTMLElement>('#calendar');\nif (!container) throw new Error('Calendar container not found');\n\nconst calendar = new WtsCalendar({\n  container,\n  license,\n  plugins: [resourceSchedulingModule],\n  viewDate: '2026-09-07',\n  timeZone: 'UTC',\n  startOfWeek: 1,\n  height: 560,\n  headerToolbar: { start: 'prev,next', center: 'title', end: '' },\n  view: 'resource-timeline',\n  resources: [],\n  events: [],\n  resourceSources: [\n    {\n      id: 'directory',\n      // Replace this in-memory directory with your own async loader.\n      loader: async () => [\n        { id: 'design', title: 'Design studio', capacity: 2 },\n        { id: 'engineering', title: 'Engineering', capacity: 4 },\n      ],\n    },\n  ],\n});\nawait calendar.whenIdle();\n\ncalendar.addResource({ id: 'support', title: 'Support', capacity: 2 });\ncalendar.updateResource('support', { title: 'Support desk' });\ncalendar.removeResource('support'); // No events reference this sample resource.\nexport async function refreshDirectory() {\n  await calendar.refetchResources('directory');\n  return calendar.getResources();\n}\n\n// Call from your component's unmount/destroy hook.\nexport function dispose() {\n  calendar.destroy();\n}",
+    "notes": [
+      "Mount after the host element exists. For Angular, React or Vue, pass these options and plugins to the web wrapper and use its calendar API for the calls below; let the wrapper own destruction.",
+      "Choose an explicit reassignment/removal policy before removing resources that have events. Source loaders and persistence belong to your application.",
+      "Add the stylesheet once to your global CSS/SCSS file using a bundler that resolves npm package imports. Keep it separate from component TypeScript."
+    ],
+    "markup": "<div id=\"calendar\"></div>",
+    "stylesheet": "@import '@wts-calendar/core/styles/calendar.css';"
+  },
+  {
+    "id": "resource-hierarchy",
+    "install": "npm install @wts-calendar/core",
+    "code": "import { WtsCalendar, verifyCalendarLicense } from '@wts-calendar/core';\nimport { resourceSchedulingModule } from '@wts-calendar/core/resource-scheduling';\n\nconst license = await verifyCalendarLicense('YOUR_WTS_LICENSE_KEY');\nconst container = document.querySelector<HTMLElement>('#calendar');\nif (!container) throw new Error('Calendar container not found');\n\nconst calendar = new WtsCalendar({\n  container,\n  license,\n  plugins: [resourceSchedulingModule],\n  viewDate: '2026-09-07',\n  timeZone: 'UTC',\n  startOfWeek: 1,\n  height: 560,\n  headerToolbar: { start: 'prev,next', center: 'title', end: '' },\n  view: 'resource-timeline',\n  resources: [\n    { id: 'product', title: 'Product team' },\n    { id: 'design', parentId: 'product', title: 'Design studio' },\n    { id: 'engineering', parentId: 'product', title: 'Engineering' },\n  ],\n  events: [\n    {\n      id: 'review',\n      title: 'Design review',\n      resourceId: 'design',\n      start: '2026-09-07T09:00:00Z',\n      end: '2026-09-07T10:30:00Z',\n    },\n  ],\n});\nawait calendar.whenIdle();\n\n// Call from your component's unmount/destroy hook.\nexport function dispose() {\n  calendar.destroy();\n}",
+    "notes": [
+      "Mount after the host element exists. For Angular, React or Vue, pass these options and plugins to the web wrapper and use its calendar API for the calls below; let the wrapper own destruction.",
+      "Add the stylesheet once to your global CSS/SCSS file using a bundler that resolves npm package imports. Keep it separate from component TypeScript."
+    ],
+    "markup": "<div id=\"calendar\"></div>",
+    "stylesheet": "@import '@wts-calendar/core/styles/calendar.css';"
+  },
+  {
+    "id": "resource-grouping-ordering-filtering",
+    "install": "npm install @wts-calendar/core",
+    "code": "import { WtsCalendar, verifyCalendarLicense } from '@wts-calendar/core';\nimport { resourceSchedulingModule } from '@wts-calendar/core/resource-scheduling';\n\nconst license = await verifyCalendarLicense('YOUR_WTS_LICENSE_KEY');\nconst container = document.querySelector<HTMLElement>('#calendar');\nif (!container) throw new Error('Calendar container not found');\n\nconst calendar = new WtsCalendar({\n  container,\n  license,\n  plugins: [resourceSchedulingModule],\n  viewDate: '2026-09-07',\n  timeZone: 'UTC',\n  startOfWeek: 1,\n  height: 560,\n  headerToolbar: { start: 'prev,next', center: 'title', end: '' },\n  view: 'resource-timeline',\n  resourceGroupFields: [{ field: 'region', label: 'Region' }],\n  resourceOrder: '-capacity,title',\n  resourceFilter: ({ resource }) => !resource.extendedProps?.['archived'],\n  resources: [\n    { id: 'design', title: 'Design', capacity: 2, extendedProps: { region: 'East' } },\n    {\n      id: 'engineering',\n      title: 'Engineering',\n      capacity: 4,\n      extendedProps: { region: 'West' },\n    },\n    {\n      id: 'retired',\n      title: 'Archived',\n      extendedProps: { region: 'East', archived: true },\n    },\n  ],\n  events: [\n    {\n      id: 'review',\n      title: 'Design review',\n      resourceId: 'design',\n      start: '2026-09-07T09:00:00Z',\n      end: '2026-09-07T10:30:00Z',\n    },\n  ],\n});\nawait calendar.whenIdle();\n\n// Call from your component's unmount/destroy hook.\nexport function dispose() {\n  calendar.destroy();\n}",
+    "notes": [
+      "Mount after the host element exists. For Angular, React or Vue, pass these options and plugins to the web wrapper and use its calendar API for the calls below; let the wrapper own destruction.",
+      "Add the stylesheet once to your global CSS/SCSS file using a bundler that resolves npm package imports. Keep it separate from component TypeScript."
+    ],
+    "markup": "<div id=\"calendar\"></div>",
+    "stylesheet": "@import '@wts-calendar/core/styles/calendar.css';"
+  },
+  {
+    "id": "resource-columns-render-hooks",
+    "install": "npm install @wts-calendar/core",
+    "code": "import { WtsCalendar, verifyCalendarLicense } from '@wts-calendar/core';\nimport { resourceSchedulingModule } from '@wts-calendar/core/resource-scheduling';\n\nconst license = await verifyCalendarLicense('YOUR_WTS_LICENSE_KEY');\nconst container = document.querySelector<HTMLElement>('#calendar');\nif (!container) throw new Error('Calendar container not found');\n\nconst calendar = new WtsCalendar({\n  container,\n  license,\n  plugins: [resourceSchedulingModule],\n  viewDate: '2026-09-07',\n  timeZone: 'UTC',\n  startOfWeek: 1,\n  height: 560,\n  headerToolbar: { start: 'prev,next', center: 'title', end: '' },\n  view: 'resource-timeline',\n  resourceTimeline: {\n    durationDays: 7,\n    resourceAreaColumns: [\n      { field: 'title', header: 'Team', width: 180 },\n      { field: 'capacity', header: 'Capacity', width: 90 },\n    ],\n  },\n  // Returning text avoids injecting untrusted HTML.\n  resourceCellContent: ({ resource, field }) =>\n    field === 'title' && resource ? resource.title + ' · team' : undefined,\n  resourceCellDidMount: ({ el }) => {\n    el.dataset['integration'] = 'resource-label';\n  },\n  resourceCellWillUnmount: ({ el }) => {\n    delete el.dataset['integration'];\n  },\n  resources: [\n    { id: 'design', title: 'Design studio', capacity: 2 },\n    { id: 'engineering', title: 'Engineering', capacity: 4 },\n  ],\n  events: [\n    {\n      id: 'review',\n      title: 'Design review',\n      resourceId: 'design',\n      start: '2026-09-07T09:00:00Z',\n      end: '2026-09-07T10:30:00Z',\n    },\n  ],\n});\nawait calendar.whenIdle();\n\n// Call from your component's unmount/destroy hook.\nexport function dispose() {\n  calendar.destroy();\n}",
+    "notes": [
+      "Mount after the host element exists. For Angular, React or Vue, pass these options and plugins to the web wrapper and use its calendar API for the calls below; let the wrapper own destruction.",
+      "If a mount hook creates a tooltip or subscription, dispose it in the corresponding unmount hook.",
+      "Add the stylesheet once to your global CSS/SCSS file using a bundler that resolves npm package imports. Keep it separate from component TypeScript."
+    ],
+    "markup": "<div id=\"calendar\"></div>",
+    "stylesheet": "@import '@wts-calendar/core/styles/calendar.css';"
+  },
+  {
+    "id": "resource-availability-assignment",
+    "install": "npm install @wts-calendar/core",
+    "code": "import { WtsCalendar, verifyCalendarLicense } from '@wts-calendar/core';\nimport { resourceSchedulingModule } from '@wts-calendar/core/resource-scheduling';\n\nconst license = await verifyCalendarLicense('YOUR_WTS_LICENSE_KEY');\nconst container = document.querySelector<HTMLElement>('#calendar');\nif (!container) throw new Error('Calendar container not found');\n\nconst calendar = new WtsCalendar({\n  container,\n  license,\n  plugins: [resourceSchedulingModule],\n  viewDate: '2026-09-07',\n  timeZone: 'UTC',\n  startOfWeek: 1,\n  height: 560,\n  headerToolbar: { start: 'prev,next', center: 'title', end: '' },\n  view: 'resource-time-grid-day',\n  resources: [\n    {\n      id: 'design',\n      title: 'Design studio',\n      capacity: 2,\n      availability: {\n        workingHours: {\n          daysOfWeek: [1, 2, 3, 4, 5],\n          startTime: '09:00',\n          endTime: '17:00',\n        },\n        unavailable: [\n          { start: '2026-09-07T12:00:00Z', end: '2026-09-07T13:00:00Z', reason: 'Lunch' },\n        ],\n      },\n    },\n  ],\n  events: [\n    {\n      id: 'review',\n      title: 'Design review',\n      resourceId: 'design',\n      start: '2026-09-07T09:00:00Z',\n      end: '2026-09-07T10:30:00Z',\n    },\n  ],\n});\nawait calendar.whenIdle();\n\nexport function assignLunchBooking() {\n  try {\n    calendar.addEvent({\n      id: 'lunch',\n      title: 'Proposed booking',\n      resourceId: 'design',\n      start: '2026-09-07T12:00:00Z',\n      end: '2026-09-07T12:30:00Z',\n    });\n  } catch (error) {\n    // Display the validation error; do not silently discard the user's edit.\n    return error instanceof Error ? error.message : String(error);\n  }\n  return 'Booking accepted';\n}\n\n// Call from your component's unmount/destroy hook.\nexport function dispose() {\n  calendar.destroy();\n}",
+    "notes": [
+      "Mount after the host element exists. For Angular, React or Vue, pass these options and plugins to the web wrapper and use its calendar API for the calls below; let the wrapper own destruction.",
+      "Add the stylesheet once to your global CSS/SCSS file using a bundler that resolves npm package imports. Keep it separate from component TypeScript."
+    ],
+    "markup": "<div id=\"calendar\"></div>",
+    "stylesheet": "@import '@wts-calendar/core/styles/calendar.css';"
+  },
+  {
+    "id": "capacity-skills-roles",
+    "install": "npm install @wts-calendar/core",
+    "code": "import { WtsCalendar, verifyCalendarLicense } from '@wts-calendar/core';\nimport { resourceSchedulingModule } from '@wts-calendar/core/resource-scheduling';\n\nconst license = await verifyCalendarLicense('YOUR_WTS_LICENSE_KEY');\nconst container = document.querySelector<HTMLElement>('#calendar');\nif (!container) throw new Error('Calendar container not found');\n\nconst calendar = new WtsCalendar({\n  container,\n  license,\n  plugins: [resourceSchedulingModule],\n  viewDate: '2026-09-07',\n  timeZone: 'UTC',\n  startOfWeek: 1,\n  height: 560,\n  headerToolbar: { start: 'prev,next', center: 'title', end: '' },\n  view: 'resource-time-grid-day',\n  resources: [\n    {\n      id: 'design',\n      title: 'Design studio',\n      capacity: 2,\n      assignmentPolicy: { skills: ['research'], roles: ['reviewer'] },\n    },\n  ],\n  events: [],\n});\nawait calendar.whenIdle();\n\ncalendar.addEvent({\n  id: 'review',\n  title: 'Research review',\n  resourceId: 'design',\n  resourceUnits: 1,\n  resourceRequirements: { skills: ['research'], roles: ['reviewer'] },\n  start: '2026-09-07T09:00:00Z',\n  end: '2026-09-07T10:00:00Z',\n});\n\n// Call from your component's unmount/destroy hook.\nexport function dispose() {\n  calendar.destroy();\n}",
+    "notes": [
+      "Mount after the host element exists. For Angular, React or Vue, pass these options and plugins to the web wrapper and use its calendar API for the calls below; let the wrapper own destruction.",
+      "Catch validation failures in your edit handler. Client-side resource policies do not replace authorization in a shared backend.",
+      "Add the stylesheet once to your global CSS/SCSS file using a bundler that resolves npm package imports. Keep it separate from component TypeScript."
+    ],
+    "markup": "<div id=\"calendar\"></div>",
+    "stylesheet": "@import '@wts-calendar/core/styles/calendar.css';"
+  },
+  {
+    "id": "resource-virtualization-print",
+    "install": "npm install @wts-calendar/core",
+    "code": "import { WtsCalendar, verifyCalendarLicense } from '@wts-calendar/core';\nimport { resourceSchedulingModule } from '@wts-calendar/core/resource-scheduling';\n\nconst license = await verifyCalendarLicense('YOUR_WTS_LICENSE_KEY');\nconst container = document.querySelector<HTMLElement>('#calendar');\nif (!container) throw new Error('Calendar container not found');\n\nconst calendar = new WtsCalendar({\n  container,\n  license,\n  plugins: [resourceSchedulingModule],\n  viewDate: '2026-09-07',\n  timeZone: 'UTC',\n  startOfWeek: 1,\n  height: 560,\n  headerToolbar: { start: 'prev,next', center: 'title', end: '' },\n  view: 'resource-timeline',\n  resources: Array.from({ length: 300 }, (_, index) => ({\n    id: 'resource-' + index,\n    title: 'Resource ' + (index + 1),\n  })),\n  events: [\n    {\n      id: 'work',\n      title: 'Scheduled work',\n      resourceId: 'resource-0',\n      start: '2026-09-07',\n      end: '2026-09-10',\n      isAllDay: true,\n    },\n  ],\n  resourceTimeline: {\n    durationDays: 30,\n    slotWidth: 100,\n    rowMinHeight: 42,\n    resourceVirtualizationThreshold: 20,\n    resourceOverscan: 2,\n    slotVirtualizationThreshold: 15,\n    slotOverscan: 2,\n  },\n});\nawait calendar.whenIdle();\n\n// Invoke from your application's Print button. Browser print hooks expand the view.\nexport function printSchedule() {\n  window.print();\n}\n\n// Call from your component's unmount/destroy hook.\nexport function dispose() {\n  calendar.destroy();\n}",
+    "notes": [
+      "Mount after the host element exists. For Angular, React or Vue, pass these options and plugins to the web wrapper and use its calendar API for the calls below; let the wrapper own destruction.",
+      "Test paper size and pagination with your real dataset. Very large expanded print views use more memory than the virtualized screen.",
+      "Add the stylesheet once to your global CSS/SCSS file using a bundler that resolves npm package imports. Keep it separate from component TypeScript."
+    ],
+    "markup": "<div id=\"calendar\"></div>",
+    "stylesheet": "@import '@wts-calendar/core/styles/calendar.css';"
+  },
+  {
+    "id": "repeated-task-views",
+    "install": "npm install @wts-calendar/core",
+    "code": "import { WtsCalendar, verifyCalendarLicense } from '@wts-calendar/core';\nimport { repeatedTasksModule } from '@wts-calendar/core/repeated-tasks';\n\nconst license = await verifyCalendarLicense('YOUR_WTS_LICENSE_KEY');\nconst container = document.querySelector<HTMLElement>('#calendar');\nif (!container) throw new Error('Calendar container not found');\nconst calendar = new WtsCalendar({\n  container,\n  license,\n  plugins: [repeatedTasksModule],\n  view: 'weekly-repeated-task',\n  viewDate: '2026-09-07',\n  timeZone: 'UTC',\n  height: 560,\n  headerToolbar: {\n    start: 'prev,next',\n    center: 'title',\n    end: 'weekly-repeated-task,monthly-repeated-task',\n  },\n  task: [\n    {\n      id: 'checks',\n      name: 'checks',\n      title: 'Equipment checks',\n      enable: true,\n      color: '#18796b',\n      icon: '',\n      data: [\n        {\n          id: 'inspection',\n          start: '2026-09-07',\n          end: '2026-09-07',\n          reason: 'Safety inspection',\n          status: 'pending',\n        },\n      ],\n    },\n  ],\n});\nexport function completeInspection() {\n  calendar.setTaskStatus('checks', 'inspection', 'completed');\n}\nexport function dispose() {\n  calendar.destroy();\n}",
+    "notes": [
+      "Mount in a web component lifecycle and dispose on unmount. Task data is separate from ordinary calendar events; persist changes in your own application if needed.",
+      "Add the stylesheet once to your global CSS/SCSS file using a bundler that resolves npm package imports. Keep it separate from component TypeScript."
+    ],
+    "markup": "<div id=\"calendar\"></div>",
+    "stylesheet": "@import '@wts-calendar/core/styles/calendar.css';"
+  },
+  {
+    "id": "utilization-capacity-heatmaps",
+    "install": "npm install @wts-calendar/core",
+    "code": "import { verifyCalendarLicense } from '@wts-calendar/core';\nimport { AdvancedResourcePlanner } from '@wts-calendar/core/advanced-resource-planning';\n\nconst license = await verifyCalendarLicense('YOUR_WTS_LICENSE_KEY');\nconst planner = new AdvancedResourcePlanner({\n  license,\n  timeZone: 'UTC',\n  resources: [\n    { id: 'design', title: 'Design studio', capacity: 2 },\n    { id: 'engineering', title: 'Engineering', capacity: 4 },\n  ],\n  events: [\n    {\n      id: 'review',\n      title: 'Design review',\n      resourceId: 'design',\n      start: '2026-09-07T09:00:00Z',\n      end: '2026-09-07T10:30:00Z',\n    },\n  ],\n});\n\nexport const heatmap = planner.createCapacityHeatmap({\n  start: '2026-09-07T08:00:00Z',\n  end: '2026-09-07T18:00:00Z',\n  bucketMinutes: 60,\n});\nconsole.table(\n  heatmap.cells.map((cell) => ({\n    resource: cell.resourceId,\n    start: cell.start,\n    booked: cell.bookedUnits,\n    capacity: cell.usableCapacity,\n    utilization: cell.utilizationPercent,\n    state: cell.state,\n  })),\n);",
+    "notes": [
+      "The engine returns data, not a built-in chart. Render results in your application and call planner.setData() after resources, events or profiles change."
+    ]
+  },
+  {
+    "id": "split-shifts-rotating-schedules",
+    "install": "npm install @wts-calendar/core",
+    "code": "import { verifyCalendarLicense } from '@wts-calendar/core';\nimport { AdvancedResourcePlanner } from '@wts-calendar/core/advanced-resource-planning';\n\nconst license = await verifyCalendarLicense('YOUR_WTS_LICENSE_KEY');\nconst planner = new AdvancedResourcePlanner({\n  license,\n  timeZone: 'UTC',\n  resources: [\n    { id: 'design', title: 'Design studio', capacity: 2 },\n    { id: 'engineering', title: 'Engineering', capacity: 4 },\n  ],\n  events: [\n    {\n      id: 'review',\n      title: 'Design review',\n      resourceId: 'design',\n      start: '2026-09-07T09:00:00Z',\n      end: '2026-09-07T10:30:00Z',\n    },\n  ],\n  profiles: [\n    {\n      resourceId: 'design',\n      shifts: [\n        {\n          id: 'morning',\n          startTime: '08:00',\n          endTime: '12:00',\n          rotation: { anchor: '2026-09-07', cycleDays: 4, activeDays: [0, 1] },\n        },\n        {\n          id: 'evening',\n          startTime: '16:00',\n          endTime: '20:00',\n          rotation: { anchor: '2026-09-07', cycleDays: 4, activeDays: [0, 1] },\n        },\n      ],\n    },\n  ],\n});\n\nexport const shifts = planner.getShiftOccurrences('design', '2026-09-07', '2026-09-15');\nconsole.table(shifts);",
+    "notes": [
+      "The engine returns data, not a built-in chart. Render results in your application and call planner.setData() after resources, events or profiles change.",
+      "This sample runs two days on, two days off, with two shifts per active day. Set timeZone to your scheduling zone before expanding shifts."
+    ]
+  },
+  {
+    "id": "resource-dependencies-substitutes",
+    "install": "npm install @wts-calendar/core",
+    "code": "import { verifyCalendarLicense } from '@wts-calendar/core';\nimport { AdvancedResourcePlanner } from '@wts-calendar/core/advanced-resource-planning';\n\nconst license = await verifyCalendarLicense('YOUR_WTS_LICENSE_KEY');\nconst planner = new AdvancedResourcePlanner({\n  license,\n  timeZone: 'UTC',\n  resources: [\n    { id: 'design', title: 'Design studio', capacity: 2 },\n    { id: 'engineering', title: 'Engineering', capacity: 4 },\n  ],\n  events: [\n    {\n      id: 'review',\n      title: 'Design review',\n      resourceId: 'design',\n      start: '2026-09-07T09:00:00Z',\n      end: '2026-09-07T10:30:00Z',\n    },\n  ],\n  profiles: [\n    {\n      resourceId: 'design',\n      dependencies: [{ resourceId: 'engineering', units: 1 }],\n      substituteIds: ['engineering'],\n    },\n  ],\n});\n\nconst request = {\n  resourceId: 'design',\n  start: '2026-09-07T09:30:00Z',\n  end: '2026-09-07T10:00:00Z',\n  units: 2,\n};\nexport const decision = planner.evaluateBooking(request);\nexport const alternatives = planner.findSubstitutes(request);\nconsole.log(decision.allowed, decision.issues, alternatives);",
+    "notes": [
+      "The engine returns data, not a built-in chart. Render results in your application and call planner.setData() after resources, events or profiles change.",
+      "Evaluations do not reserve capacity or automatically reassign events. Recheck and commit through your application after the user chooses an alternative."
+    ]
+  },
+  {
+    "id": "overbooking-policies",
+    "install": "npm install @wts-calendar/core",
+    "code": "import { verifyCalendarLicense } from '@wts-calendar/core';\nimport { AdvancedResourcePlanner } from '@wts-calendar/core/advanced-resource-planning';\n\nconst license = await verifyCalendarLicense('YOUR_WTS_LICENSE_KEY');\nconst planner = new AdvancedResourcePlanner({\n  license,\n  timeZone: 'UTC',\n  resources: [\n    { id: 'design', title: 'Design studio', capacity: 2 },\n    { id: 'engineering', title: 'Engineering', capacity: 4 },\n  ],\n  events: [\n    {\n      id: 'review',\n      title: 'Design review',\n      resourceId: 'design',\n      start: '2026-09-07T09:00:00Z',\n      end: '2026-09-07T10:30:00Z',\n    },\n  ],\n  profiles: [\n    { resourceId: 'design', overbooking: { mode: 'warn', maxUtilizationPercent: 100 } },\n  ],\n});\n\nexport const decision = planner.evaluateBooking({\n  resourceId: 'design',\n  start: '2026-09-07T09:30:00Z',\n  end: '2026-09-07T10:00:00Z',\n  units: 2,\n});\nconsole.log(decision.allowed, decision.projectedUtilizationPercent, decision.issues);",
+    "notes": [
+      "The engine returns data, not a built-in chart. Render results in your application and call planner.setData() after resources, events or profiles change.",
+      "Use block to reject over-capacity bookings, warn to require your application to surface warnings, or allow when your policy permits them. Evaluation alone does not create a booking."
+    ]
+  },
+  {
+    "id": "demand-availability-forecasting",
+    "install": "npm install @wts-calendar/core",
+    "code": "import { verifyCalendarLicense } from '@wts-calendar/core';\nimport { AdvancedResourcePlanner } from '@wts-calendar/core/advanced-resource-planning';\n\nconst license = await verifyCalendarLicense('YOUR_WTS_LICENSE_KEY');\nconst planner = new AdvancedResourcePlanner({\n  license,\n  timeZone: 'UTC',\n  resources: [\n    { id: 'design', title: 'Design studio', capacity: 2 },\n    { id: 'engineering', title: 'Engineering', capacity: 4 },\n  ],\n  events: [\n    {\n      id: 'review',\n      title: 'Design review',\n      resourceId: 'design',\n      start: '2026-09-07T09:00:00Z',\n      end: '2026-09-07T10:30:00Z',\n    },\n  ],\n});\n\nexport const forecast = planner.forecastDemand({\n  start: '2026-09-07T08:00:00Z',\n  end: '2026-09-07T18:00:00Z',\n  bucketMinutes: 60,\n  demand: [\n    { start: '2026-09-07T08:00:00Z', end: '2026-09-07T12:00:00Z', units: 3 },\n    { start: '2026-09-07T12:00:00Z', end: '2026-09-07T18:00:00Z', units: 8 },\n  ],\n});\nconsole.table(forecast.buckets);\nconsole.log('Coverage', forecast.coveragePercent);",
+    "notes": [
+      "The engine returns data, not a built-in chart. Render results in your application and call planner.setData() after resources, events or profiles change.",
+      "Supply your own demand estimates. This compares demand against available capacity; it does not train a forecasting model."
+    ]
+  },
+  {
+    "id": "dependencies-critical-paths",
+    "install": "npm install @wts-calendar/core",
+    "code": "import { verifyCalendarLicense } from '@wts-calendar/core';\nimport { AdvancedResourcePlanner } from '@wts-calendar/core/advanced-resource-planning';\n\nconst license = await verifyCalendarLicense('YOUR_WTS_LICENSE_KEY');\nconst planner = new AdvancedResourcePlanner({\n  license,\n  timeZone: 'UTC',\n  resources: [\n    { id: 'design', title: 'Design studio', capacity: 2 },\n    { id: 'engineering', title: 'Engineering', capacity: 4 },\n  ],\n  events: [\n    {\n      id: 'review',\n      title: 'Design review',\n      resourceId: 'design',\n      start: '2026-09-07T09:00:00Z',\n      end: '2026-09-07T10:30:00Z',\n    },\n  ],\n});\n\nexport const analysis = planner.analyzeCriticalPath([\n  { id: 'design', durationMinutes: 90 },\n  {\n    id: 'build',\n    durationMinutes: 180,\n    dependencyIds: ['design'],\n    resourceIds: ['engineering'],\n  },\n  { id: 'inspect', durationMinutes: 45, dependencyIds: ['build'] },\n  { id: 'notes', durationMinutes: 30, dependencyIds: ['design'] },\n]);\nconsole.table(analysis.tasks);\nconsole.log(analysis.criticalPathIds, analysis.projectDurationMinutes);",
+    "notes": [
+      "The engine returns data, not a built-in chart. Render results in your application and call planner.setData() after resources, events or profiles change.",
+      "Map returned critical indicators into your own timeline rendering. Dependency analysis does not automatically schedule calendar events or level resource capacity."
+    ]
+  },
+  {
+    "id": "two-way-google-calendar-synchronization",
+    "install": "npm install @wts-calendar/core",
+    "code": "import { verifyCalendarLicense } from '@wts-calendar/core';\nimport { PremiumCalendarInteroperability } from '@wts-calendar/core/premium-interoperability';\nimport type {\n  CalendarSynchronizationRequest,\n  CalendarInteropMutation,\n} from '@wts-calendar/core/premium-interoperability';\nconst license = await verifyCalendarLicense('YOUR_WTS_LICENSE_KEY');\nconst interoperability = new PremiumCalendarInteroperability({ license });\n\n// Call after your application obtains an authorized session.\nexport function connectGoogle(getAccessToken: () => string | Promise<string>) {\n  const adapter = interoperability.createGoogleCalendarAdapter({\n    calendarId: 'primary',\n    accessToken: getAccessToken,\n    timeZone: 'UTC',\n  });\n  return {\n    // Initial sync: omit cursor. For deltas, supply the retained remoteBase snapshot.\n    preview: (request: CalendarSynchronizationRequest) =>\n      interoperability.synchronize(adapter, {\n        ...request,\n        conflictPolicy: 'manual',\n        push: false,\n      }),\n    // Call only after the user resolves conflicts and approves the mutation plan.\n    commit: (mutations: readonly CalendarInteropMutation[], signal?: AbortSignal) =>\n      adapter.push(mutations, signal ? { signal } : {}),\n  };\n}\n\n// Example call in your session handler (do not use the WTS key as an OAuth token):\n// const connection = connectGoogle(getAccessToken);\n// const plan = await connection.preview({\n//   start: '2026-09-01T00:00:00Z', end: '2026-10-01T00:00:00Z',\n//   base: lastCommonEvents, local: currentEvents,\n// });\n// Show plan.reconciliation.conflicts and plan.mutations in your UI.\n// After approval, await connection.commit(approvedMutations).\n// Pull again and retain the fresh remote IDs/ETags, cursor and common base.",
+    "notes": [
+      "Supply getAccessToken from your own OAuth connection. Use a read/write calendar grant, keep access tokens in memory, and handle expiration or revocation. Never put a client secret or refresh token into browser code.",
+      "Start with the last common event base and current local events. On incremental pulls, retain the complete remoteBase snapshot as well as the cursor. A delta response alone is not a full snapshot.",
+      "Preview does not write to the provider. Resolve every manual conflict before committing reviewed mutations; catch network and ETag conflict errors and refresh instead of blindly overwriting. Re-pull after successful writes before updating sync state.",
+      "The package does not schedule background sync, obtain OAuth consent, or persist session state. Disconnect and abort pending requests when the user signs out."
+    ]
+  },
+  {
+    "id": "microsoft-365-outlook-adapter",
+    "install": "npm install @wts-calendar/core",
+    "code": "import { verifyCalendarLicense } from '@wts-calendar/core';\nimport { PremiumCalendarInteroperability } from '@wts-calendar/core/premium-interoperability';\nimport type {\n  CalendarSynchronizationRequest,\n  CalendarInteropMutation,\n} from '@wts-calendar/core/premium-interoperability';\nconst license = await verifyCalendarLicense('YOUR_WTS_LICENSE_KEY');\nconst interoperability = new PremiumCalendarInteroperability({ license });\n\n// Call after your application obtains an authorized session.\nexport function connectOutlook(getAccessToken: () => string | Promise<string>) {\n  const adapter = interoperability.createMicrosoft365Adapter({\n    accessToken: getAccessToken, // Default calendar; optionally supply calendarId.\n    timeZone: 'UTC',\n  });\n  return {\n    // Initial sync: omit cursor. For deltas, supply the retained remoteBase snapshot.\n    preview: (request: CalendarSynchronizationRequest) =>\n      interoperability.synchronize(adapter, {\n        ...request,\n        conflictPolicy: 'manual',\n        push: false,\n      }),\n    // Call only after the user resolves conflicts and approves the mutation plan.\n    commit: (mutations: readonly CalendarInteropMutation[], signal?: AbortSignal) =>\n      adapter.push(mutations, signal ? { signal } : {}),\n  };\n}\n\n// Example call in your session handler (do not use the WTS key as an OAuth token):\n// const connection = connectOutlook(getAccessToken);\n// const plan = await connection.preview({\n//   start: '2026-09-01T00:00:00Z', end: '2026-10-01T00:00:00Z',\n//   base: lastCommonEvents, local: currentEvents,\n// });\n// Show plan.reconciliation.conflicts and plan.mutations in your UI.\n// After approval, await connection.commit(approvedMutations).\n// Pull again and retain the fresh remote IDs/ETags, cursor and common base.",
+    "notes": [
+      "Supply getAccessToken from your own OAuth connection. Use a read/write calendar grant, keep access tokens in memory, and handle expiration or revocation. Never put a client secret or refresh token into browser code.",
+      "Start with the last common event base and current local events. On incremental pulls, retain the complete remoteBase snapshot as well as the cursor. A delta response alone is not a full snapshot.",
+      "Preview does not write to the provider. Resolve every manual conflict before committing reviewed mutations; catch network and ETag conflict errors and refresh instead of blindly overwriting. Re-pull after successful writes before updating sync state.",
+      "The package does not schedule background sync, obtain OAuth consent, or persist session state. Disconnect and abort pending requests when the user signs out.",
+      "Provide timeZoneMap when your tenant returns a Windows time-zone name that is not built into the adapter."
+    ]
+  },
+  {
+    "id": "caldav-adapter",
+    "install": "npm install @wts-calendar/core",
+    "code": "import { verifyCalendarLicense } from '@wts-calendar/core';\nimport { PremiumCalendarInteroperability } from '@wts-calendar/core/premium-interoperability';\nimport type {\n  CalendarSynchronizationRequest,\n  CalendarInteropMutation,\n} from '@wts-calendar/core/premium-interoperability';\nconst license = await verifyCalendarLicense('YOUR_WTS_LICENSE_KEY');\nconst interoperability = new PremiumCalendarInteroperability({ license });\n\n// Call after your application obtains an authorized session.\nexport function connectCalDav(\n  calendarUrl: string,\n  getAuthorization: () => string | Promise<string>,\n) {\n  const adapter = interoperability.createCalDavAdapter({\n    calendarUrl,\n    authorization: getAuthorization,\n    timeZone: 'UTC',\n  });\n  return {\n    // Initial sync: omit cursor. For deltas, supply the retained remoteBase snapshot.\n    preview: (request: CalendarSynchronizationRequest) =>\n      interoperability.synchronize(adapter, {\n        ...request,\n        conflictPolicy: 'manual',\n        push: false,\n      }),\n    // Call only after the user resolves conflicts and approves the mutation plan.\n    commit: (mutations: readonly CalendarInteropMutation[], signal?: AbortSignal) =>\n      adapter.push(mutations, signal ? { signal } : {}),\n  };\n}\n\n// Example call in your session handler (do not use the WTS key as an OAuth token):\n// const connection = connectCalDav('https://dav.example.com/calendars/me/work/', getAuthorization);\n// const plan = await connection.preview({\n//   start: '2026-09-01T00:00:00Z', end: '2026-10-01T00:00:00Z',\n//   base: lastCommonEvents, local: currentEvents,\n// });\n// Show plan.reconciliation.conflicts and plan.mutations in your UI.\n// After approval, await connection.commit(approvedMutations).\n// Pull again and retain the fresh remote IDs/ETags, cursor and common base.",
+    "notes": [
+      "Supply the Authorization header at runtime using the authentication method supported by your CalDAV server. Never embed a password in the calendar URL or publish credentials.",
+      "The server must allow your browser origin, REPORT/PUT/DELETE methods, Authorization/If-Match headers and exposed ETags through CORS. If it does not, a customer-managed gateway is required.",
+      "Start with the last common event base and current local events. On incremental pulls, retain the complete remoteBase snapshot as well as the cursor. A delta response alone is not a full snapshot.",
+      "Preview does not write to the provider. Resolve every manual conflict before committing reviewed mutations; catch network and ETag conflict errors and refresh instead of blindly overwriting. Re-pull after successful writes before updating sync state.",
+      "The package does not schedule background sync, obtain OAuth consent, or persist session state. Disconnect and abort pending requests when the user signs out."
+    ]
+  },
+  {
+    "id": "ics-change-detection-reconciliation",
+    "install": "npm install @wts-calendar/core",
+    "code": "import { verifyCalendarLicense } from '@wts-calendar/core';\nimport { PremiumCalendarInteroperability } from '@wts-calendar/core/premium-interoperability';\nimport type { CalendarEventInput } from '@wts-calendar/core';\nconst license = await verifyCalendarLicense('YOUR_WTS_LICENSE_KEY');\nconst interoperability = new PremiumCalendarInteroperability({ license });\n\n// File contents and event snapshots come from your application, not a WTS service.\nexport function compareFeeds(previousIcs: string, currentIcs: string) {\n  return interoperability.diffICalendar(previousIcs, currentIcs, 'UTC');\n}\nexport function reconcileEvents(\n  base: CalendarEventInput[],\n  local: CalendarEventInput[],\n  remote: CalendarEventInput[],\n) {\n  const result = interoperability.reconcile(base, local, remote, 'manual');\n  // Keep local state until your conflict UI resolves every unresolved conflict.\n  return { proposedEvents: result.events, conflicts: result.conflicts };\n}",
+    "notes": [
+      "Keep stable event IDs across snapshots. Detecting a deleted event does not authorize deleting it from another system; apply your own reconciliation policy."
+    ]
+  },
+  {
+    "id": "moment-luxon-migration-toolkit",
+    "install": "npm install @wts-calendar/core moment",
+    "code": "import type { CalendarOptions } from '@wts-calendar/core';\nimport { verifyCalendarLicense } from '@wts-calendar/core';\nimport { PremiumCalendarInteroperability } from '@wts-calendar/core/premium-interoperability';\n\nconst license = await verifyCalendarLicense('YOUR_WTS_LICENSE_KEY');\nconst interoperability = new PremiumCalendarInteroperability({ license });\n\n// Install only the compatibility peer you select.\nconst formattingPlugin = await interoperability.loadDateFormattingCompatibility('moment');\nexport const label = formattingPlugin.format(\n  new Date('2026-09-07T09:30:00Z'),\n  'dddd, MMMM D YYYY [at] HH:mm',\n  { locale: 'en-US', timeZone: 'UTC' },\n);\n// Pass the plugin in your calendar's plugins array when using legacy format strings.\nexport const calendarOptions = { plugins: [formattingPlugin] } satisfies Pick<CalendarOptions, 'plugins'>;\n// Luxon alternative: loadDateFormattingCompatibility('luxon3') with Luxon patterns.",
+    "notes": [
+      "Install moment for the shown example. For Luxon, install luxon and select luxon3; Moment and Luxon pattern syntaxes are not interchangeable."
+    ]
+  },
+  {
+    "id": "configuration-migration-assistant",
+    "install": "npm install @wts-calendar/core",
+    "code": "import { verifyCalendarLicense } from '@wts-calendar/core';\nimport { PremiumCalendarInteroperability } from '@wts-calendar/core/premium-interoperability';\n\nconst license = await verifyCalendarLicense('YOUR_WTS_LICENSE_KEY');\nconst interoperability = new PremiumCalendarInteroperability({ license });\n\n// Use the exact exported migration method; the output is a draft, not drop-in parity.\nexport function inspectMigration(legacyOptions: Readonly<Record<string, unknown>>) {\n  const draft = interoperability.migrateFullCalendarOptions(legacyOptions);\n  return {\n    options: draft.options,\n    modulesToInstall: draft.requiredModules,\n    review: draft.issues,\n    unmapped: draft.unmappedOptions,\n  };\n}\nexport const example = inspectMigration({\n  initialView: 'resourceTimelineWeek',\n  initialDate: '2026-09-07',\n  firstDay: 1,\n  slotDuration: '00:30:00',\n  editable: true,\n});",
+    "notes": [
+      "Review diagnostics and unmapped options, register the reported modules, and test callback payloads before using the draft. A WTS entitlement must be obtained separately."
+    ]
+  },
+  {
+    "id": "multi-stage-approvals",
+    "install": "npm install @wts-calendar/core",
+    "code": "import { verifyCalendarLicense } from '@wts-calendar/core';\nimport { EnterpriseCalendarWorkflow } from '@wts-calendar/core/enterprise-workflow';\nimport type { EnterpriseWorkflowActor } from '@wts-calendar/core/enterprise-workflow';\nconst license = await verifyCalendarLicense('YOUR_WTS_LICENSE_KEY');\nconst workflow = new EnterpriseCalendarWorkflow({\n  license,\n  actor: { id: 'editor-1', roles: ['editor'] },\n  online: false,\n  autoFlush: false,\n  events: [\n    {\n      id: 'release',\n      title: 'Release window',\n      start: '2026-09-07T09:00:00Z',\n      end: '2026-09-07T10:00:00Z',\n    },\n  ],\n  defaultPermission: 'deny',\n  permissionPolicies: [\n    { id: 'propose', effect: 'allow', actions: ['update', 'flush'], roles: ['editor'] },\n    {\n      id: 'review',\n      effect: 'allow',\n      actions: ['approve', 'reject'],\n      roles: ['manager', 'director'],\n    },\n  ],\n  approvalFlows: [\n    {\n      id: 'release-review',\n      stages: [\n        { id: 'manager-review', approverRoles: ['manager'] },\n        { id: 'director-review', approverRoles: ['director'] },\n      ],\n    },\n  ],\n});\n\nexport const pending = await workflow.submit({\n  type: 'update',\n  eventId: 'release',\n  changes: { title: 'Reviewed release' },\n  approvalFlowId: 'release-review',\n});\n// Invoke each approval from the appropriate authenticated review action.\nexport async function approveAs(actor: EnterpriseWorkflowActor) {\n  return workflow.approve(pending.id, actor);\n}\n// After all stages complete, explicitly deliver the queued mutation.\nexport async function deliver() {\n  workflow.setOnline(true);\n  return workflow.flush();\n}",
+    "notes": [
+      "This sample is runtime-only and initially offline. No database or WTS backend is required. Without your own backend adapter, flush commits only in memory and reload loses the state.",
+      "Actor IDs and roles are sample data, not authentication. A shared backend must authenticate users and independently enforce permissions, approval stages and event versions.",
+      "Use stage hooks such as onEnter to notify reviewers; make external side effects idempotent. Pending approvals are not sent by flush until all required stages complete."
+    ]
+  },
+  {
+    "id": "configurable-event-state-machines",
+    "install": "npm install @wts-calendar/core",
+    "code": "import { verifyCalendarLicense } from '@wts-calendar/core';\nimport { EnterpriseCalendarWorkflow } from '@wts-calendar/core/enterprise-workflow';\n\nconst license = await verifyCalendarLicense('YOUR_WTS_LICENSE_KEY');\nconst workflow = new EnterpriseCalendarWorkflow({\n  license,\n  actor: { id: 'editor-1', roles: ['editor'] },\n  online: false,\n  autoFlush: false,\n  events: [\n    {\n      id: 'release',\n      title: 'Release window',\n      start: '2026-09-07T09:00:00Z',\n      end: '2026-09-07T10:00:00Z',\n    },\n  ],\n  defaultPermission: 'deny',\n  permissionPolicies: [\n    {\n      id: 'editor-transitions',\n      effect: 'allow',\n      actions: ['transition', 'flush'],\n      roles: ['editor'],\n    },\n  ],\n  defaultStateMachineId: 'release-flow',\n  stateMachines: [\n    {\n      id: 'release-flow',\n      initialState: 'draft',\n      states: ['draft', 'review', 'approved'],\n      transitions: [\n        { name: 'submit', from: 'draft', to: 'review' },\n        { name: 'approve', from: 'review', to: 'approved' },\n      ],\n    },\n  ],\n});\n\nexport async function transition(name: 'submit' | 'approve') {\n  await workflow.submit({ type: 'transition', eventId: 'release', transition: name });\n  workflow.setOnline(true);\n  await workflow.flush();\n  return workflow.getEvent('release')?.state;\n}",
+    "notes": [
+      "This sample is runtime-only and initially offline. No database or WTS backend is required. Without your own backend adapter, flush commits only in memory and reload loses the state.",
+      "Actor IDs and roles are sample data, not authentication. A shared backend must authenticate users and independently enforce permissions, approval stages and event versions.",
+      "This minimal machine lets an editor exercise both transitions. Add role-aware guards and approval flows to enforce your real review policy. Handle rejected transitions in your UI."
+    ]
+  },
+  {
+    "id": "immutable-audit-history",
+    "install": "npm install @wts-calendar/core",
+    "code": "import { verifyCalendarLicense } from '@wts-calendar/core';\nimport { EnterpriseCalendarWorkflow } from '@wts-calendar/core/enterprise-workflow';\n\nconst license = await verifyCalendarLicense('YOUR_WTS_LICENSE_KEY');\nconst workflow = new EnterpriseCalendarWorkflow({\n  license,\n  actor: { id: 'editor-1', roles: ['editor'] },\n  online: false,\n  autoFlush: false,\n  events: [\n    {\n      id: 'release',\n      title: 'Release window',\n      start: '2026-09-07T09:00:00Z',\n      end: '2026-09-07T10:00:00Z',\n    },\n  ],\n  defaultPermission: 'deny',\n  permissionPolicies: [\n    {\n      id: 'editor-update',\n      effect: 'allow',\n      actions: ['update', 'flush'],\n      roles: ['editor'],\n    },\n  ],\n});\n\nawait workflow.submit({\n  type: 'update',\n  eventId: 'release',\n  changes: { title: 'Reviewed release' },\n});\nworkflow.setOnline(true);\nawait workflow.flush();\nexport const history = workflow.getAuditHistory();\nexport const intact = await workflow.verifyAuditHistory(history);\nconsole.log(intact, history);",
+    "notes": [
+      "This sample is runtime-only and initially offline. No database or WTS backend is required. Without your own backend adapter, flush commits only in memory and reload loses the state.",
+      "Actor IDs and roles are sample data, not authentication. A shared backend must authenticate users and independently enforce permissions, approval stages and event versions.",
+      "Frozen, hash-chained snapshots detect edits within a retained chain. They are not durable or tamper-proof if an attacker replaces the whole chain; regulated systems need an external append-only ledger and trusted checkpoints."
+    ]
+  },
+  {
+    "id": "permissions-field-level-policies",
+    "install": "npm install @wts-calendar/core",
+    "code": "import { verifyCalendarLicense } from '@wts-calendar/core';\nimport { EnterpriseCalendarWorkflow } from '@wts-calendar/core/enterprise-workflow';\n\nconst license = await verifyCalendarLicense('YOUR_WTS_LICENSE_KEY');\nconst workflow = new EnterpriseCalendarWorkflow({\n  license,\n  actor: { id: 'editor-1', roles: ['editor'] },\n  online: false,\n  autoFlush: false,\n  events: [\n    {\n      id: 'release',\n      title: 'Release window',\n      start: '2026-09-07T09:00:00Z',\n      end: '2026-09-07T10:00:00Z',\n    },\n  ],\n  defaultPermission: 'deny',\n  permissionPolicies: [\n    {\n      id: 'editor-update',\n      effect: 'allow',\n      actions: ['update', 'flush'],\n      roles: ['editor'],\n    },\n    {\n      id: 'protect-resource',\n      effect: 'deny',\n      actions: ['update'],\n      roles: ['editor'],\n      fields: ['resourceId'],\n    },\n    {\n      id: 'manager-update',\n      effect: 'allow',\n      actions: ['update', 'flush'],\n      roles: ['manager'],\n    },\n  ],\n});\n\nconst event = workflow.getEvent('release')?.event;\nexport const canEditTitle = workflow.permissionDecision('update', event, ['title']);\nexport const canEditResource = workflow.permissionDecision('update', event, [\n  'resourceId',\n]);\n// Use decisions to disable fields; submit also enforces the same runtime policies.\nawait workflow.submit({\n  type: 'update',\n  eventId: 'release',\n  changes: { title: 'New title' },\n});",
+    "notes": [
+      "This sample is runtime-only and initially offline. No database or WTS backend is required. Without your own backend adapter, flush commits only in memory and reload loses the state.",
+      "Actor IDs and roles are sample data, not authentication. A shared backend must authenticate users and independently enforce permissions, approval stages and event versions."
+    ]
+  },
+  {
+    "id": "optimistic-offline-mutation-queues",
+    "install": "npm install @wts-calendar/core",
+    "code": "import { verifyCalendarLicense } from '@wts-calendar/core';\nimport { EnterpriseCalendarWorkflow } from '@wts-calendar/core/enterprise-workflow';\nimport type { WtsCalendar } from '@wts-calendar/core';\nconst license = await verifyCalendarLicense('YOUR_WTS_LICENSE_KEY');\nconst workflow = new EnterpriseCalendarWorkflow({\n  license,\n  actor: { id: 'editor-1', roles: ['editor'] },\n  online: false,\n  autoFlush: false,\n  events: [\n    {\n      id: 'release',\n      title: 'Release window',\n      start: '2026-09-07T09:00:00Z',\n      end: '2026-09-07T10:00:00Z',\n    },\n  ],\n  defaultPermission: 'deny',\n  permissionPolicies: [\n    {\n      id: 'editor-update',\n      effect: 'allow',\n      actions: ['update', 'flush'],\n      roles: ['editor'],\n    },\n  ],\n});\n\nawait workflow.submit({\n  type: 'update',\n  eventId: 'release',\n  changes: { title: 'Optimistic title' },\n});\nconsole.log(workflow.getMutationQueue(), workflow.getEvent('release'));\n\n// Render optimistic records through an existing web-calendar controller.\nexport function bindCalendar(calendar: Pick<WtsCalendar, 'setEvents'>) {\n  const render = () =>\n    calendar.setEvents(workflow.getEvents().map((record) => ({ ...record.event })));\n  render();\n  const unsubscribe = workflow.subscribe(render);\n  return unsubscribe; // Call during unmount; do not leak listeners.\n}\nexport async function reconnect(signal: AbortSignal) {\n  workflow.setOnline(true);\n  return workflow.flush({ signal });\n}",
+    "notes": [
+      "This sample is runtime-only and initially offline. No database or WTS backend is required. Without your own backend adapter, flush commits only in memory and reload loses the state.",
+      "Actor IDs and roles are sample data, not authentication. A shared backend must authenticate users and independently enforce permissions, approval stages and event versions.",
+      "Set online state from your application connection lifecycle. For delivery or durable queues, supply your own backend with sendMutation and persistQueue; this example does not implement persistence."
+    ]
+  },
+  {
+    "id": "existing-backend-interfaces",
+    "install": "npm install @wts-calendar/core",
+    "code": "import { verifyCalendarLicense } from '@wts-calendar/core';\nimport { EnterpriseCalendarWorkflow } from '@wts-calendar/core/enterprise-workflow';\nimport type {\n  EnterpriseWorkflowActor,\n  EnterpriseWorkflowBackendAdapter,\n} from '@wts-calendar/core/enterprise-workflow';\n\nconst license = await verifyCalendarLicense('YOUR_WTS_LICENSE_KEY');\n// Supply a customer-owned authenticated transport. WTS provides no /api endpoint.\nexport function connectBackend(\n  actor: EnterpriseWorkflowActor,\n  backend: EnterpriseWorkflowBackendAdapter,\n) {\n  return new EnterpriseCalendarWorkflow({\n    license,\n    actor,\n    backend,\n    online: true,\n    autoFlush: false,\n    events: [\n      {\n        id: 'release',\n        title: 'Release window',\n        start: '2026-09-07T09:00:00Z',\n        end: '2026-09-07T10:00:00Z',\n      },\n    ],\n    defaultPermission: 'deny',\n    permissionPolicies: [\n      { id: 'editors', effect: 'allow', actions: ['update', 'flush'], roles: ['editor'] },\n    ],\n  });\n}\n\n// Wrap your REST/GraphQL/RPC implementation; preserve the typed result contract.\nexport function createBackend(\n  sendMutation: EnterpriseWorkflowBackendAdapter['sendMutation'],\n  persistQueue: NonNullable<EnterpriseWorkflowBackendAdapter['persistQueue']>,\n  persistAudit: NonNullable<EnterpriseWorkflowBackendAdapter['persistAudit']>,\n): EnterpriseWorkflowBackendAdapter {\n  return { sendMutation, persistQueue, persistAudit };\n}\n// sendMutation(context, signal) must return a Promise resolving to:\n// { status: 'committed', record? } | { status: 'conflict' | 'rejected' | 'retry', message? }\n// Then await workflow.submit(...); await workflow.flush({ signal });",
+    "notes": [
+      "Implement the transport and storage callbacks using your existing systems; there is no pretend successful backend in this example.",
+      "Authenticate actors on the server, validate versions and permissions, use mutation IDs for idempotency, and return conflicts or rejections instead of acknowledging failed writes.",
+      "persistQueue and persistAudit only provide callbacks; retention, encrypted storage, recovery and trusted audit checkpoints remain customer responsibilities."
+    ]
+  }
+]

@@ -5,12 +5,16 @@ import { DOCS_BASE, LICENSE_REQUEST, PREMIUM_FEATURES } from './site-data';
 import { PremiumNavigation } from './premium-navigation';
 import { NotFoundPage } from './not-found-page';
 import content from './premium-feature-data.json';
+import { premiumScreenshot } from './premium-screenshots';
+import { CodeCard } from './code-card';
+import integrations from './premium-integration-data.json';
 
 const guides = new Map(content.map((guide) => [guide.id, guide]));
+const examples = new Map(integrations.map((example) => [example.id, example]));
 
 @Component({
   selector: 'app-premium-feature-page',
-  imports: [RouterLink, PremiumNavigation, NotFoundPage],
+  imports: [RouterLink, PremiumNavigation, NotFoundPage, CodeCard],
   template: `
     @if (selected(); as page) {
       <div class="premium-document-layout container">
@@ -29,14 +33,14 @@ const guides = new Map(content.map((guide) => [guide.id, guide]));
           <p class="premium-document-intro">{{ page.guide.overview }}</p>
           <figure class="premium-feature-figure">
             <img
-              [src]="'previews/premium/' + page.feature.id + '.svg'"
-              [alt]="page.guide.visual.title + '. ' + page.guide.visual.subtitle"
-              width="1120"
-              height="640"
+              [src]="'previews/premium/' + page.screenshot.file"
+              [alt]="page.feature.title + ' — ' + page.screenshot.caption"
+              [width]="page.screenshot.width"
+              [height]="page.screenshot.height"
               fetchpriority="high"
             />
             <figcaption>
-              Static illustration with sample data, not a live demo or product screenshot.
+              {{ page.screenshot.caption }}
             </figcaption>
           </figure>
           <nav class="premium-section-links" aria-label="On this page">
@@ -66,12 +70,38 @@ const guides = new Map(content.map((guide) => [guide.id, guide]));
             class="premium-doc-section"
             aria-labelledby="integration-heading"
           >
-            <h2 id="integration-heading">Integration steps</h2>
+            <h2 id="integration-heading">Integration code example</h2>
             <ol>
               @for (step of page.guide.steps; track step) {
                 <li>{{ step }}</li>
               }
             </ol>
+            <p class="premium-integration-note">
+              Copy this TypeScript into your application, not the browser console. Replace
+              YOUR_WTS_LICENSE_KEY with an entitlement issued for your deployment origin. A WTS
+              license is not a Google, Microsoft or CalDAV credential. These examples are
+              documentation only and never execute on this page.
+            </p>
+            <app-code-card
+              label="Install command"
+              kind="premium-install"
+              [code]="page.integration.install"
+            />
+            @if (page.integration.markup; as markup) {
+              <app-code-card label="Host markup" kind="premium-markup" [code]="markup" />
+            }
+            @if (page.integration.stylesheet; as stylesheet) {
+              <app-code-card label="Global CSS / SCSS" kind="premium-styles" [code]="stylesheet" />
+            }
+            <app-code-card
+              label="TypeScript integration"
+              kind="premium-integration"
+              [code]="page.integration.code"
+            />
+            <h3>Application responsibilities</h3>
+            @for (note of page.integration.notes; track note) {
+              <p class="premium-integration-note">{{ note }}</p>
+            }
           </section>
           <section id="behavior" class="premium-doc-section" aria-labelledby="behavior-heading">
             <h2 id="behavior-heading">Behavior and lifecycle</h2>
@@ -142,6 +172,9 @@ export class PremiumFeaturePage {
   readonly selected = computed(() => {
     const feature = PREMIUM_FEATURES.find((item) => item.id === this.params()?.get('id'));
     const guide = feature && guides.get(feature.id);
-    return feature && guide ? { feature, guide } : null;
+    const integration = feature && examples.get(feature.id);
+    return feature && guide && integration
+      ? { feature, guide, integration, screenshot: premiumScreenshot(feature.id) }
+      : null;
   });
 }

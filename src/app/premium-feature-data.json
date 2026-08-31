@@ -497,7 +497,7 @@
       "Planner inputs are copied and returned results are immutable."
     ],
     "limits": [
-      "The engine returns analysis data; the illustration is not a bundled heatmap dashboard.",
+      "The engine returns analysis data; the screenshot's result table is application-owned, not a bundled heatmap dashboard.",
       "Unconfigured capacity is distinct from zero availability and should be explained in your UI."
     ],
     "guide": "docs/ADVANCED-RESOURCE-PLANNING.md",
@@ -1032,7 +1032,7 @@
     "visual": {
       "layout": "permissions",
       "title": "A policy for the action and the field",
-      "subtitle": "An illustrative role-by-field decision matrix",
+      "subtitle": "Role-by-field decisions returned by the workflow engine",
       "labels": ["Title", "Time", "Resource", "Editor", "Manager"]
     }
   },

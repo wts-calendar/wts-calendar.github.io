@@ -632,6 +632,7 @@ main {
   width: 100%;
   height: auto;
   aspect-ratio: 7 / 4;
+  object-fit: contain;
   border: 1px solid var(--line);
   border-radius: 6px;
   background: var(--wash);
@@ -708,7 +709,6 @@ main {
   display: block;
   width: 100%;
   height: auto;
-  aspect-ratio: 7 / 4;
   border-radius: 8px;
 }
 .premium-feature-figure figcaption {
@@ -1008,6 +1008,47 @@ tbody th {
 .code-panel code {
   font-family: 'SFMono-Regular', Consolas, monospace;
 }
+.code-card {
+  display: block;
+  min-width: 0;
+}
+.code-card-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px 8px 20px;
+  border-bottom: 1px solid #365348;
+  color: #d8e9df;
+  font-size: 11px;
+}
+.code-card-toolbar > span:first-child {
+  flex: 1 1 auto;
+}
+.copy-code-feedback {
+  flex: 0 1 auto;
+  max-width: 65%;
+  text-align: end;
+  line-height: 1.4;
+}
+.code-card-toolbar .copy-code-button {
+  display: inline-flex;
+  flex: 0 0 36px;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 1px solid #708e7f;
+  border-radius: 5px;
+  color: #f0fff5;
+  background: transparent;
+}
+.code-card-toolbar .copy-code-button:hover,
+.code-card-toolbar .copy-code-button:focus-visible {
+  color: white;
+  background: #34574a;
+  border-color: #c3e6d1;
+}
 .notice {
   background: var(--wash);
   border: 1px solid var(--line);
@@ -1165,6 +1206,7 @@ app-calendar-demo {
 
   .calendar-toolbar-section {
     display: flex;
+    flex-wrap: wrap;
     gap: 6px;
     min-width: 0;
   }
@@ -1172,7 +1214,7 @@ app-calendar-demo {
   ._title {
     white-space: normal;
     text-align: center;
-    color: var(--ink);
+    color: var(--calendar-toolbar-title-color, var(--wts-calendar-text, var(--ink)));
     font-family: inherit;
     font-size: 17px;
     font-weight: 600;
@@ -1182,10 +1224,10 @@ app-calendar-demo {
   .buttons-group {
     display: inline-flex;
     flex: 0 0 auto;
-    border: 1px solid var(--line);
+    border: 1px solid var(--wts-calendar-border, var(--line));
     border-radius: 6px;
-    color: var(--ink);
-    background: white;
+    color: var(--wts-calendar-text, var(--ink));
+    background: var(--wts-calendar-surface, white);
     padding: 0;
     margin: 0;
   }
@@ -1198,8 +1240,8 @@ app-calendar-demo {
     padding: 7px 10px;
     border: 0;
     border-radius: 0;
-    background: white;
-    color: var(--ink);
+    background: var(--wts-calendar-surface, white);
+    color: var(--wts-calendar-text, var(--ink));
     font-size: 12px;
     font-weight: 600;
     line-height: 1.3;
@@ -1214,14 +1256,14 @@ app-calendar-demo {
       border-end-end-radius: 5px;
     }
     & + .example-native-button {
-      border-inline-start: 1px solid var(--line);
+      border-inline-start: 1px solid var(--wts-calendar-border, var(--line));
     }
     &:hover {
-      background: var(--wash);
+      background: var(--wts-calendar-surface-muted, var(--wash));
     }
     &[aria-pressed='true'] {
-      background: var(--green);
-      color: white;
+      background: var(--wts-calendar-primary, var(--green));
+      color: var(--wts-calendar-primary-foreground, white);
     }
     &[data-calendar-toolbar-action='prev'],
     &[data-calendar-toolbar-action='next'] {
@@ -1511,6 +1553,90 @@ app-calendar-demo {
 .demo-tools button {
   font-size: 12px;
 }
+.searchable-select {
+  display: block;
+  position: relative;
+  flex: 1 1 340px;
+  min-width: 0;
+  max-width: 520px;
+}
+.searchable-select label {
+  margin-bottom: 6px;
+}
+.searchable-select-field {
+  position: relative;
+}
+.searchable-select-field input {
+  padding-right: 32px;
+  font-size: 13px;
+}
+.searchable-select-chevron {
+  position: absolute;
+  right: 12px;
+  top: 9px;
+  pointer-events: none;
+  color: var(--muted);
+}
+.searchable-select-help {
+  margin: 6px 0 0;
+  font-size: 11px;
+}
+.searchable-select-popup {
+  position: absolute;
+  inset-inline: 0;
+  top: calc(100% + 4px);
+  z-index: 50;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 8px 24px #18352e21;
+  overflow: hidden;
+}
+.searchable-select-count {
+  margin: 0;
+  padding: 7px 12px;
+  border-bottom: 1px solid var(--line);
+  font-size: 11px;
+  background: var(--wash);
+}
+.searchable-select-list {
+  position: relative;
+  max-height: min(320px, 45vh);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.searchable-select-list [role='option'] {
+  padding: 10px 12px;
+  cursor: pointer;
+  overflow-wrap: anywhere;
+  font-size: 13px;
+  line-height: 1.5;
+  border-inline-start: 3px solid transparent;
+}
+.searchable-select-list [role='option']:hover,
+.searchable-select-list [role='option'].active {
+  background: var(--wash);
+  border-inline-start-color: var(--green);
+}
+.searchable-select-list [role='option'].selected {
+  font-weight: 650;
+}
+.searchable-select-list small {
+  display: block;
+  color: var(--muted);
+  font-weight: 400;
+}
+.searchable-select-empty {
+  margin: 0;
+  padding: 18px 12px;
+  font-size: 13px;
+}
+.intl-demo-note {
+  flex: 1 1 240px;
+  font-size: 12px;
+  margin: 18px 0 0;
+  max-width: 440px;
+}
 .checkbox-label {
   display: flex;
   align-items: center;
@@ -1523,6 +1649,174 @@ app-calendar-demo {
   border-top: 1px solid var(--line);
   background: #fafcf9;
   min-height: 38px;
+}
+.runtime-options {
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  padding: 14px 16px;
+  background: var(--wash);
+  font-size: 12px;
+
+  summary {
+    cursor: pointer;
+    font-weight: 650;
+  }
+  summary span {
+    margin-inline-start: 12px;
+    font-weight: 400;
+    color: var(--muted);
+  }
+  .runtime-options-content {
+    padding-top: 12px;
+  }
+  p {
+    margin: 0 0 12px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+  .runtime-options-actions {
+    display: flex;
+    align-items: end;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+  .runtime-search {
+    display: grid;
+    gap: 6px;
+    flex: 1;
+    font-weight: 600;
+    min-width: 0;
+  }
+  .runtime-group {
+    display: grid;
+    gap: 6px;
+    font-weight: 600;
+  }
+  .runtime-group select {
+    min-height: 44px;
+    padding: 8px;
+    font-size: 12px;
+  }
+  .runtime-search input {
+    width: 100%;
+    min-width: 0;
+  }
+  button {
+    font-size: 12px;
+  }
+  .runtime-reset-note {
+    font-size: 11px;
+  }
+  fieldset {
+    border: 0;
+    padding: 12px 0;
+    margin: 0;
+    min-width: 0;
+  }
+  fieldset + fieldset {
+    border-top: 1px solid var(--line);
+  }
+  legend {
+    padding: 0;
+    font-weight: 700;
+    font-size: 12px;
+  }
+  .runtime-options-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+  }
+  .runtime-option {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 7px;
+    align-content: start;
+  }
+  .runtime-option label {
+    font-weight: 600;
+    align-self: center;
+  }
+  .runtime-option select {
+    grid-column: 1 / -1;
+    width: 100%;
+    min-width: 0;
+    font-size: 12px;
+    padding: 8px;
+  }
+  .runtime-option input[type='checkbox'] {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--green);
+    margin: 0;
+  }
+  .runtime-option p {
+    grid-column: 1 / -1;
+    font-size: 11px;
+    margin: 0;
+    overflow-wrap: anywhere;
+  }
+  .runtime-option code {
+    color: var(--green);
+    font-size: 10px;
+  }
+  .runtime-empty button {
+    text-decoration: underline;
+    padding: 0;
+    border: 0;
+    background: none;
+  }
+}
+.framework-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 16px 0;
+}
+.framework-tabs button {
+  padding: 7px 13px;
+  min-height: 36px;
+  font-size: 12px;
+}
+.framework-tabs button[aria-pressed='true'] {
+  color: white;
+  background: var(--green);
+  border-color: var(--green);
+}
+.framework-notes {
+  margin: 12px 0 16px;
+  padding-inline-start: 20px;
+  color: var(--muted);
+  font-size: 12px;
+}
+.framework-notes li + li {
+  margin-top: 6px;
+}
+.configuration h3 {
+  font-size: 12px;
+  margin: 18px 0 8px;
+}
+@media (max-width: 1000px) {
+  .runtime-options .runtime-options-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 560px) {
+  .runtime-options .runtime-options-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .runtime-options .runtime-options-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  .runtime-options summary span {
+    display: block;
+    margin: 5px 0 0 16px;
+  }
+}
+@media print {
+  app-runtime-options {
+    display: none !important;
+  }
 }
 .activity,
 .configuration {

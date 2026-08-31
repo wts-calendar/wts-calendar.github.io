@@ -1,8 +1,8 @@
 # Consumer application validation
 
-Candidate: `@wts-calendar/core@1.0.0`
+Candidate: `@wts-calendar/core@1.1.1`
 
-Validation date: 2026-08-26
+Validation date: 2026-08-31
 
 Command: `npm run consumer:verify`
 
@@ -15,8 +15,8 @@ temporary applications are removed after the run.
 ## React standalone consumer
 
 - Application/framework: React 19.2.8
-- Adapter: `@wts-calendar/react@1.0.0`
-- Calendar installation: packed `@wts-calendar/core@1.0.0` artifact
+- Adapter: `@wts-calendar/react@1.0.1`
+- Calendar installation: packed `@wts-calendar/core@1.1.1` artifact
 - Install: passed from freshly packed scoped artifacts (`9` packages installed)
 - Build: passed
 - Required runtime assertion: Week TimeGrid mounts through the optional
@@ -30,8 +30,8 @@ temporary applications are removed after the run.
 ## Vue standalone consumer
 
 - Application/framework: Vue 3.5.41
-- Adapter: `@wts-calendar/vue@1.0.0`
-- Calendar installation: packed `@wts-calendar/core@1.0.0` artifact
+- Adapter: `@wts-calendar/vue@1.0.1`
+- Calendar installation: packed `@wts-calendar/core@1.1.1` artifact
 - Install: passed from freshly packed scoped artifacts (`29` packages installed)
 - Build: passed
 - Required runtime assertion: `list-week` mounts through the optional `list`
@@ -47,5 +47,5 @@ installation, packing, bundling, browser console
 errors, page errors, view identity, event count, or visible event rendering
 failures produce a non-zero exit status.
 
-Earlier 2026-08-19 consumer evidence predates the final scoped-package
-conversion and is not reused as approval for `@wts-calendar/*@1.0.0`.
+Earlier 2026-08-19 and 2026-08-26 evidence is historical; this approval uses
+freshly built and packed 1.1.1 core artifacts, not a local link in the example portal.
