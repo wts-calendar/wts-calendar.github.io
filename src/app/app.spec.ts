@@ -233,9 +233,12 @@ describe('Free examples', () => {
       }
       if (demo.id === 'event-editor') {
         await vi.waitFor(() => expect(fixture.componentInstance.editorReady()).toBe(true));
+        // Apply the async ready signal before clicking the formerly disabled button.
+        fixture.detectChanges();
         const button = fixture.nativeElement.querySelector(
           '.demo-tools button',
         ) as HTMLButtonElement;
+        expect(button.disabled).toBe(false);
         button.click();
         fixture.detectChanges();
         expect(document.querySelector('[role="dialog"]')).toBeTruthy();
