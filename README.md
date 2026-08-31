@@ -119,7 +119,8 @@ The source branch is **wts/source** in
 Pushes to that branch run [deploy-pages.yml](.github/workflows/deploy-pages.yml):
 locked dependency installation, showcase contract checks, all tests, prerendering,
 SEO verification, artifact upload, and GitHub Pages deployment. Pull requests run
-the checks but cannot deploy. A manual run is also available from the Actions tab.
+the checks but cannot deploy. Push-based deployment is active; GitHub only shows
+the manual-run control when the workflow also exists on the default branch.
 
 Pages uses **GitHub Actions** as its publishing source. Deployment uses the built-in
 GitHub token and OIDC permissions; no personal access token, npm token, or provider
