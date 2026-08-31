@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#f8fbf8"/>
+  <rect width="1200" height="14" fill="#13685a"/>
+  <g font-family="Arial, Helvetica, sans-serif" fill="#193c33">
+    <text x="70" y="113" font-size="29" font-weight="700" letter-spacing="3">WTS CALENDAR</text>
+    <text x="68" y="225" font-size="66" font-weight="700">Every kind</text>
+    <text x="68" y="303" font-size="66" font-weight="700">of schedule.</text>
+    <text x="72" y="374" font-size="24" fill="#526d63">JavaScript calendars for your stack.</text>
+    <text x="72" y="441" font-size="20" fill="#13685a">Angular  ·  React  ·  Vue  ·  JavaScript</text>
+    <rect x="70" y="497" width="364" height="53" rx="12" fill="#13685a"/>
+    <text x="95" y="532" font-size="23" font-weight="700" fill="white">wts-calendar.github.io</text>
+  </g>
+  <g transform="translate(677 135)">
+    <rect width="450" height="377" rx="22" fill="white" stroke="#cbdcd3" stroke-width="2"/>
+    <text x="26" y="49" font-family="Arial, Helvetica, sans-serif" font-size="22" fill="#193c33" font-weight="700">A week, beautifully organized</text>
+    <path d="M0 78H450M0 142H450M0 206H450M0 270H450M90 78V377M180 78V377M270 78V377M360 78V377M0 334H450" stroke="#e0e9e3"/>
+    <rect x="16" y="93" width="151" height="40" rx="7" fill="#b9d9ce"/>
+    <rect x="191" y="153" width="153" height="42" rx="7" fill="#dbd3e8"/>
+    <rect x="101" y="221" width="244" height="40" rx="7" fill="#f3dfb0"/>
+    <rect x="281" y="284" width="153" height="40" rx="7" fill="#bed4e8"/>
+    <g font-family="Arial, Helvetica, sans-serif" font-size="17" fill="#24473d">
+      <text x="28" y="119">Plan together</text><text x="205" y="180">Create space</text>
+      <text x="117" y="247">Move things forward</text><text x="295" y="310">Make time</text>
+    </g>
+  </g>
+</svg>

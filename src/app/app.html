@@ -1,153 +1,51 @@
-<main>
-  <header class="site-header">
-    <a class="brand" href="#top" aria-label="Tempo home">
-      <span class="brand-mark" aria-hidden="true">T</span>
-      <span>Tempo</span>
-    </a>
-    <nav aria-label="Page navigation">
-      <a href="#calendar">Calendar</a>
-      <a href="#integration">Integration</a>
-      <a
-        href="https://www.npmjs.com/package/@wts-calendar/angular"
-        target="_blank"
-        rel="noreferrer"
-      >
-        npm ↗
-      </a>
-    </nav>
-  </header>
-
-  <section id="top" class="hero" aria-labelledby="page-title">
-    <div class="hero-copy">
-      <p class="eyebrow"><span></span> Angular 22 calendar example</p>
-      <h1 id="page-title">A calmer way<br />to plan <em>what’s next.</em></h1>
-    </div>
-    <aside class="hero-note">
-      <span>01 / Overview</span>
-      <p>
-        A production-minded example using the official Angular adapter for the framework-agnostic
-        WTS Calendar core.
-      </p>
-      <div class="package-line"><code>@wts-calendar/angular</code><strong>v1.0.0</strong></div>
-    </aside>
-  </section>
-
-  <section id="calendar" class="workspace" aria-labelledby="calendar-title">
-    <div class="workspace-heading">
-      <div>
-        <span class="section-index">02 / Live workspace</span>
-        <h2 id="calendar-title">Studio schedule</h2>
-      </div>
-      <p>
-        Use the controls, select a day, or click any event. Every calendar surface is rendered by
-        the published package.
-      </p>
-    </div>
-
-    <div class="calendar-shell">
-      <div class="calendar-toolbar">
-        <div class="date-navigation">
-          <button type="button" aria-label="Previous period" (click)="navigate('previous')">
-            ←
-          </button>
-          <button type="button" (click)="navigate('today')">Today</button>
-          <button type="button" aria-label="Next period" (click)="navigate('next')">→</button>
-        </div>
-
-        <h3 aria-live="polite">{{ activeTitle() }}</h3>
-
-        <div class="view-switcher" aria-label="Calendar view">
-          @for (option of viewOptions; track option.value) {
-            <button
-              type="button"
-              [class.active]="activeView() === option.value"
-              (click)="changeView(option.value)"
-            >
-              {{ option.label }}
-            </button>
-          }
-        </div>
-      </div>
-
-      <div class="calendar-layout">
-        <aside class="calendar-sidebar">
-          <div class="sidebar-heading">
-            <span>Workspace</span>
-            <i [class.ready]="controller.ready()"></i>
-          </div>
-
-          <div class="selected-card">
-            <span>Selected day</span>
-            <strong>{{ formatDate(selectedDate()) }}</strong>
-            <small>{{ selectedEvent() }}</small>
-          </div>
-
-          <button class="primary-action" type="button" (click)="addFocusBlock()">
-            Add focus block <span>+</span>
-          </button>
-
-          <div class="setting">
-            <label for="theme">Calendar theme</label>
-            <select id="theme" [value]="theme()" (change)="changeTheme($event)">
-              @for (item of themes; track item) {
-                <option [value]="item">{{ item }}</option>
-              }
-            </select>
-          </div>
-
-          <label class="toggle-row">
-            <span>
-              <strong>Show weekends</strong>
-              <small>Saturday and Sunday</small>
-            </span>
-            <input type="checkbox" [checked]="weekends()" (change)="toggleWeekends()" />
-          </label>
-
-          <div class="event-summary">
-            <span>Schedule</span>
-            <strong>{{ events().length }}</strong>
-            <small>events in this demo</small>
-          </div>
-        </aside>
-
-        <div class="calendar-stage">
-          <wts-calendar-angular
-            [initialOptions]="initialOptions"
-            [options]="liveOptions()"
-            [events]="events()"
-            [controller]="controller"
-            (ready)="calendarReady($event)"
-            (calendarError)="calendarError($event)"
-          />
-          <div class="status-line" aria-live="polite">
-            <span><i></i>{{ status() }}</span>
-            <button type="button" (click)="resetDemo()">Reset demo ↺</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section id="integration" class="integration" aria-labelledby="integration-title">
-    <div class="integration-copy">
-      <span class="section-index">03 / Integration</span>
-      <h2 id="integration-title">Angular owns the state.<br /><em>Core owns the calendar.</em></h2>
-      <p>
-        The adapter keeps one calendar instance alive while Angular updates events and options
-        transactionally.
-      </p>
-    </div>
-    <pre><code><span>&lt;wts-calendar-angular</span>
-  [initialOptions]="initialOptions"
-  [events]="events()"
-  [options]="liveOptions()"
-  [controller]="controller"
-  (ready)="calendarReady($event)"
-<span>/&gt;</span></code></pre>
-  </section>
-
-  <footer>
-    <span>Tempo / Angular 22 example</span>
-    <span>SSR-safe · Standalone · Transactional</span>
-  </footer>
-</main>
+<a class="skip-link" href="#main-content" (click)="$event.preventDefault(); main.focus()"
+  >Skip to content</a
+>
+<header class="site-header">
+  <a routerLink="/" class="brand" aria-label="WTS Calendar home"
+    ><span class="brand-mark" aria-hidden="true">W</span> wts<span class="brand-light"
+      >calendar</span
+    ></a
+  >
+  <button
+    class="menu-toggle"
+    (click)="menuOpen.set(!menuOpen())"
+    [attr.aria-expanded]="menuOpen()"
+    aria-controls="site-nav"
+  >
+    Menu
+  </button>
+  <nav id="site-nav" aria-label="Main navigation" [class.open]="menuOpen()">
+    <a routerLink="/examples" routerLinkActive="active">Examples</a>
+    <a routerLink="/features" routerLinkActive="active">Features</a>
+    <a routerLink="/docs" routerLinkActive="active">Documentation</a>
+    <a routerLink="/pricing" routerLinkActive="active">Pricing</a>
+    <a [href]="repository">GitHub ↗</a>
+    <a routerLink="/docs" class="button primary small"
+      >Get started <span aria-hidden="true">→</span></a
+    >
+  </nav>
+</header>
+<main id="main-content" #main tabindex="-1"><router-outlet /></main>
+<footer class="site-footer">
+  <div>
+    <a class="brand" routerLink="/"
+      ><span class="brand-mark" aria-hidden="true">W</span> wts<span class="brand-light"
+        >calendar</span
+      ></a
+    >
+    <p>Make room for what matters.</p>
+  </div>
+  <div>
+    <strong>Explore</strong><a routerLink="/examples">Examples</a
+    ><a routerLink="/features">All features</a><a routerLink="/pricing">Pricing & licensing</a>
+  </div>
+  <div>
+    <strong>Build</strong><a routerLink="/docs">Documentation</a
+    ><a href="https://www.npmjs.com/package/@wts-calendar/core">npm package ↗</a
+    ><a [href]="repository">Source on GitHub ↗</a>
+  </div>
+  <p class="footer-note">
+    Standard features: MIT. Premium capabilities require a separate license.
+  </p>
+</footer>
