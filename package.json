@@ -9,8 +9,9 @@
     "test": "ng test",
     "build:pages": "ng build --base-href /wts-calendar-angular-example/ && node scripts/prepare-pages.mjs /wts-calendar-angular-example/ && node scripts/verify-pages.mjs",
     "build:pages:org": "ng build --base-href / && node scripts/prepare-pages.mjs / && node scripts/verify-pages.mjs /",
-    "check:showcase": "node scripts/verify-showcase.mjs",
-    "check:release": "node scripts/verify-showcase.mjs --require-contact"
+    "generate:premium-previews": "node scripts/generate-premium-previews.mjs",
+    "check:showcase": "node scripts/generate-premium-previews.mjs --check && node scripts/verify-showcase.mjs",
+    "check:release": "node scripts/generate-premium-previews.mjs --check && node scripts/verify-showcase.mjs --require-contact"
   },
   "private": true,
   "packageManager": "npm@10.9.2",

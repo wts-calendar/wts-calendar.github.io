@@ -13,8 +13,9 @@ import {
   FEATURES,
   LICENSE_REQUEST,
   PREMIUM_CONTACT_EMAIL,
-  PREMIUM_PREVIEWS,
+  PREMIUM_FEATURES,
 } from './site-data';
+import premiumContent from './premium-feature-data.json';
 
 beforeAll(() => {
   globalThis.ResizeObserver = class {
@@ -46,9 +47,16 @@ describe('Showcase contract', () => {
       }
     }
   });
-  it('provides static previews for each premium category', () => {
-    for (const feature of FEATURES.filter((f) => f.tier === 'Premium')) {
-      expect(PREMIUM_PREVIEWS[feature.group]?.src).toMatch(/^previews\/.+\.svg$/);
+  it('provides a distinct guide and illustration definition for every Premium feature', () => {
+    expect(new Set(premiumContent.map((guide) => guide.id))).toEqual(
+      new Set(PREMIUM_FEATURES.map((feature) => feature.id)),
+    );
+    for (const feature of PREMIUM_FEATURES) {
+      const guide = premiumContent.find((item) => item.id === feature.id);
+      expect(guide?.visual.title).toBeTruthy();
+      expect(guide?.configuration.length).toBeGreaterThanOrEqual(3);
+      expect(guide?.steps.length).toBeGreaterThanOrEqual(3);
+      expect(guide?.limits.length).toBeGreaterThanOrEqual(2);
     }
   });
   it('never uses a public issue tracker for a license request', () => {
@@ -61,7 +69,7 @@ describe('Showcase contract', () => {
 });
 
 describe('Feature catalogue', () => {
-  it('renders premium badges with pricing links, no demos or source', async () => {
+  it('renders Premium illustrations and individual guide links, with no runtime demos or code', async () => {
     await TestBed.configureTestingModule({
       imports: [FeaturesPage],
       providers: [provideRouter([])],
@@ -74,10 +82,18 @@ describe('Feature catalogue', () => {
     expect(cards.length).toBe(FEATURES.filter((f) => f.tier === 'Premium').length);
     for (const card of cards) {
       expect(card.querySelector('.badge.premium')).toBeTruthy();
-      expect(card.querySelector('a')?.getAttribute('href')).toBe('/pricing');
+      const title = card.querySelector('h3')?.textContent?.trim();
+      const feature = PREMIUM_FEATURES.find((item) => item.title === title)!;
+      expect(card.querySelector('a')?.getAttribute('href')).toBe('/premium/' + feature.id);
+      expect(card.querySelector('img')?.getAttribute('src')).toBe(
+        'previews/premium/' + feature.id + '.svg',
+      );
+      expect(card.querySelector('img')?.getAttribute('alt')).toContain(feature.title);
       expect(card.querySelector('pre, code, wts-calendar-angular')).toBeNull();
     }
-    expect(fixture.nativeElement.querySelectorAll('.premium-preview img').length).toBe(3);
+    expect(fixture.nativeElement.querySelectorAll('.feature-preview').length).toBe(
+      PREMIUM_FEATURES.length,
+    );
   });
   it('supports combined filters and empty-state reset', async () => {
     await TestBed.configureTestingModule({

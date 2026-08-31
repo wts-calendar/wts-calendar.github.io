@@ -5,7 +5,7 @@ import { describe, expect, it } from 'vitest';
 import { legacyHashTarget } from './legacy-hash';
 import { SEO_PAGES, SITE_ORIGIN, seoForUrl, structuredData } from './seo-data';
 import { SeoService } from './seo.service';
-import { DEMOS } from './site-data';
+import { DEMOS, PREMIUM_FEATURES } from './site-data';
 import { appConfig } from './app.config';
 
 describe('Clean URL routing', () => {
@@ -43,7 +43,7 @@ describe('Clean URL routing', () => {
 
 describe('Portal SEO', () => {
   it('gives every public page distinct metadata', () => {
-    expect(SEO_PAGES.length).toBe(DEMOS.length + 4);
+    expect(SEO_PAGES.length).toBe(DEMOS.length + PREMIUM_FEATURES.length + 4);
     expect(new Set(SEO_PAGES.map((page) => page.path)).size).toBe(SEO_PAGES.length);
     expect(new Set(SEO_PAGES.map((page) => page.title)).size).toBe(SEO_PAGES.length);
     expect(new Set(SEO_PAGES.map((page) => page.description)).size).toBe(SEO_PAGES.length);
@@ -59,6 +59,8 @@ describe('Portal SEO', () => {
     expect(seoForUrl('/examples/list?period=day').path).toBe('/examples/list/');
     expect(seoForUrl('/missing').noindex).toBe(true);
     expect(seoForUrl('/examples/premium-resource').noindex).toBe(true);
+    expect(seoForUrl('/premium/not-a-feature').noindex).toBe(true);
+    expect(seoForUrl('/premium/resource-grid#configuration').path).toBe('/premium/resource-grid/');
   });
   it('keeps structured data factual and aligned with each page', () => {
     for (const page of SEO_PAGES) {

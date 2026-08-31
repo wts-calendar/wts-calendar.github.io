@@ -7,7 +7,8 @@ const read = (path) => readFileSync(resolve(root, path), 'utf8');
 const files = readdirSync(resolve(root, 'src/app')).filter(
   (file) => /\.(ts|html)$/.test(file) && !file.endsWith('.spec.ts'),
 );
-const source = files.map((file) => read('src/app/' + file)).join('\n');
+const premiumContent = read('src/app/premium-feature-data.json');
+const source = files.map((file) => read('src/app/' + file)).join('\n') + premiumContent;
 assert.ok(
   !/full[\s-]*calend[ae]r/i.test(source + read('src/index.html') + read('README.md')),
   'Keep competitor branding out of public showcase copy',
@@ -33,11 +34,24 @@ assert.ok(
   'Premium dynamic import in showcase',
 );
 assert.ok(
-  !/issues\/new/.test(read('src/app/site-data.ts') + read('src/app/pricing-page.ts')),
+  !/issues\/new/.test(
+    read('src/app/site-data.ts') +
+      read('src/app/pricing-page.ts') +
+      read('src/app/premium-feature-page.ts'),
+  ),
   'Public license issue link is forbidden',
 );
-for (const file of readdirSync(resolve(root, 'public/previews'))) {
-  const svg = read('public/previews/' + file);
+function previewFiles(directory) {
+  return readdirSync(resolve(root, directory), { withFileTypes: true }).flatMap((entry) =>
+    entry.isDirectory()
+      ? previewFiles(directory + '/' + entry.name)
+      : [directory + '/' + entry.name],
+  );
+}
+const previews = previewFiles('public/previews');
+for (const file of previews) {
+  assert.ok(file.endsWith('.svg'), 'Unexpected preview type: ' + file);
+  const svg = read(file);
   assert.ok(!/full[\s-]*calend[ae]r/i.test(svg), 'Competitor branding in preview: ' + file);
   assert.ok(
     !/<script|<foreignObject|\bon\w+=|https?:\/\//i.test(
@@ -46,6 +60,14 @@ for (const file of readdirSync(resolve(root, 'public/previews'))) {
     'Unsafe preview: ' + file,
   );
   assert.ok(svg.includes('Static illustration'), 'Preview must not pretend to be a screenshot');
+}
+const premium = JSON.parse(premiumContent);
+assert.equal(new Set(premium.map((feature) => feature.id)).size, premium.length);
+for (const feature of premium) {
+  assert.ok(existsSync(resolve(root, 'public/previews/premium', feature.id + '.svg')));
+  assert.ok(feature.configuration.length >= 3 && feature.steps.length >= 3);
+  assert.ok(feature.behavior.length >= 2 && feature.limits.length >= 2);
+  assert.ok(existsSync(resolve(root, 'package-docs/core', feature.guide)));
 }
 if (process.argv.includes('--require-contact')) {
   const contact = read('src/app/site-data.ts').match(
@@ -60,5 +82,7 @@ if (process.argv.includes('--require-contact')) {
 console.log(
   'Showcase checks passed: ' +
     docs.length +
-    ' local guide targets, static previews, free-only modules, email-only license contact.',
+    ' local guide targets, ' +
+    premium.length +
+    ' Premium guides, safe static previews, standard-only runtime modules, email-only license contact.',
 );

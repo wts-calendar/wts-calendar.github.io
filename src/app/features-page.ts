@@ -1,6 +1,6 @@
 import { Component, computed, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { DOCS_BASE, FEATURES, FEATURE_GROUPS, PREMIUM_PREVIEWS } from './site-data';
+import { DOCS_BASE, FEATURES, FEATURE_GROUPS } from './site-data';
 @Component({
   selector: 'app-features-page',
   imports: [RouterLink],
@@ -44,24 +44,19 @@ import { DOCS_BASE, FEATURES, FEATURE_GROUPS, PREMIUM_PREVIEWS } from './site-da
       @for (section of sections(); track section.name) {
         <section class="feature-section">
           <h2>{{ section.name }}</h2>
-          @if (previews[section.name]; as preview) {
-            <figure class="premium-preview">
-              <img
-                [src]="preview.src"
-                [alt]="preview.alt"
-                loading="lazy"
-                width="660"
-                height="380"
-              />
-              <figcaption>
-                <span class="badge premium">Premium</span> Illustrative preview · not a live demo or
-                product screenshot
-              </figcaption>
-            </figure>
-          }
           <div class="feature-grid">
             @for (feature of section.items; track feature.id) {
               <article class="feature-card" [attr.data-tier]="feature.tier">
+                @if (feature.tier === 'Premium') {
+                  <img
+                    class="feature-preview"
+                    [src]="'previews/premium/' + feature.id + '.svg'"
+                    [alt]="feature.title + ' — static illustrative preview'"
+                    loading="lazy"
+                    width="1120"
+                    height="640"
+                  />
+                }
                 <div class="card-heading">
                   <h3>{{ feature.title }}</h3>
                   @if (feature.tier === 'Premium') {
@@ -70,8 +65,8 @@ import { DOCS_BASE, FEATURES, FEATURE_GROUPS, PREMIUM_PREVIEWS } from './site-da
                 </div>
                 <p>{{ feature.description }}</p>
                 @if (feature.tier === 'Premium') {
-                  <a routerLink="/pricing" class="card-link"
-                    >View pricing <span aria-hidden="true">↗</span></a
+                  <a [routerLink]="['/premium', feature.id]" class="card-link"
+                    >Preview & documentation <span aria-hidden="true">→</span></a
                   >
                 } @else if (feature.demo) {
                   <a [routerLink]="['/examples', feature.demo]" class="card-link"
@@ -93,15 +88,15 @@ import { DOCS_BASE, FEATURES, FEATURE_GROUPS, PREMIUM_PREVIEWS } from './site-da
         </div>
       }
       <p class="fine-print">
-        Premium capabilities are listed for discovery only. This website does not run premium
-        examples or collect license tokens.
+        Premium guides include feature-specific illustrations and documentation. Illustrations use
+        sample data and are not product screenshots. This website does not run Premium examples or
+        collect license tokens.
       </p>
     </section>`,
 })
 export class FeaturesPage {
   readonly docs = DOCS_BASE;
   readonly groups = FEATURE_GROUPS;
-  readonly previews = PREMIUM_PREVIEWS;
   readonly query = signal('');
   readonly group = signal('');
   readonly tier = signal('');

@@ -1,0 +1,1109 @@
+[
+  {
+    "id": "resource-grid",
+    "module": "resource-scheduling",
+    "entitlement": "resource-scheduling",
+    "overview": "Place people, rooms, or equipment beside a date grid so assignments can be understood in context. Each lane belongs to a stable resource record, and event assignments remain part of your application's data.",
+    "configuration": [
+      ["view", "Select the resource view for an all-day resource grid."],
+      [
+        "resources / resourceSources",
+        "Supply uniquely identified resource records directly or through a source."
+      ],
+      ["resourceId", "Associate each assigned event with its resource's ID."]
+    ],
+    "steps": [
+      "Verify a license with the resource-scheduling entitlement and register the optional resource scheduling module.",
+      "Load resources and events with stable IDs, then set the visible date and time zone.",
+      "Handle selection and mutation callbacks in your application and persist accepted changes if needed."
+    ],
+    "behavior": [
+      "Resource rows and date columns make assignment and multi-day event spans visible together.",
+      "Resource hierarchy, availability rules, and column customization can be combined with the grid."
+    ],
+    "limits": [
+      "The grid renders supplied assignments; it is not an automatic scheduling optimizer.",
+      "Local edits are not durable until your application saves them."
+    ],
+    "guide": "README.md",
+    "visual": {
+      "layout": "lanes",
+      "title": "A lane for every resource",
+      "subtitle": "Assignments stay connected to their resource",
+      "labels": ["Design", "Engineering", "Meeting room"],
+      "bars": [1, 3, 2]
+    }
+  },
+  {
+    "id": "resource-daygrid",
+    "module": "resource-scheduling",
+    "entitlement": "resource-scheduling",
+    "overview": "Review a day or week by resource without an hourly axis. Timed and all-day events share the corresponding resource/date cell, making this layout useful when daily allocation matters more than exact slot placement.",
+    "configuration": [
+      ["view", "Choose resource-day-grid-day or resource-day-grid-week."],
+      ["datesAboveResources", "Choose date-first or resource-first column headings."],
+      ["resources / events", "Provide resources and event assignments with matching resource IDs."]
+    ],
+    "steps": [
+      "Register the resource scheduling module with a verified resource-scheduling license.",
+      "Choose the day or week range and the heading arrangement that suits the number of resources.",
+      "Populate event assignments and connect date or event interactions to your application."
+    ],
+    "behavior": [
+      "Resource and date headings identify the ownership of each visible cell.",
+      "Timed events remain represented even though the view has no hourly grid."
+    ],
+    "limits": [
+      "Use Resource TimeGrid when users need to position appointments against an hourly axis.",
+      "Changing the header arrangement does not change event timestamps or resource assignments."
+    ],
+    "guide": "docs/CONFIGURATION.md",
+    "visual": {
+      "layout": "daygrid",
+      "title": "Daily allocations by resource",
+      "subtitle": "Day or week planning without hourly slots",
+      "labels": ["Studio A", "Studio B", "Studio C"]
+    }
+  },
+  {
+    "id": "resource-timegrid",
+    "module": "resource-scheduling",
+    "entitlement": "resource-scheduling",
+    "overview": "Schedule appointments on an hourly grid with a separate column for each resource. Day and week variants keep resource headings, all-day events, timed slots, and interactive selection aligned.",
+    "configuration": [
+      ["view", "Choose resource-time-grid-day or resource-time-grid-week."],
+      [
+        "dayView / weekView",
+        "Configure hour segments, segment height, and interaction tolerances."
+      ],
+      [
+        "resourceTimeGrid",
+        "Set columnWidth, virtualizationThreshold, and overscan for large schedules."
+      ]
+    ],
+    "steps": [
+      "Load the licensed resource scheduling module and at least one resource or resource source.",
+      "Configure slotMinTime, slotMaxTime, timeZone, and the day/week range.",
+      "Enable the needed interactions and handle event-drop, event-resize, and resource-aware selection results."
+    ],
+    "behavior": [
+      "Moving a timed event to another column updates its resource assignment and preserves duration.",
+      "Large date-by-resource column sets can virtualize while keeping headers and event hooks synchronized."
+    ],
+    "limits": [
+      "Columns scroll horizontally when their configured widths exceed the available space.",
+      "Persist successful edits and validate authoritative availability in your own application."
+    ],
+    "guide": "README.md",
+    "visual": {
+      "layout": "timegrid",
+      "title": "Time and resources, aligned",
+      "subtitle": "Appointments use the same hourly scale",
+      "labels": ["Room A", "Room B", "Room C"]
+    }
+  },
+  {
+    "id": "resource-non-resource-timeline",
+    "module": "resource-scheduling",
+    "entitlement": "resource-scheduling",
+    "overview": "Lay out longer schedules on a horizontal date scale. Use resource-timeline to assign a row to each resource, or timeline to place ordinary events in overlapping lanes without inventing resource records.",
+    "configuration": [
+      ["view", "Select resource-timeline or timeline."],
+      [
+        "resourceTimeline",
+        "Configure durationDays, slotWidth, rowMinHeight, and resourceAreaWidth."
+      ],
+      [
+        "virtualization thresholds",
+        "Tune resource-row and date-slot windows independently for large schedules."
+      ]
+    ],
+    "steps": [
+      "Register resource scheduling and verify its license even when using the non-resource timeline.",
+      "Choose a duration of 1–366 calendar days and a readable slot width.",
+      "Supply events, add resources only for resource-timeline, and connect edit/selection callbacks."
+    ],
+    "behavior": [
+      "Overlapping events occupy deterministic lanes; background events and range shading remain available.",
+      "Pointer, touch, and keyboard interactions share validation and rollback behavior."
+    ],
+    "limits": [
+      "Timeline visualization does not calculate a critical path by itself; that analysis belongs to advanced resource planning.",
+      "The non-resource view does not add synthetic resource IDs to event callbacks."
+    ],
+    "guide": "README.md",
+    "visual": {
+      "layout": "lanes",
+      "title": "A shared project timeline",
+      "subtitle": "Longer work spans one continuous date scale",
+      "labels": ["Discovery", "Delivery", "Review"],
+      "bars": [3, 4, 1]
+    }
+  },
+  {
+    "id": "dates-above-resources",
+    "module": "resource-scheduling",
+    "entitlement": "resource-scheduling",
+    "overview": "Choose which question the header answers first: when work happens, or who is assigned. Vertical resource DayGrid and TimeGrid views support both date-major and resource-major arrangements.",
+    "configuration": [
+      ["datesAboveResources", "Set true for date-major headings; false is resource-major."],
+      ["vertical resource views", "Use resource DayGrid or resource TimeGrid day/week variants."],
+      [
+        "visible range",
+        "Keep the date range and resource collection consistent while comparing arrangements."
+      ]
+    ],
+    "steps": [
+      "Enable a licensed vertical resource view and load the resource collection.",
+      "Choose the datesAboveResources value that matches your users' scanning pattern.",
+      "Confirm the header grouping remains understandable with your real resource titles and translations."
+    ],
+    "behavior": [
+      "Date-major headers repeat resources under each date.",
+      "Resource-major headers repeat dates under each resource without changing underlying event assignments."
+    ],
+    "limits": [
+      "This option changes heading and column organization, not the event data model.",
+      "It is not a setting for the ordinary Month view or horizontal timeline."
+    ],
+    "guide": "docs/CONFIGURATION.md",
+    "visual": {
+      "layout": "headers",
+      "title": "Choose the heading hierarchy",
+      "subtitle": "Date first or resource first",
+      "labels": ["Monday", "Tuesday", "Room A", "Room B"]
+    }
+  },
+  {
+    "id": "resource-crud-sources",
+    "module": "resource-scheduling",
+    "entitlement": "resource-scheduling",
+    "overview": "Keep the resource directory connected to application state rather than embedding it permanently in a view. Resource APIs and sources support dynamic records, loading, refresh, and paginated collections.",
+    "configuration": [
+      ["resources", "Start with a static collection of stable resource IDs and titles."],
+      ["resourceSources", "Connect resource loaders or URLs and adapt your response shape."],
+      [
+        "source request data",
+        "Pass the range and pagination information required by your resource service."
+      ]
+    ],
+    "steps": [
+      "Define stable resource identifiers shared by the resource directory and event assignments.",
+      "Choose static data, sources, or a combination and configure the relevant adapters.",
+      "Refresh source-owned data after accepted backend changes and expose loading or failure states to users."
+    ],
+    "behavior": [
+      "Resource loading is separate from the event collection so each can follow its own data lifecycle.",
+      "Paging allows a large directory to be supplied in smaller responses."
+    ],
+    "limits": [
+      "The package does not provide a resource database or a hosted directory endpoint.",
+      "Decide how your application handles events assigned to resources that are removed or no longer visible."
+    ],
+    "guide": "README.md",
+    "visual": {
+      "layout": "pipeline",
+      "title": "A live resource directory",
+      "subtitle": "Load, adapt, and present customer-owned records",
+      "labels": ["Resource service", "Source adapter", "Calendar lanes"],
+      "note": "Refresh and pagination stay application-controlled"
+    }
+  },
+  {
+    "id": "resource-hierarchy",
+    "module": "resource-scheduling",
+    "entitlement": "resource-scheduling",
+    "overview": "Represent departments, teams, rooms, or equipment as an expandable resource tree. Collapsing a parent simplifies the visible schedule while retaining the underlying resource and event data.",
+    "configuration": [
+      ["parentId", "Link a child resource to an existing parent using a cycle-free hierarchy."],
+      [
+        "resourcesInitiallyExpanded",
+        "Set the initial expansion state through resourceTimeline options."
+      ],
+      ["resourceSummaryContent", "Customize the text summary shown for a collapsed subtree."]
+    ],
+    "steps": [
+      "Build and validate a resource tree with unique IDs and valid parent links.",
+      "Select a licensed resource view and choose the initial expansion state.",
+      "Use collapsed summaries to explain hidden scheduled load and capacity conflicts."
+    ],
+    "behavior": [
+      "Expansion state survives date navigation and option rebuilds for the calendar instance.",
+      "Collapsed summaries can report event count, booked units, capacity, utilization, and conflicts."
+    ],
+    "limits": [
+      "Collapsing resources hides descendant rows or columns; it does not delete or reassign their events.",
+      "Summary content is text-only; persistent expansion preferences remain application-owned."
+    ],
+    "guide": "README.md",
+    "visual": {
+      "layout": "hierarchy",
+      "title": "From department to resource",
+      "subtitle": "Expand detail while preserving the whole plan",
+      "labels": ["Product delivery", "Design team", "Engineering team", "Research", "Platform"]
+    }
+  },
+  {
+    "id": "resource-grouping-ordering-filtering",
+    "module": "resource-scheduling",
+    "entitlement": "resource-scheduling",
+    "overview": "Create a useful presentation of a large resource directory without rewriting its source collection. Combine filters, stable ordering, nested groups, and parent-child hierarchy to match the way teams plan work.",
+    "configuration": [
+      [
+        "resourceFilter / filterResourcesWithEvents",
+        "Filter by application criteria or the presence of assigned events."
+      ],
+      [
+        "resourceOrder",
+        "Order using fields, descending field entries, comparator functions, or mixed arrays."
+      ],
+      [
+        "resourceGroupFields",
+        "Define nested timeline groups with values, labels, empty labels, and ordering."
+      ]
+    ],
+    "steps": [
+      "Choose the resource fields that users need to filter and compare.",
+      "Add ordering and timeline group tiers, optionally including grouped resource-area columns.",
+      "Check empty values and descendant matches using representative resource trees."
+    ],
+    "behavior": [
+      "Matching descendants retain their ancestors so filtering does not create an invalid resource tree.",
+      "Column groups, global group tiers, and parentId hierarchy can compose without mutating the source array."
+    ],
+    "limits": [
+      "Nested resource grouping is a Resource Timeline presentation feature.",
+      "A visibility filter is not authorization; sensitive records should be excluded by your data-access layer."
+    ],
+    "guide": "README.md",
+    "visual": {
+      "layout": "groups",
+      "title": "Turn a directory into a plan",
+      "subtitle": "Group, sort, and filter without changing source data",
+      "labels": [
+        "Region: East",
+        "Design · 4 seats",
+        "Engineering · 8 seats",
+        "Region: West",
+        "Operations · 6 seats"
+      ]
+    }
+  },
+  {
+    "id": "resource-columns-render-hooks",
+    "module": "resource-scheduling",
+    "entitlement": "resource-scheduling",
+    "overview": "Add meaningful resource metadata and tailor the scheduling surface with documented rendering hooks. Resizable columns and balanced mount/unmount callbacks let the calendar fit your application's design and lifecycle.",
+    "configuration": [
+      [
+        "resourceAreaColumns",
+        "Describe title, capacity, extended properties, or derived text values."
+      ],
+      ["columnResizing", "Configure resizing limits and keyboard steps, or disable handles."],
+      [
+        "content and lifecycle hooks",
+        "Customize resource cells, lanes, groups, and headers with their typed context."
+      ]
+    ],
+    "steps": [
+      "Choose metadata columns and set useful width bounds.",
+      "Use text values by default; only trusted application hooks should construct DOM content.",
+      "Release observers and custom resources when their matching unmount hook runs."
+    ],
+    "behavior": [
+      "Column resizing keeps the relevant shared scheduling scale aligned and emits a column-resize result.",
+      "Render hooks remain balanced across virtual-window recycling, filtering, navigation, and destruction."
+    ],
+    "limits": [
+      "Ordinary column values are assigned as text, not interpreted as HTML.",
+      "Widths persist for the calendar instance; save preferences yourself if they must survive reloads."
+    ],
+    "guide": "README.md",
+    "visual": {
+      "layout": "columns",
+      "title": "The resource details that matter",
+      "subtitle": "Metadata columns and lifecycle-aware content",
+      "labels": ["Resource", "Capacity", "Location", "Design", "4 seats", "London"]
+    }
+  },
+  {
+    "id": "resource-availability-assignment",
+    "module": "resource-scheduling",
+    "entitlement": "resource-scheduling",
+    "overview": "Check whether a proposed assignment fits the resource's working intervals and blackout ranges. Built-in rules and an optional application approval hook explain why a selection or mutation is accepted or rejected.",
+    "configuration": [
+      [
+        "availability.workingHours",
+        "Define resource-specific working weekdays and time intervals."
+      ],
+      ["availability.unavailable", "Add exact unavailable ranges and optional reasons."],
+      [
+        "resourceAssignmentAllow",
+        "Run application approval after built-in synchronous checks pass."
+      ]
+    ],
+    "steps": [
+      "Define availability in the calendar's intended time zone.",
+      "Attach resource requirements to events and enable the relevant selection or editing paths.",
+      "Handle invalid, pending, and settled decisions; use transactional create/edit APIs for asynchronous approval."
+    ],
+    "behavior": [
+      "Timed assignments must fit within one working interval; all-day assignments require an allowed weekday.",
+      "An unavailable-range intersection rejects the assignment, and asynchronous validation uses the pending/rollback lifecycle."
+    ],
+    "limits": [
+      "Client-side checks are not a reservation lock across simultaneous users.",
+      "An authoritative backend must revalidate availability before committing shared bookings."
+    ],
+    "guide": "README.md",
+    "visual": {
+      "layout": "availability",
+      "title": "Make availability visible",
+      "subtitle": "Working intervals and blackout ranges shape decisions",
+      "labels": ["Room A", "Working time", "Unavailable", "Booking fits"]
+    }
+  },
+  {
+    "id": "capacity-skills-roles",
+    "module": "resource-scheduling",
+    "entitlement": "resource-scheduling",
+    "overview": "Describe both how much work a resource can accept and which work it is qualified to perform. Weighted event demand and resource requirements support decisions beyond simple visual overlap.",
+    "configuration": [
+      [
+        "capacity / resourceUnits",
+        "Describe resource capacity and the units consumed by assigned events."
+      ],
+      ["assignmentPolicy", "Declare allowed event types, available skills, and roles."],
+      [
+        "resourceRequirements",
+        "Carry an event's type, skill, and role requirements with its assignment."
+      ]
+    ],
+    "steps": [
+      "Agree on the capacity unit used by your resource and event data.",
+      "Describe resource capabilities and event requirements with consistent identifiers.",
+      "Enable the relevant constraint checks and surface structured failures in the editing experience."
+    ],
+    "behavior": [
+      "Requirements are considered across resource-aware mutation and interaction paths.",
+      "Resource summaries expose booked units and capacity conflicts for the visible range."
+    ],
+    "limits": [
+      "The application defines what a unit, skill, or role means; the package does not certify qualifications.",
+      "Capacity rules require reliable input data and server-side validation for shared scheduling."
+    ],
+    "guide": "README.md",
+    "visual": {
+      "layout": "capacity",
+      "title": "Capacity plus capability",
+      "subtitle": "Match booking demand to resource requirements",
+      "labels": ["Design team", "3 / 4 units", "Research skill", "Reviewer role"]
+    }
+  },
+  {
+    "id": "resource-virtualization-print",
+    "module": "resource-scheduling",
+    "entitlement": "resource-scheduling",
+    "overview": "Keep large scheduling surfaces practical by mounting the visible resource or date window with overscan. Print layouts provide a separate presentation path for reviewing schedules outside the interactive viewport.",
+    "configuration": [
+      ["resourceTimeGrid", "Tune the date-by-resource column threshold and overscan."],
+      ["resourceTimeline", "Configure independent resource and slot virtualization thresholds."],
+      [
+        "print styles",
+        "Check page orientation, repeated headings, and your application's print overrides."
+      ]
+    ],
+    "steps": [
+      "Measure representative resource counts, date ranges, and event density.",
+      "Choose thresholds and overscan that balance smooth scrolling with DOM size.",
+      "Verify keyboard focus, mount/unmount cleanup, and print output with your real data."
+    ],
+    "behavior": [
+      "Virtualization keeps headers, event geometry, selection state, and lifecycle hooks synchronized.",
+      "Scrolling changes mounted UI, not the underlying resource or event collection."
+    ],
+    "limits": [
+      "Virtualized off-screen elements should not be treated as a complete DOM export of the schedule.",
+      "Browser print results depend on data volume, page size, and host styles; validate the intended print workflow."
+    ],
+    "guide": "README.md",
+    "visual": {
+      "layout": "virtual",
+      "title": "Render the working window",
+      "subtitle": "Visible rows, overscan, and a separate print layout",
+      "labels": ["Visible resources", "Overscan", "Print review"]
+    }
+  },
+  {
+    "id": "repeated-task-views",
+    "module": "repeated-tasks",
+    "entitlement": "repeated-task-views",
+    "overview": "Present categorized task occurrences across a month or week. This is a dedicated task-oriented layout, distinct from ordinary recurring events in the standard calendar.",
+    "configuration": [
+      ["view", "Choose monthly-repeated-task or weekly-repeated-task."],
+      [
+        "task / taskSources",
+        "Supply task categories and their occurrences statically or through sources."
+      ],
+      [
+        "IDs and versions",
+        "Keep category and occurrence IDs stable; preserve optional concurrency versions."
+      ]
+    ],
+    "steps": [
+      "Register the repeated-tasks module with its own repeated-task-views entitlement.",
+      "Map task categories, occurrence dates, status, and labels into the task model.",
+      "Connect source refresh or pagination and persist accepted task changes in your application."
+    ],
+    "behavior": [
+      "Source refreshes replace their owned task snapshot without removing static or other-source tasks.",
+      "Stable occurrence IDs allow paginated data to merge and later refreshes to reconcile records."
+    ],
+    "limits": [
+      "These Premium views are not required for standard recurring calendar events.",
+      "No task database or background task-execution service is included."
+    ],
+    "guide": "README.md",
+    "visual": {
+      "layout": "tasks",
+      "title": "Repeated work, clearly organized",
+      "subtitle": "Categories and occurrences across the week",
+      "labels": ["Equipment check", "Team review", "Inventory"]
+    }
+  },
+  {
+    "id": "utilization-capacity-heatmaps",
+    "module": "advanced-resource-planning",
+    "entitlement": "advanced-resource-planning",
+    "overview": "Calculate resource utilization in time buckets and use the resulting data to build a capacity heatmap. The planner reports capacity, peak booked units, remaining units, utilization, and an explicit bucket state.",
+    "configuration": [
+      [
+        "resources / events / profiles",
+        "Supply capacity, assignments, and resource planning policies."
+      ],
+      [
+        "createCapacityHeatmap",
+        "Request a bounded start/end interval and bucketMinutes resolution."
+      ],
+      ["bucket states", "Interpret unconfigured, closed, idle, balanced, high, and over states."]
+    ],
+    "steps": [
+      "Create the licensed advanced resource planner with your time zone and current data.",
+      "Request heatmap buckets for the range and resolution your users need.",
+      "Render bucket values with accessible labels and a legend, then refresh planner data after changes."
+    ],
+    "behavior": [
+      "Results include configured and policy-adjusted capacity together with active shift IDs.",
+      "Planner inputs are copied and returned results are immutable."
+    ],
+    "limits": [
+      "The engine returns analysis data; the illustration is not a bundled heatmap dashboard.",
+      "Unconfigured capacity is distinct from zero availability and should be explained in your UI."
+    ],
+    "guide": "docs/ADVANCED-RESOURCE-PLANNING.md",
+    "visual": {
+      "layout": "heatmap",
+      "title": "See pressure before it becomes a conflict",
+      "subtitle": "Illustrative utilization buckets with a shared legend",
+      "labels": ["Design", "Engineering", "Operations"]
+    }
+  },
+  {
+    "id": "split-shifts-rotating-schedules",
+    "module": "advanced-resource-planning",
+    "entitlement": "advanced-resource-planning",
+    "overview": "Model split working days, overnight shifts, and repeating rotations from a time-zone-aware anchor. The planner expands shift definitions into occurrences that can be used in availability and capacity analysis.",
+    "configuration": [
+      [
+        "profiles.shifts",
+        "Describe shift IDs, weekdays, start/end times, and effective boundaries."
+      ],
+      ["rotation", "Set an anchor date, cycleDays, and activeDays within the cycle."],
+      ["getShiftOccurrences", "Expand a resource's shifts over a requested interval."]
+    ],
+    "steps": [
+      "Choose the resource time zone and define each working segment separately.",
+      "Add rotations only where the schedule follows an anchored cycle.",
+      "Inspect generated occurrences around overnight boundaries and daylight-saving changes."
+    ],
+    "behavior": [
+      "An end time earlier than the start denotes an overnight shift; 24:00 is supported.",
+      "Shift expansion uses the calendar's named-zone and effective-boundary policies."
+    ],
+    "limits": [
+      "You provide the rotation pattern; the planner does not automatically generate a staffing roster.",
+      "Employment rules and organization-specific shift requirements must be modeled and validated by your application."
+    ],
+    "guide": "docs/ADVANCED-RESOURCE-PLANNING.md",
+    "visual": {
+      "layout": "shifts",
+      "title": "Split days and repeating rotations",
+      "subtitle": "Separate working segments remain part of one schedule",
+      "labels": ["Morning", "Break", "Evening", "Night rotation"]
+    }
+  },
+  {
+    "id": "resource-dependencies-substitutes",
+    "module": "advanced-resource-planning",
+    "entitlement": "advanced-resource-planning",
+    "overview": "Evaluate bookings that depend on more than one resource and discover allowed replacement choices. A machine may need an operator; a primary room may have a configured substitute when capacity is unavailable.",
+    "configuration": [
+      ["profiles.dependencies", "List required companion resources and consumed units."],
+      ["profiles.substituteIds", "Define the replacements your application permits."],
+      [
+        "evaluateBooking / findSubstitutes",
+        "Evaluate the proposed interval, units, and requirements."
+      ]
+    ],
+    "steps": [
+      "Keep dependent-resource IDs consistent with the resource directory.",
+      "Provide the booking interval and requirements to the licensed planner.",
+      "Explain decision issues and let your application choose whether to apply a suggested substitute."
+    ],
+    "behavior": [
+      "Availability, shifts, requirements, dependencies, and capacity are evaluated together.",
+      "Allowed substitutes are ranked by projected utilization and then stable resource ID."
+    ],
+    "limits": [
+      "Finding a substitute does not automatically modify calendar events or reserve resources.",
+      "Coordinate final multi-resource reservations through your application's authoritative transaction logic."
+    ],
+    "guide": "docs/ADVANCED-RESOURCE-PLANNING.md",
+    "visual": {
+      "layout": "dependencies",
+      "title": "Plan the complete assignment",
+      "subtitle": "A primary resource, a dependency, and an alternative",
+      "labels": ["Machine A", "Operator", "Machine B", "Allowed substitute"]
+    }
+  },
+  {
+    "id": "overbooking-policies",
+    "module": "advanced-resource-planning",
+    "entitlement": "advanced-resource-planning",
+    "overview": "Make overbooking an explicit decision rather than an accidental consequence of overlapping events. Resource policies can block, warn, or allow while retaining typed issues and severity for the host application.",
+    "configuration": [
+      ["overbooking.mode", "Choose block, warn, or allow for the resource profile."],
+      ["maxUtilizationPercent", "Set the policy's utilization ceiling."],
+      ["reserveUnits", "Account for capacity that should remain reserved."]
+    ],
+    "steps": [
+      "Define capacity units and choose the policy for each relevant resource.",
+      "Evaluate proposed bookings with current events and planning profiles.",
+      "Surface warnings and reasons, and decide whether a permitted booking should be committed."
+    ],
+    "behavior": [
+      "Evaluation retains issues even when the chosen mode allows the proposal.",
+      "Policy-adjusted capacity is also available to utilization analysis."
+    ],
+    "limits": [
+      "A warning is not a completed approval workflow; connect workflow hooks separately when needed.",
+      "The planner does not prevent a separate client from booking stale capacity."
+    ],
+    "guide": "docs/ADVANCED-RESOURCE-PLANNING.md",
+    "visual": {
+      "layout": "policies",
+      "title": "Choose how excess demand is handled",
+      "subtitle": "The decision includes a reason, not just a boolean",
+      "labels": ["Block", "Warn", "Allow", "Proposed load: 110%"]
+    }
+  },
+  {
+    "id": "demand-availability-forecasting",
+    "module": "advanced-resource-planning",
+    "entitlement": "advanced-resource-planning",
+    "overview": "Compare supplied demand with modeled availability and already scheduled work. Time buckets report coverage and shortfall so an application can explain where the plan is covered, at risk, or under-resourced.",
+    "configuration": [
+      ["forecastDemand", "Set the requested start/end interval and bucketMinutes."],
+      ["demand", "Supply projected demand intervals, units, and resource IDs."],
+      [
+        "resources / events / profiles",
+        "Keep capacity, scheduled load, and shift policies current."
+      ]
+    ],
+    "steps": [
+      "Translate your projected orders or workload into resource demand intervals.",
+      "Run the licensed planner over the intended forecast horizon.",
+      "Present demand, net available units, coverage, and shortfall together rather than hiding the assumptions."
+    ],
+    "behavior": [
+      "Each bucket combines peak demand, existing scheduled load, and modeled availability.",
+      "Results distinguish covered, at-risk, and shortfall states."
+    ],
+    "limits": [
+      "This is deterministic capacity analysis, not a statistical or AI prediction of future demand.",
+      "The forecast is only as current as the demand and availability inputs you supply."
+    ],
+    "guide": "docs/ADVANCED-RESOURCE-PLANNING.md",
+    "visual": {
+      "layout": "forecast",
+      "title": "Compare demand with available capacity",
+      "subtitle": "Illustrative buckets expose the shortfall",
+      "labels": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
+    }
+  },
+  {
+    "id": "dependencies-critical-paths",
+    "module": "advanced-resource-planning",
+    "entitlement": "advanced-resource-planning",
+    "overview": "Analyze task dependencies to identify the work that determines project duration. The planner returns earliest/latest times, total float, resource IDs, and critical indicators that your application can display beside a timeline.",
+    "configuration": [
+      ["analyzeCriticalPath", "Supply the task collection to the licensed planner."],
+      [
+        "durationMinutes / dependencyIds",
+        "Describe each task's duration and prerequisite task IDs."
+      ],
+      ["resourceIds", "Retain resource context in the analysis result when relevant."]
+    ],
+    "steps": [
+      "Create uniquely identified tasks with valid durations and dependency links.",
+      "Run the analysis and inspect the deterministic critical path and project duration.",
+      "Render the results in your own dependency or timeline presentation and recompute after task changes."
+    ],
+    "behavior": [
+      "The result includes one deterministic critical path and per-task float information.",
+      "Cycles, unknown dependencies, duplicate IDs, and invalid durations fail before a result is returned."
+    ],
+    "limits": [
+      "Critical-path analysis does not automatically reschedule calendar events.",
+      "It is not a resource-leveling optimizer; task durations and dependencies are supplied by your application."
+    ],
+    "guide": "docs/ADVANCED-RESOURCE-PLANNING.md",
+    "visual": {
+      "layout": "critical",
+      "title": "Find the work that sets the finish date",
+      "subtitle": "Critical tasks and a parallel task with float",
+      "labels": ["Design · 90m", "Build · 180m", "Inspect · 45m", "Notes · 30m"]
+    }
+  },
+  {
+    "id": "two-way-google-calendar-synchronization",
+    "module": "premium-interoperability",
+    "entitlement": "premium-interoperability",
+    "overview": "Pull Google Calendar changes, reconcile them with local events, and plan or apply writes through a customer-authorized adapter. WTS does not operate a synchronization or credential-storage service.",
+    "configuration": [
+      [
+        "createGoogleCalendarAdapter",
+        "Provide a calendarId, runtime access-token provider, and time zone."
+      ],
+      [
+        "cursor / remoteBase",
+        "Retain the sync cursor and the prior remote snapshot for incremental synchronization."
+      ],
+      [
+        "synchronize",
+        "Choose reconciliation policy and explicitly enable push when writes are intended."
+      ]
+    ],
+    "steps": [
+      "Verify the WTS entitlement and obtain separate provider authorization appropriate to the intended read/write operations.",
+      "Pull a bounded initial range, retain IDs and version metadata, then inspect the reconciliation plan.",
+      "Resolve conflicts before pushing and keep the returned cursor and remote base for subsequent cycles."
+    ],
+    "behavior": [
+      "Incremental pulls include remote deletions, and writes use conditional ETags when available.",
+      "Synchronization defaults to planning without push so the application can inspect conflicts first."
+    ],
+    "limits": [
+      "A WTS license is not a Google API key or OAuth token.",
+      "Credentials, cursor persistence, scheduling sync cycles, and unattended token refresh remain customer-controlled."
+    ],
+    "guide": "docs/PREMIUM-INTEROPERABILITY.md",
+    "visual": {
+      "layout": "sync",
+      "title": "Reconcile before writing",
+      "subtitle": "Customer-authorized two-way calendar changes",
+      "labels": ["Local events", "Reconciliation", "Google Calendar"],
+      "note": "Pull → review conflicts → optional push"
+    }
+  },
+  {
+    "id": "microsoft-365-outlook-adapter",
+    "module": "premium-interoperability",
+    "entitlement": "premium-interoperability",
+    "overview": "Connect Microsoft calendars through the premium interoperability adapter. Delta queries and conditional writes support incremental change handling while the application retains control over authorization and reconciliation.",
+    "configuration": [
+      [
+        "createMicrosoft365Adapter",
+        "Supply a runtime access-token provider and optional calendarId."
+      ],
+      [
+        "timeZone / timeZoneMap",
+        "Choose display-zone behavior and map uncommon Windows time-zone identifiers."
+      ],
+      ["delta cursor", "Retain the provider's delta link together with the prior remote snapshot."]
+    ],
+    "steps": [
+      "Obtain customer-managed Microsoft authorization separately from the WTS entitlement.",
+      "Create the adapter, pull the required range, and inspect normalized event metadata.",
+      "Reconcile local/remote changes and apply intended writes through your application's sync workflow."
+    ],
+    "behavior": [
+      "The adapter maps deletions, cancellations, all-day events, and supported event metadata.",
+      "Create, update, and delete operations retain conditional version handling through ETags."
+    ],
+    "limits": [
+      "Tenant permissions, authentication, and provider availability are outside the WTS license.",
+      "Supply mappings for tenant-specific or uncommon time zones and validate them with representative events."
+    ],
+    "guide": "docs/PREMIUM-INTEROPERABILITY.md",
+    "visual": {
+      "layout": "sync",
+      "title": "Microsoft calendars in your workflow",
+      "subtitle": "Delta changes and application-controlled writes",
+      "labels": ["Local events", "Delta adapter", "Microsoft 365"],
+      "note": "Retain the delta cursor and remote snapshot"
+    }
+  },
+  {
+    "id": "caldav-adapter",
+    "module": "premium-interoperability",
+    "entitlement": "premium-interoperability",
+    "overview": "Connect a compatible CalDAV calendar using the interoperability adapter. Initial queries, incremental collection synchronization, and conditional writes form the transport layer for your own reconciliation workflow.",
+    "configuration": [
+      ["calendarUrl", "Provide the calendar endpoint without embedded credentials."],
+      [
+        "authorization / headers",
+        "Supply runtime authentication and any required customer headers."
+      ],
+      [
+        "sync token / ETags",
+        "Retain collection cursors and event versions between synchronization cycles."
+      ]
+    ],
+    "steps": [
+      "Verify the WTS entitlement and confirm the CalDAV server allows your application's origin and authentication method.",
+      "Read the initial calendar range and retain the returned synchronization information.",
+      "Reconcile event changes before conditional PUT or DELETE operations."
+    ],
+    "behavior": [
+      "Initial reads use calendar-query; incremental reads use sync-collection.",
+      "Embedded calendar data is preferred, with a same-origin retrieval fallback when needed."
+    ],
+    "limits": [
+      "Browser access depends on the server's CORS and authentication policy; not every deployment allows direct browser connections.",
+      "Provider links must stay on their permitted origin, and response/page ceilings apply."
+    ],
+    "guide": "docs/PREMIUM-INTEROPERABILITY.md",
+    "visual": {
+      "layout": "sync",
+      "title": "Connect a compatible CalDAV server",
+      "subtitle": "Collection changes, event versions, and conditional writes",
+      "labels": ["Your calendar", "CalDAV adapter", "Customer server"],
+      "note": "Server authentication and CORS must allow access"
+    }
+  },
+  {
+    "id": "ics-change-detection-reconciliation",
+    "module": "premium-interoperability",
+    "entitlement": "premium-interoperability",
+    "overview": "Detect changes between ICS snapshots and reconcile competing local and remote edits against a common base. The toolkit produces an inspectable result so applications can choose their conflict policy deliberately.",
+    "configuration": [
+      ["diffICalendar", "Compare previous and current ICS content using the intended time zone."],
+      ["reconcile", "Supply base, local, and remote event collections with stable IDs."],
+      ["conflict policy", "Choose local, remote, or manual reconciliation behavior."]
+    ],
+    "steps": [
+      "Retain the previous feed or common event snapshot instead of comparing unrelated data sets.",
+      "Inspect added, updated, deleted, and unchanged records.",
+      "Resolve manual conflicts before writing or adopting the proposed result."
+    ],
+    "behavior": [
+      "Three-way conflicts retain the base, local, and remote values.",
+      "Manual mode preserves the local copy in the proposal while reporting the unresolved conflict."
+    ],
+    "limits": [
+      "Basic ICS import/export remains separate from this Premium change-management workflow.",
+      "When a provider returns a delta, preserve remoteBase so absent unchanged events are not mistaken for deletions."
+    ],
+    "guide": "docs/PREMIUM-INTEROPERABILITY.md",
+    "visual": {
+      "layout": "reconcile",
+      "title": "Make feed changes inspectable",
+      "subtitle": "Three snapshots, one explicit conflict decision",
+      "labels": ["Common base", "Local edit", "Remote edit", "Needs review"]
+    }
+  },
+  {
+    "id": "moment-luxon-migration-toolkit",
+    "module": "premium-interoperability",
+    "entitlement": "premium-interoperability",
+    "overview": "Support an existing date-library stack through the licensed migration workflow. Compatibility loading selects the requested formatting peer dynamically rather than loading both date libraries into every integration.",
+    "configuration": [
+      [
+        "loadDateFormattingCompatibility",
+        "Select moment or luxon3 from the interoperability toolkit."
+      ],
+      ["peer dependency", "Install the selected date library in the consuming application."],
+      [
+        "formatting configuration",
+        "Review the legacy format strings, locale settings, and time-zone expectations."
+      ]
+    ],
+    "steps": [
+      "Identify which date library the existing application actually uses.",
+      "Install that peer and load its compatibility plugin through the licensed toolkit.",
+      "Validate representative labels, locales, and time zones before completing migration."
+    ],
+    "behavior": [
+      "Selecting one peer does not automatically load the other.",
+      "Existing direct format-moment and format-luxon3 entry points remain available separately."
+    ],
+    "limits": [
+      "The Premium toolkit adds gated selection and migration workflow; direct formatting compatibility is not reclassified as Premium.",
+      "This is not a guarantee that every legacy format string or date-library behavior is interchangeable."
+    ],
+    "guide": "docs/PREMIUM-INTEROPERABILITY.md",
+    "visual": {
+      "layout": "migration",
+      "title": "Keep the date-library bridge deliberate",
+      "subtitle": "Load the selected compatibility peer",
+      "labels": ["Existing formats", "Moment or Luxon", "Calendar labels"],
+      "note": "Install and test the selected peer"
+    }
+  },
+  {
+    "id": "configuration-migration-assistant",
+    "module": "premium-interoperability",
+    "entitlement": "premium-interoperability",
+    "overview": "Translate supported legacy calendar configuration into a WTS draft and make remaining work visible. The assistant reports required modules, migration issues, and options that have no registered lossless mapping.",
+    "configuration": [
+      ["input options", "Supply the supported legacy configuration to the migration assistant."],
+      [
+        "options / requiredModules",
+        "Inspect the draft WTS options and the optional modules it identifies."
+      ],
+      [
+        "issues / unmappedOptions",
+        "Review diagnostics and manually resolve unsupported or ambiguous settings."
+      ]
+    ],
+    "steps": [
+      "Inventory existing views, callbacks, resource settings, and date behavior.",
+      "Run the licensed migration assistant and treat its output as a reviewable draft.",
+      "Complete application tests for time zones, recurrence, interactions, accessibility, and visual behavior."
+    ],
+    "behavior": [
+      "Supported aliases and layout settings are translated while unmapped options remain visible.",
+      "Callback payloads are flagged for review, and third-party license keys are not converted into WTS grants."
+    ],
+    "limits": [
+      "This is a configuration assistant, not a source-compatible drop-in replacement for every API or DOM hook.",
+      "Do not remove the old integration until application-level acceptance checks pass."
+    ],
+    "guide": "docs/PREMIUM-INTEROPERABILITY.md",
+    "visual": {
+      "layout": "migration",
+      "title": "A migration draft with an explicit checklist",
+      "subtitle": "Supported mappings and manual work stay separate",
+      "labels": ["Legacy options", "Mapping review", "WTS draft"],
+      "note": "Review callbacks, required modules, and unmapped options"
+    }
+  },
+  {
+    "id": "multi-stage-approvals",
+    "module": "enterprise-workflow",
+    "entitlement": "enterprise-workflow",
+    "overview": "Route calendar mutations through ordered approval stages before they are ready to commit. Exact approvers, role selectors, and lifecycle hooks allow the host application to coordinate its own review process.",
+    "configuration": [
+      ["approvalFlows", "Define ordered stages with approverIds or approverRoles."],
+      ["stage mode", "Use any for one matching approval, or all for every configured selector."],
+      [
+        "approval hooks",
+        "Connect stage entry, approval, rejection, leave, and flow completion behavior."
+      ]
+    ],
+    "steps": [
+      "Create a licensed workflow engine with actors, permission policies, and approval flows.",
+      "Attach a flow to a mutation or state transition, then submit it for review.",
+      "Call approve or reject with the acting user's identity and connect notifications through your hooks."
+    ],
+    "behavior": [
+      "Mutations remain pending-approval until their required stages complete.",
+      "A failing or denying hook prevents progression; failure paths record audit and rollback actions."
+    ],
+    "limits": [
+      "No email, notification, or reviewer directory service is operated by WTS.",
+      "Hook side effects should be idempotent, and a shared backend must authenticate approvers."
+    ],
+    "guide": "docs/ENTERPRISE-WORKFLOW.md",
+    "visual": {
+      "layout": "workflow",
+      "title": "Review in the right order",
+      "subtitle": "Approval stages are explicit and customer-configured",
+      "labels": ["Submitted", "Manager review", "Director review", "Ready to commit"]
+    }
+  },
+  {
+    "id": "configurable-event-state-machines",
+    "module": "enterprise-workflow",
+    "entitlement": "enterprise-workflow",
+    "overview": "Give calendar events named states and explicit transitions instead of relying on loosely related flags. Guards and optional approval flows determine whether a proposed transition is accepted.",
+    "configuration": [
+      [
+        "stateMachines",
+        "Define machine IDs, initial states, allowed states, and named transitions."
+      ],
+      ["defaultStateMachineId", "Choose the default machine for workflow events."],
+      [
+        "extendedProps.workflow.machineId",
+        "Select a different machine for an individual event when needed."
+      ]
+    ],
+    "steps": [
+      "Model the states and transitions your application actually permits.",
+      "Add transition guards, permissions, and approval flows where required.",
+      "Submit transitions through the workflow and render its returned event snapshots."
+    ],
+    "behavior": [
+      "Transition guards run before a mutation is accepted.",
+      "Workflow records expose current state and version; optimistic events also mirror workflow metadata."
+    ],
+    "limits": [
+      "The engine does not implicitly mutate an existing calendar instance; subscribe and apply snapshots yourself.",
+      "Server-side transition validation is required when your backend is authoritative."
+    ],
+    "guide": "docs/ENTERPRISE-WORKFLOW.md",
+    "visual": {
+      "layout": "states",
+      "title": "Only valid transitions move the event",
+      "subtitle": "A sample machine with an explicit cancellation branch",
+      "labels": ["Draft", "In review", "Approved", "Cancelled"]
+    }
+  },
+  {
+    "id": "immutable-audit-history",
+    "module": "enterprise-workflow",
+    "entitlement": "enterprise-workflow",
+    "overview": "Capture immutable workflow audit snapshots with linked SHA-256 hashes. Each entry records the actor, action, sequence, event/mutation identifiers, and the preceding hash so a supplied history can be checked for integrity.",
+    "configuration": [
+      ["getAuditHistory", "Read the workflow's immutable audit snapshot."],
+      ["verifyAuditHistory", "Verify ordering and hash consistency in the supplied history."],
+      ["persistAudit", "Append entries to a customer-controlled durable ledger when required."]
+    ],
+    "steps": [
+      "Provide meaningful actor IDs and roles when submitting or approving workflow operations.",
+      "Retain audit entries through the optional backend adapter.",
+      "Verify retrieved history and anchor or sign checkpoints outside the browser when your assurance requirements call for it."
+    ],
+    "behavior": [
+      "Audit appends are serialized and entries include both their own hash and the previous hash.",
+      "Verification can detect reordered, removed, or modified entries in the supplied chain."
+    ],
+    "limits": [
+      "Hash chaining does not make browser memory durable and cannot protect a history if an attacker can replace the whole chain.",
+      "This feature alone is not a compliance certification or a tamper-proof storage service."
+    ],
+    "guide": "docs/ENTERPRISE-WORKFLOW.md",
+    "visual": {
+      "layout": "audit",
+      "title": "A linked history of workflow actions",
+      "subtitle": "Immutable snapshots with verifiable chain relationships",
+      "labels": ["Created · #001", "Submitted · #002", "Approved · #003"],
+      "note": "Durable storage and external checkpoints are customer-owned"
+    }
+  },
+  {
+    "id": "permissions-field-level-policies",
+    "module": "enterprise-workflow",
+    "entitlement": "enterprise-workflow",
+    "overview": "Control which workflow actions and event fields an actor may change. Declarative policies provide consistent client-side behavior and explainable decisions before the engine accepts a mutation.",
+    "configuration": [
+      [
+        "permissionPolicies",
+        "Match actions, actors, roles, states, fields, and an optional predicate."
+      ],
+      ["defaultPermission", "Choose the fallback decision; the default is deny."],
+      ["permissionDecision", "Inspect a proposed action and changed-field set for an actor."]
+    ],
+    "steps": [
+      "Define the actor and role vocabulary used by your application.",
+      "Describe allowed actions and sensitive fields, then test both allowed and denied paths.",
+      "Mirror authoritative authentication, policy, transition, and version checks in your backend."
+    ],
+    "behavior": [
+      "Deny policies take precedence over allow policies.",
+      "Field rules can restrict a resource reassignment while allowing another event field to be edited."
+    ],
+    "limits": [
+      "These policies govern the workflow engine, not every possible direct write to application data.",
+      "Browser permissions are a user-experience boundary, not a replacement for server authorization."
+    ],
+    "guide": "docs/ENTERPRISE-WORKFLOW.md",
+    "visual": {
+      "layout": "permissions",
+      "title": "A policy for the action and the field",
+      "subtitle": "An illustrative role-by-field decision matrix",
+      "labels": ["Title", "Time", "Resource", "Editor", "Manager"]
+    }
+  },
+  {
+    "id": "optimistic-offline-mutation-queues",
+    "module": "enterprise-workflow",
+    "entitlement": "enterprise-workflow",
+    "overview": "Reflect accepted mutations immediately in a runtime snapshot while their delivery is pending. Offline queues, retries, and rollback paths let the application show progress without treating an optimistic change as a confirmed backend commit.",
+    "configuration": [
+      ["online / setOnline", "Communicate application connectivity to the workflow."],
+      ["autoFlush / flush", "Use automatic flushing or explicitly control delivery."],
+      [
+        "persistQueue / maxAttempts",
+        "Provide queue persistence and a retry ceiling appropriate to your transport."
+      ]
+    ],
+    "steps": [
+      "Connect a licensed workflow engine to your events and backend adapter.",
+      "Render optimistic snapshots and expose pending, approval, or conflict state to users.",
+      "Restore connectivity, flush intended work, and reconcile the canonical result returned by the backend."
+    ],
+    "behavior": [
+      "Only one unsettled mutation per event is allowed, preventing ambiguous rollback order.",
+      "Conflict, rejection, cancellation, or exhausted retry paths restore the captured pre-mutation record."
+    ],
+    "limits": [
+      "An in-memory queue does not survive reloads unless your application supplies suitable persistence and recovery handling.",
+      "Offline operation does not bypass approvals, permissions, or server-side concurrency checks."
+    ],
+    "guide": "docs/ENTERPRISE-WORKFLOW.md",
+    "visual": {
+      "layout": "queue",
+      "title": "Pending is visible, committed is explicit",
+      "subtitle": "Optimistic updates follow a controlled delivery queue",
+      "labels": ["Local edit", "Queued offline", "Retry / flush", "Committed"],
+      "note": "Conflict or rejection rolls back the optimistic record"
+    }
+  },
+  {
+    "id": "existing-backend-interfaces",
+    "module": "enterprise-workflow",
+    "entitlement": "enterprise-workflow",
+    "overview": "Connect the workflow to infrastructure you already operate. A transport-neutral adapter separates calendar mutation decisions from REST, GraphQL, RPC, local-first storage, or another customer system.",
+    "configuration": [
+      ["sendMutation", "Deliver the mutation, actor, and record context using your transport."],
+      ["result status", "Return committed, conflict, rejected, or retry."],
+      [
+        "persistQueue / persistAudit",
+        "Optionally store pending work and append audit evidence in customer-owned systems."
+      ]
+    ],
+    "steps": [
+      "Implement the backend adapter around your existing authentication and transport contracts.",
+      "Return canonical event records or explicit failure decisions with appropriate version handling.",
+      "Subscribe to workflow snapshots, apply them to the calendar, and unsubscribe during teardown."
+    ],
+    "behavior": [
+      "A committed response may normalize event data and assign the authoritative record version.",
+      "The workflow engine does not choose a database, authentication scheme, or delivery protocol."
+    ],
+    "limits": [
+      "The adapter interface is not a hosted backend or a preconfigured integration with every service.",
+      "Authenticate actors, enforce policies, validate versions, and operate durable storage in infrastructure you control."
+    ],
+    "guide": "docs/ENTERPRISE-WORKFLOW.md",
+    "visual": {
+      "layout": "backend",
+      "title": "Keep your existing infrastructure",
+      "subtitle": "One workflow contract, customer-selected transport",
+      "labels": ["Calendar UI", "Workflow adapter", "Your backend"],
+      "note": "Committed · Conflict · Rejected · Retry"
+    }
+  }
+]

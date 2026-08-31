@@ -137,7 +137,7 @@ import { DEMOS } from './site-data';
         <span>Resource scheduling & timelines</span><span>Capacity, shifts & planning</span
         ><span>Calendar synchronization & migration</span
         ><span>Approvals, policies & workflows</span
-        ><a routerLink="/pricing" class="button primary">Explore pricing →</a>
+        ><a routerLink="/premium/resource-grid" class="button primary">Explore Premium guides →</a>
       </div>
     </section>
   `,

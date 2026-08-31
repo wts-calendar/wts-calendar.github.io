@@ -501,3 +501,7 @@ export const FEATURES: readonly Feature[] = [
   ]),
 ];
 export const FEATURE_GROUPS = [...new Set(FEATURES.map((feature) => feature.group))];
+export const PREMIUM_FEATURES = FEATURES.filter((feature) => feature.tier === 'Premium');
+export const PREMIUM_GROUPS = [...new Set(PREMIUM_FEATURES.map((feature) => feature.group))].map(
+  (name) => ({ name, features: PREMIUM_FEATURES.filter((feature) => feature.group === name) }),
+);

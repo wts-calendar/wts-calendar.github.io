@@ -17,6 +17,7 @@ Open [the local preview](http://localhost:4200).
 
 - Home: `/`
 - Feature catalogue: `/features/` — search, category, and Standard/Premium filters. Only Premium features carry a badge.
+- Premium guides: `/premium/resource-grid/` and 30 other feature-specific routes — illustrations, configuration, integration steps, behavior, and limitations.
 - Examples: `/examples/month/` — 22 examples, with initial core configuration and callback activity.
 - List: `/examples/list/` — Day / Week / Month / Year controls in the package-native header. Older list URLs redirect here with their initial range preserved.
 - Interaction: `/examples/interactions/` — Month / Week / Day toolbar controls with editing and selection enabled across views.
@@ -30,11 +31,19 @@ is the API reference.
 
 ### Premium presentation
 
-Premium capabilities are **listing-only**: a Premium badge, a description, a
-pricing link, and static illustrations. The illustrations are labeled as
-illustrative previews, not product screenshots. There are no premium runtime
+Every Premium capability has its **own illustration and documentation page**.
+Feature cards and Premium sidebar links open that guide, not the pricing page.
+The illustrations are labeled as illustrative previews, not product screenshots.
+Each guide documents configuration, integration steps, behavior, limits, module,
+and entitlement, with an email-only license request button. There are no premium runtime
 examples, premium code snippets, license-token fields, or provider credential
 forms in this application. Optional premium modules are not imported by the app.
+
+Edit [premium-feature-data.json](src/app/premium-feature-data.json) for guide content
+and illustration data, then run `npm run generate:premium-previews`. The deterministic
+[SVG generator](scripts/generate-premium-previews.mjs) uses no provider credentials,
+customer data, or Premium runtime modules. CI verifies all generated images match
+their source and that every Premium feature has a reachable prerendered guide.
 
 The licensing contact is **email-only**. Set the owner's confirmed public email
 in `PREMIUM_CONTACT_EMAIL` in [site-data.ts](src/app/site-data.ts). A blank value
@@ -84,7 +93,7 @@ The production build retains the existing Angular bundle budgets.
 ## Clean URLs and SEO
 
 Angular uses its default path routing, without a hash prefix. Build-time prerendering
-creates HTML for all 26 public pages, so direct links and refreshes work on static
+creates HTML for all 57 public pages, including 31 Premium guides, so direct links and refreshes work on static
 hosting and crawlers receive real page content. Interactive calendars initialize
 only in the browser; no Node.js server or application backend is deployed.
 

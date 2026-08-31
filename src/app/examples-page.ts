@@ -2,10 +2,11 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink, RouterLinkActive } from '@angular/router';
 import { CalendarDemo } from './calendar-demo';
-import { DEMOS, FEATURES, LIST_VIEWS } from './site-data';
+import { DEMOS, LIST_VIEWS } from './site-data';
+import { PremiumNavigation } from './premium-navigation';
 @Component({
   selector: 'app-examples-page',
-  imports: [RouterLink, RouterLinkActive, CalendarDemo],
+  imports: [RouterLink, RouterLinkActive, CalendarDemo, PremiumNavigation],
   template: ` <div class="examples-layout container">
     <aside class="examples-sidebar">
       <span class="eyebrow">EXAMPLE DIRECTORY</span>
@@ -32,10 +33,8 @@ import { DEMOS, FEATURES, LIST_VIEWS } from './site-data';
       </nav>
       <div class="premium-sidebar">
         <h2>Premium features</h2>
-        <p>Available with a separate license.</p>
-        @for (group of premiumGroups; track group) {
-          <a routerLink="/pricing">{{ group }} <span class="badge premium">Premium</span></a>
-        }
+        <p><span class="badge premium">Premium</span> Previews & documentation</p>
+        <app-premium-navigation />
         <a class="text-link" routerLink="/features">See all features →</a>
       </div>
     </aside>
@@ -87,11 +86,6 @@ export class ExamplesPage {
     ),
   );
   readonly groups = [...new Set(DEMOS.map((demo) => demo.group))];
-  readonly premiumGroups = [
-    ...new Set(
-      FEATURES.filter((feature) => feature.tier === 'Premium').map((feature) => feature.group),
-    ),
-  ];
   inGroup(group: string) {
     return DEMOS.filter(
       (demo) =>

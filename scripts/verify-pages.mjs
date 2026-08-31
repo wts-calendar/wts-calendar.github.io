@@ -6,6 +6,12 @@ import { baseHref, directory, indexFiles, parse, siteOrigin } from './pages-lib.
 
 const titles = new Set();
 const canonicals = new Set();
+const premiumIds = new Set(
+  JSON.parse(
+    readFileSync(new URL('../src/app/premium-feature-data.json', import.meta.url), 'utf8'),
+  ).map((feature) => feature.id),
+);
+const premiumPages = new Set();
 let redirects = 0;
 for (const file of indexFiles()) {
   const dom = parse(file);
@@ -47,6 +53,45 @@ for (const file of indexFiles()) {
     'Missing prerendered content: ' + route,
   );
   assert.ok(!document.querySelector('meta[name="robots"]')?.content.includes('noindex'));
+  if (route.startsWith('premium/')) {
+    const id = route.slice('premium/'.length);
+    assert.ok(premiumIds.has(id), 'Unexpected Premium route: ' + route);
+    premiumPages.add(id);
+    const article = document.querySelector('[data-premium-feature="' + id + '"]');
+    assert.ok(article, 'Missing feature-specific guide: ' + route);
+    assert.equal(
+      article.querySelector('.premium-feature-figure img')?.getAttribute('src'),
+      'previews/premium/' + id + '.svg',
+    );
+    assert.ok(article.querySelector('.premium-feature-figure img')?.getAttribute('alt'));
+    for (const section of ['configuration', 'integration', 'behavior', 'boundaries', 'licensing'])
+      assert.ok(
+        article.querySelector('#' + section)?.textContent.trim().length > 60,
+        'Empty Premium section: ' + route + '#' + section,
+      );
+    assert.ok(
+      !article.querySelector('wts-calendar-angular,input,form,pre,code'),
+      'Premium runtime, credential form, or code sample: ' + route,
+    );
+    assert.ok(
+      article.querySelector('a[href^="mailto:"]'),
+      'Missing email-only license contact: ' + route,
+    );
+    assert.ok(
+      !article.querySelector('a[href$="/pricing"]'),
+      'Premium guide must not redirect users to pricing: ' + route,
+    );
+  }
+  for (const card of document.querySelectorAll('.feature-card[data-tier="Premium"]')) {
+    assert.ok(card.querySelector('img.feature-preview'), 'Premium card needs an illustration');
+    assert.ok(
+      card
+        .querySelector('a')
+        ?.getAttribute('href')
+        .startsWith(baseHref + 'premium/'),
+      'Premium card needs a documentation route',
+    );
+  }
   assert.equal(document.querySelector('meta[property="og:url"]')?.content, canonical);
   assert.equal(document.querySelector('meta[property="og:title"]')?.content, document.title);
   assert.equal(document.querySelector('meta[name="twitter:card"]')?.content, 'summary_large_image');
@@ -85,6 +130,7 @@ for (const file of indexFiles()) {
   dom.window.close();
 }
 assert.ok(canonicals.size > 4, 'Examples were not prerendered');
+assert.deepEqual(premiumPages, premiumIds, 'Every Premium feature must have a prerendered guide');
 assert.equal(redirects, 5, 'Example-index and four old List routes must remain reachable');
 const sitemap = new JSDOM(readFileSync(join(directory, 'sitemap.xml'), 'utf8'), {
   contentType: 'text/xml',

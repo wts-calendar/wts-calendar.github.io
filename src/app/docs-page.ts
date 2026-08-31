@@ -68,7 +68,7 @@ import { DOCS_BASE, REPOSITORY } from './site-data';
             integration. The configuration migration assistant is
             <span class="badge premium">Premium</span>.
           </p>
-          <a routerLink="/pricing">View pricing →</a>
+          <a routerLink="/premium/configuration-migration-assistant">Read the migration guide →</a>
         </div>
       </aside>
     </div>`,

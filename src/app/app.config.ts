@@ -9,6 +9,10 @@ export const routes: Routes = [
     loadComponent: () => import('./overview-page').then((m) => m.OverviewPage),
   },
   { path: 'features', loadComponent: () => import('./features-page').then((m) => m.FeaturesPage) },
+  {
+    path: 'premium/:id',
+    loadComponent: () => import('./premium-feature-page').then((m) => m.PremiumFeaturePage),
+  },
   { path: 'pricing', loadComponent: () => import('./pricing-page').then((m) => m.PricingPage) },
   { path: 'docs', loadComponent: () => import('./docs-page').then((m) => m.DocsPage) },
   { path: 'examples', pathMatch: 'full', redirectTo: 'examples/month' },
@@ -28,6 +32,9 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideClientHydration(withEventReplay()),
-    provideRouter(routes, withInMemoryScrolling({ scrollPositionRestoration: 'enabled' })),
+    provideRouter(
+      routes,
+      withInMemoryScrolling({ scrollPositionRestoration: 'enabled', anchorScrolling: 'enabled' }),
+    ),
   ],
 };

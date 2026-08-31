@@ -123,9 +123,11 @@ import { FEATURES, FEATURE_GROUPS, LICENSE_REQUEST } from './site-data';
       <details>
         <summary>Where are the premium examples?</summary>
         <p>
-          Premium features are listed with a badge only. Public interactive examples on this site
-          cover Standard features.
+          Every Premium feature has a dedicated guide with an illustrative preview, configuration
+          reference, integration steps, and limitations. Public interactive examples cover Standard
+          features only.
         </p>
+        <a routerLink="/premium/resource-grid">Explore Premium guides →</a>
       </details>
       <details>
         <summary>Are renewals, support response times, or developer seats fixed?</summary>

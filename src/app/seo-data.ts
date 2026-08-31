@@ -1,4 +1,4 @@
-import { DEMOS } from './site-data';
+import { DEMOS, PREMIUM_FEATURES } from './site-data';
 
 export const SITE_ORIGIN = 'https://wts-calendar.github.io';
 export const SITE_NAME = 'WTS Calendar';
@@ -48,6 +48,14 @@ export const SEO_PAGES: readonly PageSeo[] = [
     label: demo.title + ' example',
     title: demo.title + ' Calendar Example | WTS Calendar',
     description: demo.description + ' Explore the live WTS Calendar example and its configuration.',
+  })),
+  ...PREMIUM_FEATURES.map((feature) => ({
+    path: '/premium/' + feature.id + '/',
+    label: feature.title,
+    title: feature.title + ' — Premium Guide | WTS Calendar',
+    description:
+      feature.description +
+      ' Read the WTS Calendar Premium guide, view the illustration, and review integration requirements.',
   })),
 ];
 
@@ -117,7 +125,22 @@ export function structuredData(page: PageSeo): Record<string, unknown> {
               '@id': url + '#breadcrumb',
               itemListElement: [
                 { '@type': 'ListItem', position: 1, name: 'Home', item: SITE_ORIGIN + '/' },
-                { '@type': 'ListItem', position: 2, name: page.label, item: url },
+                ...(page.path.startsWith('/premium/')
+                  ? [
+                      {
+                        '@type': 'ListItem',
+                        position: 2,
+                        name: 'Features',
+                        item: SITE_ORIGIN + '/features/',
+                      },
+                    ]
+                  : []),
+                {
+                  '@type': 'ListItem',
+                  position: page.path.startsWith('/premium/') ? 3 : 2,
+                  name: page.label,
+                  item: url,
+                },
               ],
             },
           ]),
