@@ -10,6 +10,7 @@ const STANDARD_VIEWS = [...GRID_VIEWS, 'list-week'] as const;
 export const DEMO_HEADER_VIEWS: Readonly<Record<string, readonly string[]>> = {
   list: LIST_VIEWS,
   interactions: GRID_VIEWS,
+  'event-editor': GRID_VIEWS,
   // List views intentionally omit background shading.
   background: GRID_VIEWS,
   themes: STANDARD_VIEWS,
@@ -98,7 +99,7 @@ export async function createDemoSetup(
     footerScrollbarSticky: false,
     dayMaxEvents: 3,
     editable: ['interactions', 'constraints', 'event-editor', 'accessibility'].includes(id),
-    selectable: id === 'interactions' || id === 'constraints',
+    selectable: ['interactions', 'constraints', 'event-editor'].includes(id),
     plugins,
   };
   const events = sampleEvents();

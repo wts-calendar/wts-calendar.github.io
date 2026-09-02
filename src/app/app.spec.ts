@@ -385,6 +385,7 @@ describe('Free examples', () => {
         }
         if (demo.id === 'event-editor') {
           await vi.waitFor(() => expect(fixture.componentInstance.editorReady()).toBe(true));
+          expect(api.getOption('selectable')).toBe(true);
           // Apply the async ready signal before clicking the formerly disabled button.
           fixture.detectChanges();
           const button = fixture.nativeElement.querySelector(
@@ -394,6 +395,25 @@ describe('Free examples', () => {
           button.click();
           fixture.detectChanges();
           expect(document.querySelector('[role="dialog"]')).toBeTruthy();
+          document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+          expect(document.querySelector('[role="dialog"]')).toBeNull();
+          expect(
+            api.select({
+              start: '2026-09-09T10:00:00Z',
+              end: '2026-09-09T11:30:00Z',
+              allDay: false,
+            }),
+          ).toBeTruthy();
+          fixture.detectChanges();
+          const rangeDialog = document.querySelector('[role="dialog"]');
+          expect(rangeDialog).toBeTruthy();
+          expect((rangeDialog?.querySelector('[name="start"]') as HTMLInputElement).value).toBe(
+            '2026-09-09T10:00',
+          );
+          expect((rangeDialog?.querySelector('[name="end"]') as HTMLInputElement).value).toBe(
+            '2026-09-09T11:30',
+          );
+          expect(api.getSelection()).toBeNull();
         }
         fixture.destroy();
         expect(document.querySelector('[role="dialog"]')).toBeNull();

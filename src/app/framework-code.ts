@@ -48,7 +48,10 @@ function webOptions(context: CodeContext): string {
     "type InitialOptions = Omit<CalendarOptions, 'container' | 'document' | 'events' | 'resources'>;",
     'function createInitialOptions(',
     '  _getApi: () => WtsCalendar | null,',
-    '  _editEvent?: (id: string) => void,',
+    demo.id === 'event-editor'
+      ? "  _createEvent?: (input: Parameters<CalendarEventEditor['openCreate']>[0]) => void,"
+      : '',
+    demo.id === 'event-editor' ? '  _editEvent?: (id: string, opener: HTMLElement) => void,' : '',
     '): InitialOptions {',
     '  const options: InitialOptions = ' +
       indentCode(codeJson({ ...config, events: undefined }), 2).trimStart() +
@@ -67,7 +70,7 @@ function webOptions(context: CodeContext): string {
       ? "  options.eventSources = [{ id: 'sample', loader: async () => sampleEvents }];"
       : '',
     demo.id === 'event-editor'
-      ? '  options.eventClick = info => { if (info.event.id) _editEvent?.(info.event.id); };'
+      ? '  options.dateClick = info => _createEvent?.({ start: info.date, allDay: info.allDay, resourceId: info.resource?.id, opener: info.dayEl });\n  options.select = info => { _createEvent?.({ start: info.start, end: info.end, allDay: info.allDay, resourceId: info.resourceId, opener: info.jsEvent?.target instanceof HTMLElement ? info.jsEvent.target : null }); _getApi()?.unselect(); };\n  options.eventClick = info => { if (info.event.id) _editEvent?.(info.event.id, info.el); };'
       : '',
     '  return options;',
     '}',
@@ -139,7 +142,8 @@ export function frameworkCode(framework: CodeFramework, context: CodeContext): F
         editor ? '  const editorRef = useRef<CalendarEventEditor | null>(null);' : '',
         '  const [initialOptions] = useState(() => createInitialOptions(',
         '    () => calendarRef.current?.getApi() ?? null' + (editor ? ',' : ''),
-        editor ? '    id => editorRef.current?.openEdit(id),' : '',
+        editor ? '    input => editorRef.current?.openCreate(input),' : '',
+        editor ? '    (id, opener) => editorRef.current?.openEdit(id, { opener }),' : '',
         '  ));',
         '  return (',
         '    <>',
@@ -180,7 +184,8 @@ export function frameworkCode(framework: CodeFramework, context: CodeContext): F
         editor ? 'const editor = shallowRef<CalendarEventEditor | null>(null);' : '',
         'const initialOptions = createInitialOptions(',
         '  () => calendarRef.value?.getApi() ?? null' + (editor ? ',' : ''),
-        editor ? '  id => editor.value?.openEdit(id),' : '',
+        editor ? '  input => editor.value?.openCreate(input),' : '',
+        editor ? '  (id, opener) => editor.value?.openEdit(id, { opener }),' : '',
         ');',
         editor
           ? "function ready(calendar: WtsCalendar) { editor.value = createCalendarEventEditor(calendar, { presentation: 'dialog' }); }"
@@ -235,7 +240,8 @@ export function frameworkCode(framework: CodeFramework, context: CodeContext): F
       editor ? '  editor: CalendarEventEditor | null = null;' : '',
       '  readonly initialOptions = createInitialOptions(',
       '    () => this.controller.getApi()' + (editor ? ',' : ''),
-      editor ? '    id => this.editor?.openEdit(id),' : '',
+      editor ? '    input => this.editor?.openCreate(input),' : '',
+      editor ? '    (id, opener) => this.editor?.openEdit(id, { opener }),' : '',
       '  );',
       editor
         ? "  ready(calendar: WtsCalendar) { this.editor = createCalendarEventEditor(calendar, { presentation: 'dialog' }); }"

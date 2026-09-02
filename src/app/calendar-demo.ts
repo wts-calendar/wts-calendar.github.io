@@ -14,7 +14,14 @@ import {
   WtsCalendarAngularController,
   type WtsCalendarAngularInitialOptions,
 } from '@wts-calendar/angular';
-import type { CalendarEventInput, CalendarOptionChanges, WtsCalendar } from '@wts-calendar/core';
+import type {
+  CalendarDateClickInfo,
+  CalendarEventClickInfo,
+  CalendarEventInput,
+  CalendarOptionChanges,
+  CalendarSelection,
+  WtsCalendar,
+} from '@wts-calendar/core';
 import type { CalendarEventEditor } from '@wts-calendar/core/event-editor';
 import { createDemoSetup, DEMO_HEADER_VIEWS, SAMPLE_ICS, type DemoSetup } from './demo-setup';
 import { demoCode, runtimeCode } from './demo-code';
@@ -107,7 +114,10 @@ import type { LocaleChoice } from './intl-options';
             Create event</button
           ><button (click)="history('undo')" [disabled]="!controller.ready()">Undo</button
           ><button (click)="history('redo')" [disabled]="!controller.ready()">Redo</button
-          ><span>Click an event to edit, duplicate, or delete.</span>
+          ><span
+            >Click an empty cell or select a range to create. Click an event to edit, duplicate, or
+            delete.</span
+          >
         }
         @if (demo.id === 'ics') {
           <button (click)="importIcs()" [disabled]="!controller.ready() || imported()">
@@ -275,13 +285,9 @@ export class CalendarDemo implements OnInit, OnDestroy {
         const api = this.controller.getApi();
         if (api) this.syncRuntimeState(api);
       };
-      config.dateClick = (info) => this.log('dateClick: ' + info.date.toISOString());
-      config.eventClick = (info) => {
-        this.log('eventClick: ' + info.event.title);
-        if (this.editor && info.event.id) this.editor.openEdit(info.event.id);
-      };
-      config.select = (info) =>
-        this.log('select: ' + info.start.toISOString() + ' → ' + info.end.toISOString());
+      config.dateClick = (info) => this.dateClick(info);
+      config.eventClick = (info) => this.eventClick(info);
+      config.select = (info) => this.select(info);
       config.eventDrop = () => this.log('eventDrop: event moved');
       config.eventResize = () => this.log('eventResize: duration changed');
       if (this.demo.id === 'render-hooks') {
@@ -407,6 +413,34 @@ export class CalendarDemo implements OnInit, OnDestroy {
       end: DEMO_DATE + 'T13:00:00Z',
       opener: event.currentTarget as HTMLElement,
     });
+  }
+  dateClick(info: CalendarDateClickInfo): void {
+    this.log('dateClick: ' + info.date.toISOString());
+    if (this.demo.id !== 'event-editor' || !this.editor) return;
+    this.editor.openCreate({
+      start: info.date,
+      allDay: info.allDay,
+      resourceId: info.resource?.id,
+      opener: info.dayEl,
+    });
+  }
+  select(info: CalendarSelection): void {
+    this.log('select: ' + info.start.toISOString() + ' → ' + info.end.toISOString());
+    if (this.demo.id !== 'event-editor' || !this.editor) return;
+    const target = info.jsEvent?.target;
+    this.editor.openCreate({
+      start: info.start,
+      end: info.end,
+      allDay: info.allDay,
+      resourceId: info.resourceId,
+      opener: target instanceof HTMLElement ? target : null,
+    });
+    this.controller.getApi()?.unselect();
+  }
+  eventClick(info: CalendarEventClickInfo): void {
+    this.log('eventClick: ' + info.event.title);
+    if (this.demo.id === 'event-editor' && this.editor && info.event.id)
+      this.editor.openEdit(info.event.id, { opener: info.el });
   }
   history(action: 'undo' | 'redo'): void {
     this.log(this.controller.getApi()?.[action]() ? action + ' applied' : 'Nothing to ' + action);
