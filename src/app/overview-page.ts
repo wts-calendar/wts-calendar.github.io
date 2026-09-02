@@ -38,8 +38,9 @@ import { DEMOS } from './site-data';
       <p>Fits into your stack.</p>
       <a routerLink="/docs">JavaScript</a><a routerLink="/docs">Angular</a
       ><a routerLink="/docs">React</a><a routerLink="/docs">Vue</a
-      ><a routerLink="/docs">Web Components</a
-      ><a routerLink="/docs">React Native <small>↗</small></a>
+      ><a routerLink="/docs">Web Components</a><a routerLink="/docs">React Native</a
+      ><a routerLink="/docs">PHP / PSR-15</a><a routerLink="/docs">Laravel API</a
+      ><a routerLink="/docs">ASP.NET Core API <small>↗</small></a>
     </section>
     <section class="container section-space">
       <div class="section-heading">

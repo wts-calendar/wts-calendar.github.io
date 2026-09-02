@@ -17,6 +17,16 @@ import {
   PREMIUM_FEATURES,
 } from './site-data';
 import premiumContent from './premium-feature-data.json';
+import {
+  BROWSER_SERVER_ADAPTER,
+  DOTNET_PACKAGE_URL,
+  DOTNET_REPOSITORY_URL,
+  DOTNET_SAMPLE_URL,
+  PHP_EXAMPLE_URL,
+  PHP_PACKAGE_URL,
+  REACT_NATIVE_SERVER_CLIENT,
+  SERVER_INTEGRATIONS,
+} from './server-integrations';
 
 beforeAll(() => {
   globalThis.ResizeObserver = class {
@@ -38,6 +48,38 @@ describe('Showcase contract', () => {
     expect(page.frameworks.find((framework) => framework.name === 'JavaScript')?.url).toBe(
       root + 'core/README.md',
     );
+  });
+  it('documents the published PHP and ASP.NET Core servers alongside every frontend wrapper', () => {
+    const page = new DocsPage();
+    expect(page.frameworks.map((framework) => framework.name)).toEqual(
+      expect.arrayContaining(['Angular', 'React', 'Vue', 'React Native']),
+    );
+    expect(SERVER_INTEGRATIONS.map((integration) => integration.id)).toEqual([
+      'php',
+      'slim',
+      'laravel',
+      'aspnetcore',
+    ]);
+    for (const integration of SERVER_INTEGRATIONS.filter(({ id }) => id !== 'aspnetcore')) {
+      expect(integration.install).toContain('wts-calendar/server-php:^1.0');
+      expect(integration.code).toContain('CalendarApiHandler');
+      expect(integration.packageUrl).toBe(PHP_PACKAGE_URL);
+      expect(integration.exampleUrl).toBe(PHP_EXAMPLE_URL);
+    }
+    const aspnetcore = SERVER_INTEGRATIONS.find(({ id }) => id === 'aspnetcore');
+    expect(aspnetcore).toMatchObject({
+      install: 'dotnet add package Wts.Calendar.AspNetCore --version 1.0.0',
+      packageUrl: DOTNET_PACKAGE_URL,
+      exampleUrl: DOTNET_SAMPLE_URL,
+    });
+    expect(aspnetcore?.code).toContain('MapWtsCalendarEvents');
+    expect(aspnetcore?.code).toContain('IWtsCalendarEventStore');
+    expect(DOTNET_REPOSITORY_URL).toBe('https://github.com/wts-calendar/server-dotnet');
+    expect(BROWSER_SERVER_ADAPTER).toContain('@wts-calendar/core/data-adapter-sdk');
+    expect(BROWSER_SERVER_ADAPTER).toContain('mutationUrl');
+    expect(REACT_NATIVE_SERVER_CLIENT).toContain('WtsCalendarNative');
+    expect(REACT_NATIVE_SERVER_CLIENT).toContain('authorization');
+    expect(REACT_NATIVE_SERVER_CLIENT).toContain('page.records');
   });
   it('keeps configuration migration available under Premium', () => {
     const migration = FEATURES.find(

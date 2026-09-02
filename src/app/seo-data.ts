@@ -4,7 +4,7 @@ export const SITE_ORIGIN = 'https://wts-calendar.github.io';
 export const SITE_NAME = 'WTS Calendar';
 export const SOCIAL_IMAGE = SITE_ORIGIN + '/social-preview.png';
 export const SOCIAL_IMAGE_ALT =
-  'WTS Calendar — JavaScript calendars, framework integrations, and scheduling examples';
+  'WTS Calendar — JavaScript calendars, PHP and ASP.NET Core APIs, framework integrations, and scheduling examples';
 
 export interface PageSeo {
   path: string;
@@ -20,7 +20,7 @@ export const SEO_PAGES: readonly PageSeo[] = [
     label: 'Home',
     title: 'WTS Calendar | JavaScript Calendar & Framework Integrations',
     description:
-      'Build interactive calendars with WTS Calendar. Explore JavaScript, Angular, React and Vue integrations, live scheduling examples, and Premium capabilities.',
+      'Build interactive calendars with WTS Calendar. Explore Angular, React, Vue, React Native, PHP, Laravel and ASP.NET Core integrations, live examples, and Premium capabilities.',
   },
   {
     path: '/features/',
@@ -39,9 +39,9 @@ export const SEO_PAGES: readonly PageSeo[] = [
   {
     path: '/docs/',
     label: 'Documentation',
-    title: 'Calendar Documentation & Framework Setup | WTS Calendar',
+    title: 'Calendar Documentation, PHP & ASP.NET Core APIs | WTS Calendar',
     description:
-      'Get started with WTS Calendar in JavaScript, Angular, React, Vue, Web Components or React Native. Find setup examples, API references, and integration guides.',
+      'Get started with WTS Calendar in JavaScript, Angular, React, Vue, React Native, PHP, Laravel or ASP.NET Core. Find frontend setup, REST API, ETag, and storage examples.',
   },
   ...DEMOS.map((demo) => ({
     path: '/examples/' + demo.id + '/',
@@ -112,10 +112,10 @@ export function structuredData(page: PageSeo): Record<string, unknown> {
               '@id': SITE_ORIGIN + '/#showcase',
               name: 'WTS Calendar Angular showcase',
               codeRepository: 'https://github.com/wts-calendar/wts-calendar.github.io',
-              programmingLanguage: ['TypeScript', 'JavaScript'],
-              runtimePlatform: 'Web browser',
+              programmingLanguage: ['TypeScript', 'JavaScript', 'PHP', 'C#'],
+              runtimePlatform: ['Web browser', 'PHP 8.2+', 'ASP.NET Core on .NET 8 or 10'],
               description:
-                'An Angular showcase for WTS Calendar features, examples and framework integrations.',
+                'An Angular showcase for WTS Calendar features, frontend integrations, and optional PHP and ASP.NET Core calendar REST APIs.',
               url: SITE_ORIGIN + '/',
             },
           ]

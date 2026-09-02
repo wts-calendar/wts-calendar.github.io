@@ -2,6 +2,11 @@ import { Component, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { DOCS_BASE, DOCS_ROOT } from './site-data';
 import { CodeCard } from './code-card';
+import {
+  BROWSER_SERVER_ADAPTER,
+  REACT_NATIVE_SERVER_CLIENT,
+  SERVER_INTEGRATIONS,
+} from './server-integrations';
 @Component({
   selector: 'app-docs-page',
   imports: [RouterLink, CodeCard],
@@ -9,13 +14,13 @@ import { CodeCard } from './code-card';
       <span class="eyebrow">DEVELOPER DOCUMENTATION</span>
       <h1>Your first calendar.<br /><em>Your own stack.</em></h1>
       <p>
-        Use the JavaScript core directly or choose a framework wrapper. All examples on this website
-        use the published Angular package.
+        Use the JavaScript core directly or choose a framework wrapper. Add the optional PHP or
+        ASP.NET Core server package when your application needs authenticated, durable event APIs.
       </p>
     </section>
     <div class="docs-layout container">
       <section class="docs-main">
-        <h2>1. Choose your integration</h2>
+        <h2>1. Choose your frontend integration</h2>
         <div class="segmented" aria-label="Framework">
           @for (item of frameworks; track item.name) {
             <button
@@ -30,13 +35,122 @@ import { CodeCard } from './code-card';
         <app-code-card label="Install command" [code]="framework().install" />
         <p>{{ framework().note }}</p>
         <a [href]="framework().url" class="text-link">Read {{ framework().name }} setup guide ↗</a>
-        <h2>2. Start with the core</h2>
+        <h2>2. Add a backend when your application needs one</h2>
+        <p>
+          Frontend wrappers render the calendar. The PHP and ASP.NET Core packages implement the
+          same server-side event REST contract while your application keeps control of
+          authentication, authorization, and durable storage.
+        </p>
+        <div class="segmented" aria-label="Server integration">
+          @for (item of serverIntegrations; track item.id) {
+            <button
+              [class.active]="serverIntegration() === item"
+              [attr.aria-pressed]="serverIntegration() === item"
+              (click)="serverIntegration.set(item)"
+            >
+              {{ item.name }}
+            </button>
+          }
+        </div>
+        <app-code-card
+          [label]="serverIntegration().installLabel"
+          [code]="serverIntegration().install"
+        />
+        <app-code-card
+          [label]="serverIntegration().codeLabel"
+          [kind]="serverIntegration().codeKind"
+          [code]="serverIntegration().code"
+        />
+        <p>{{ serverIntegration().note }}</p>
+        <div class="docs-links">
+          <a [href]="serverIntegration().packageUrl" class="text-link">
+            {{ serverIntegration().packageLabel }} ↗
+          </a>
+          <a [href]="serverIntegration().exampleUrl" class="text-link">
+            {{ serverIntegration().exampleLabel }} ↗
+          </a>
+        </div>
+        <h3>Shared HTTP contract</h3>
+        <div class="docs-table-scroll" tabindex="0" aria-label="Calendar server HTTP contract">
+          <table class="docs-contract-table">
+            <thead>
+              <tr>
+                <th>Method</th>
+                <th>Route</th>
+                <th>Purpose</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>GET</code></td>
+                <td><code>/api/calendar/events?start=...&amp;end=...</code></td>
+                <td>Load a bounded visible range</td>
+              </tr>
+              <tr>
+                <td><code>GET</code></td>
+                <td>
+                  <code>/api/calendar/events/{{ '{' }}id{{ '}' }}</code>
+                </td>
+                <td>Load one event and its <code>ETag</code></td>
+              </tr>
+              <tr>
+                <td><code>POST</code></td>
+                <td><code>/api/calendar/events</code></td>
+                <td>Create an event</td>
+              </tr>
+              <tr>
+                <td><code>PATCH</code> / <code>PUT</code></td>
+                <td>
+                  <code>/api/calendar/events/{{ '{' }}id{{ '}' }}</code>
+                </td>
+                <td>Update with <code>If-Match</code> conflict protection</td>
+              </tr>
+              <tr>
+                <td><code>DELETE</code></td>
+                <td>
+                  <code>/api/calendar/events/{{ '{' }}id{{ '}' }}</code>
+                </td>
+                <td>Delete with an optional version precondition</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="server-responsibility-grid">
+          <section>
+            <h3>The server package handles</h3>
+            <ul>
+              <li>Typed calendar event requests and responses</li>
+              <li>Range validation, CRUD routes, and RFC 7807 errors</li>
+              <li><code>ETag</code> and <code>If-Match</code> optimistic concurrency</li>
+              <li>A replaceable storage interface</li>
+            </ul>
+          </section>
+          <section>
+            <h3>Your application still handles</h3>
+            <ul>
+              <li>Authentication and event-level authorization</li>
+              <li>Database schema, migrations, and tenant isolation</li>
+              <li>CORS origins, rate limits, secrets, and monitoring</li>
+              <li>Production storage; in-memory stores are demo-only</li>
+            </ul>
+          </section>
+        </div>
+        <h2>3. Connect every frontend to the same endpoint</h2>
+        <p>
+          Angular, React, and Vue use the core REST adapter. It carries mutation versions through
+          <code>ETag</code> and <code>If-Match</code> so the server can reject stale edits. React
+          Native calls the same authenticated JSON endpoint and passes the resulting events to its
+          native component.
+        </p>
+        <app-code-card label="Angular, React and Vue data adapter" [code]="browserServerAdapter" />
+        <app-code-card label="React Native API loading" [code]="reactNativeServerClient" />
+        <h2>4. Start with the core</h2>
         <p>
           This minimal JavaScript example uses only Standard features. Framework components manage
           mounting and teardown for you.
         </p>
         <app-code-card label="JavaScript / TypeScript" [code]="quickStart" />
-        <h2>3. Explore one feature at a time</h2>
+        <h2>5. Explore one feature at a time</h2>
         <p>
           The examples directory shows the feature options and runtime behavior together. Optional
           modules are loaded only for the relevant examples.
@@ -70,6 +184,10 @@ import { CodeCard } from './code-card';
 })
 export class DocsPage {
   readonly docs = DOCS_BASE;
+  readonly serverIntegrations = SERVER_INTEGRATIONS;
+  readonly serverIntegration = signal(this.serverIntegrations[0]!);
+  readonly browserServerAdapter = BROWSER_SERVER_ADAPTER;
+  readonly reactNativeServerClient = REACT_NATIVE_SERVER_CLIENT;
   readonly frameworks = [
     {
       name: 'JavaScript',
