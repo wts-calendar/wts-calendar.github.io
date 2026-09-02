@@ -24,10 +24,11 @@ Open [the local preview](http://localhost:4200).
 - Multi-month and year: day-cell height follows the panel width through `--month-day-cell-min-height`; one event is shown per cell and a compact count opens the remaining events.
 - Pricing: `/pricing/` — Standard/MIT and separately entitled Premium capabilities.
 - Setup guides: `/docs/` — JavaScript, Angular, React, Vue, Web Component, and React Native.
+- API reference: `/docs/api/` — 248 client options, 95 public APIs, 78 event names, 447 exported symbol records across 23 entrypoints, and complete PHP/ASP.NET Core route settings.
 
 The catalogue currently lists 94 capabilities: 63 Standard and 31 Premium. These
 are feature listings, not a compatibility guarantee. The package documentation
-is the API reference.
+are linked to a source-generated, searchable API reference.
 
 ### Premium presentation
 
@@ -179,7 +180,7 @@ The production build retains the existing Angular bundle budgets.
 ## Clean URLs and SEO
 
 Angular uses its default path routing, without a hash prefix. Build-time prerendering
-creates HTML for all 57 public pages, including 31 Premium guides, so direct links and refreshes work on static
+creates HTML for all 62 public pages, including 31 Premium guides, so direct links and refreshes work on static
 hosting and crawlers receive real page content. Interactive calendars initialize
 only in the browser; no Node.js server or application backend is deployed.
 

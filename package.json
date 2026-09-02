@@ -10,8 +10,10 @@
     "build:pages": "ng build --base-href /wts-calendar-angular-example/ && node scripts/prepare-pages.mjs /wts-calendar-angular-example/ && node scripts/verify-pages.mjs",
     "build:pages:org": "ng build --base-href / && node scripts/prepare-pages.mjs / && node scripts/verify-pages.mjs /",
     "preview:premium": "node scripts/premium-previews/serve.mjs",
-    "check:showcase": "node scripts/verify-premium-previews.mjs && node scripts/verify-showcase.mjs",
-    "check:release": "node scripts/verify-premium-previews.mjs && node scripts/verify-showcase.mjs --require-contact"
+    "docs:api:generate": "node scripts/generate-api-reference.mjs",
+    "docs:api:check": "node scripts/generate-api-reference.mjs --check",
+    "check:showcase": "npm run docs:api:check && node scripts/verify-premium-previews.mjs && node scripts/verify-showcase.mjs",
+    "check:release": "npm run docs:api:check && node scripts/verify-premium-previews.mjs && node scripts/verify-showcase.mjs --require-contact"
   },
   "private": true,
   "packageManager": "npm@10.9.2",

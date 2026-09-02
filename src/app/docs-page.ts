@@ -20,6 +20,14 @@ import {
     </section>
     <div class="docs-layout container">
       <section class="docs-main">
+        <div class="notice">
+          <strong>Looking for an exact option, method, route, or default?</strong>
+          <p>
+            The generated API reference covers every client option and public calendar API, plus the
+            complete PHP and ASP.NET Core route-level contracts.
+          </p>
+          <a routerLink="/docs/api">Search the complete API reference →</a>
+        </div>
         <h2>1. Choose your frontend integration</h2>
         <div class="segmented" aria-label="Framework">
           @for (item of frameworks; track item.name) {
@@ -167,6 +175,7 @@ import {
       </section>
       <aside class="docs-aside">
         <span class="eyebrow">REFERENCE LIBRARY</span>
+        <a routerLink="/docs/api"><strong>Complete API & options reference →</strong></a>
         @for (guide of guides; track guide.file) {
           <a [href]="docs + guide.file">{{ guide.name }} ↗</a>
         }

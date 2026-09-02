@@ -14,6 +14,16 @@ export const routes: Routes = [
     loadComponent: () => import('./premium-feature-page').then((m) => m.PremiumFeaturePage),
   },
   { path: 'pricing', loadComponent: () => import('./pricing-page').then((m) => m.PricingPage) },
+  {
+    path: 'docs/api',
+    data: { kind: 'options' },
+    loadComponent: () => import('./api-reference-page').then((m) => m.ApiReferencePage),
+  },
+  ...(['methods', 'events', 'exports', 'server'] as const).map((section) => ({
+    path: 'docs/api/' + section,
+    data: { kind: section === 'exports' ? 'symbols' : section },
+    loadComponent: () => import('./api-reference-page').then((m) => m.ApiReferencePage),
+  })),
   { path: 'docs', loadComponent: () => import('./docs-page').then((m) => m.DocsPage) },
   { path: 'examples', pathMatch: 'full', redirectTo: 'examples/month' },
   ...['day', 'week', 'month', 'year'].map((period) => ({

@@ -5,14 +5,33 @@ import './verify-premium-integration.mjs';
 
 const root = resolve(import.meta.dirname, '..');
 const read = (path) => readFileSync(resolve(root, path), 'utf8');
-const files = readdirSync(resolve(root, 'src/app')).filter(
-  (file) => /\.(ts|html)$/.test(file) && !file.endsWith('.spec.ts'),
-);
+function sourceFiles(directory) {
+  return readdirSync(resolve(root, directory), { withFileTypes: true }).flatMap((entry) =>
+    entry.isDirectory()
+      ? sourceFiles(directory + '/' + entry.name)
+      : /\.(ts|html)$/.test(entry.name) && !entry.name.endsWith('.spec.ts')
+        ? [directory + '/' + entry.name]
+        : [],
+  );
+}
+const files = sourceFiles('src/app');
 const premiumContent = read('src/app/premium-feature-data.json');
-const source = files.map((file) => read('src/app/' + file)).join('\n') + premiumContent;
+const source = files.map((file) => read(file)).join('\n') + premiumContent;
+const brandSource = files
+  .filter((file) => file !== 'src/app/api-reference-data.generated.ts')
+  .map((file) => read(file))
+  .join('\n');
 assert.ok(
-  !/full[\s-]*calend[ae]r/i.test(source + read('src/index.html') + read('README.md')),
+  !/full[\s-]*calend[ae]r/i.test(brandSource + read('src/index.html') + read('README.md')),
   'Keep competitor branding out of public showcase copy',
+);
+const exactLegacyExports = [
+  ...read('src/app/api-reference-data.generated.ts').matchAll(/\bFullCalendar[A-Za-z]+\b/g),
+].map((match) => match[0]);
+assert.deepEqual(
+  [...new Set(exactLegacyExports)].sort(),
+  ['FullCalendarMigrationIssue', 'FullCalendarMigrationResult'],
+  'Only exact public API identifiers may retain legacy product wording',
 );
 const docs = [
   ...new Set(

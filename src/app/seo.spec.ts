@@ -43,7 +43,7 @@ describe('Clean URL routing', () => {
 
 describe('Portal SEO', () => {
   it('gives every public page distinct metadata', () => {
-    expect(SEO_PAGES.length).toBe(DEMOS.length + PREMIUM_FEATURES.length + 4);
+    expect(SEO_PAGES.length).toBe(DEMOS.length + PREMIUM_FEATURES.length + 9);
     expect(new Set(SEO_PAGES.map((page) => page.path)).size).toBe(SEO_PAGES.length);
     expect(new Set(SEO_PAGES.map((page) => page.title)).size).toBe(SEO_PAGES.length);
     expect(new Set(SEO_PAGES.map((page) => page.description)).size).toBe(SEO_PAGES.length);
@@ -55,6 +55,8 @@ describe('Portal SEO', () => {
   });
   it('normalizes canonical paths and excludes query variants', () => {
     expect(seoForUrl('/docs').path).toBe('/docs/');
+    expect(seoForUrl('/docs/api?query=timeZone').path).toBe('/docs/api/');
+    expect(seoForUrl('/docs/api/server?query=If-Match').path).toBe('/docs/api/server/');
     expect(seoForUrl('/docs/?utm_source=share#api').path).toBe('/docs/');
     expect(seoForUrl('/examples/list?period=day').path).toBe('/examples/list/');
     expect(seoForUrl('/missing').noindex).toBe(true);

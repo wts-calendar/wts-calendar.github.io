@@ -9,6 +9,18 @@ import { FeaturesPage } from './features-page';
 import { PricingPage } from './pricing-page';
 import { DocsPage } from './docs-page';
 import {
+  CLIENT_API_COUNTS,
+  CLIENT_METHODS,
+  CLIENT_OPTIONS,
+  CLIENT_SYMBOLS,
+} from './api-reference-data.generated';
+import {
+  SERVER_OPTIONS,
+  SERVER_RESPONSES,
+  SERVER_ROUTES,
+  SERVER_STORAGE_METHODS,
+} from './server-api-reference';
+import {
   DEMOS,
   LIST_VIEWS,
   FEATURES,
@@ -37,6 +49,40 @@ beforeAll(() => {
 });
 
 describe('Showcase contract', () => {
+  it('publishes a generated complete client and server API reference', () => {
+    expect(CLIENT_API_COUNTS).toEqual({
+      options: 248,
+      methods: 95,
+      events: 78,
+      symbols: 447,
+      entrypoints: 23,
+    });
+    expect(new Set(CLIENT_OPTIONS.map(({ name }) => name)).size).toBe(CLIENT_OPTIONS.length);
+    expect(new Set(CLIENT_METHODS.map(({ name }) => name)).size).toBe(CLIENT_METHODS.length);
+    expect(new Set(CLIENT_SYMBOLS.map(({ name }) => name)).size).toBe(446);
+    expect(CLIENT_OPTIONS.find(({ name }) => name === 'container')).toMatchObject({
+      required: true,
+      runtime: false,
+    });
+    expect(CLIENT_OPTIONS.find(({ name }) => name === 'timeZone')?.runtime).toBe(true);
+    expect(CLIENT_METHODS.some(({ name }) => name === 'setOptions')).toBe(true);
+    expect(CLIENT_METHODS.some(({ name }) => name === 'destroyAsync')).toBe(true);
+    expect(SERVER_OPTIONS.length).toBe(20);
+    expect(SERVER_ROUTES.length).toBe(5);
+    expect(SERVER_STORAGE_METHODS.length).toBe(5);
+    expect(SERVER_RESPONSES.map(({ status }) => status)).toEqual([
+      '400',
+      '404',
+      '405',
+      '409',
+      '413',
+      '415',
+      '422',
+      '428',
+      '401 / 403',
+      '500',
+    ]);
+  });
   it('links mirrored guides to the same branch that publishes the portal', () => {
     const page = new DocsPage();
     const root =
@@ -518,6 +564,22 @@ describe('Navigation and pricing', () => {
     expect(harness.routeNativeElement?.textContent).toContain('Contact for pricing');
     await harness.navigateByUrl('/docs');
     expect(harness.routeNativeElement?.textContent).toContain('Your own stack.');
+    await harness.navigateByUrl('/docs/api');
+    expect(harness.routeNativeElement?.textContent).toContain('248 client options');
+    const apiSearch = harness.routeNativeElement?.querySelector(
+      'input[type="search"]',
+    ) as HTMLInputElement;
+    apiSearch.value = 'timeZone';
+    apiSearch.dispatchEvent(new Event('input'));
+    harness.detectChanges();
+    expect(harness.routeNativeElement?.querySelector('#option-timeZone')).toBeTruthy();
+    expect(harness.routeNativeElement?.querySelector('#option-title')).toBeNull();
+    await harness.navigateByUrl('/docs/api/exports');
+    expect(harness.routeNativeElement?.textContent).toContain('447 matching exported symbols');
+    await harness.navigateByUrl('/docs/api/events');
+    expect(harness.routeNativeElement?.textContent).toContain('78 matching event-bus names');
+    await harness.navigateByUrl('/docs/api/server');
+    expect(harness.routeNativeElement?.textContent).toContain('Storage interface');
     await harness.navigateByUrl('/features');
     expect(harness.routeNativeElement?.textContent).toContain('Premium interoperability');
     await harness.navigateByUrl('/not-a-page');

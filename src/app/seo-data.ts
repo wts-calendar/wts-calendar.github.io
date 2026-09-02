@@ -43,6 +43,41 @@ export const SEO_PAGES: readonly PageSeo[] = [
     description:
       'Get started with WTS Calendar in JavaScript, Angular, React, Vue, React Native, PHP, Laravel or ASP.NET Core. Find frontend setup, REST API, ETag, and storage examples.',
   },
+  {
+    path: '/docs/api/',
+    label: 'API reference',
+    title: 'Complete Calendar API & Options Reference | WTS Calendar',
+    description:
+      'Search every WTS Calendar client option and public method plus complete PHP and ASP.NET Core routes, settings, event fields, errors, storage, and production guidance.',
+  },
+  {
+    path: '/docs/api/methods/',
+    label: 'Calendar methods',
+    title: 'Calendar Methods & Instance API Reference | WTS Calendar',
+    description:
+      'Search every public WtsCalendar method, property, getter, lifecycle operation, event mutation, resource API, navigation command, formatter, and runtime option method.',
+  },
+  {
+    path: '/docs/api/events/',
+    label: 'Events and modules',
+    title: 'Calendar Events & Module Entrypoints | WTS Calendar',
+    description:
+      'Find all typed WTS Calendar event-bus names and every public package entrypoint for views, interaction, recurrence, data adapters, testing, tooling, and Premium modules.',
+  },
+  {
+    path: '/docs/api/exports/',
+    label: 'Exported symbols',
+    title: 'Complete Exported Symbols Reference | WTS Calendar',
+    description:
+      'Search every public class, interface, type, function, value, module, and default export across all WTS Calendar package entrypoints, with signatures and import paths.',
+  },
+  {
+    path: '/docs/api/server/',
+    label: 'Server APIs',
+    title: 'PHP & ASP.NET Core Server API Reference | WTS Calendar',
+    description:
+      'Review complete WTS Calendar PHP and ASP.NET Core routes, settings, defaults, event fields, storage interfaces, ETags, errors, runtime requirements, and production guidance.',
+  },
   ...DEMOS.map((demo) => ({
     path: '/examples/' + demo.id + '/',
     label: demo.title + ' example',
