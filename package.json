@@ -17,7 +17,7 @@
     "docs:api:generate": "node scripts/generate-api-reference.mjs",
     "docs:api:check": "node scripts/generate-api-reference.mjs --check",
     "check:showcase": "npm run docs:api:check && node scripts/verify-premium-previews.mjs && node scripts/verify-showcase.mjs",
-    "check:release": "npm run docs:api:check && node scripts/verify-premium-previews.mjs && node scripts/verify-showcase.mjs --require-contact"
+    "check:release": "npm run docs:api:check && node scripts/verify-api-examples.mjs && node scripts/verify-premium-previews.mjs && node scripts/verify-showcase.mjs --require-contact"
   },
   "private": true,
   "packageManager": "npm@10.9.2",

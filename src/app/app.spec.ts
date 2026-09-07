@@ -565,19 +565,23 @@ describe('Navigation and pricing', () => {
     await harness.navigateByUrl('/docs');
     expect(harness.routeNativeElement?.textContent).toContain('Your own stack.');
     await harness.navigateByUrl('/docs/api');
-    expect(harness.routeNativeElement?.textContent).toContain('248 client options');
+    expect(harness.routeNativeElement?.textContent).toContain('Client options');
     const apiSearch = harness.routeNativeElement?.querySelector(
       'input[type="search"]',
     ) as HTMLInputElement;
     apiSearch.value = 'timeZone';
     apiSearch.dispatchEvent(new Event('input'));
     harness.detectChanges();
-    expect(harness.routeNativeElement?.querySelector('#option-timeZone')).toBeTruthy();
-    expect(harness.routeNativeElement?.querySelector('#option-title')).toBeNull();
+    expect(harness.routeNativeElement?.querySelector('.reference-index')?.textContent).toContain(
+      'timeZone',
+    );
+    expect(
+      harness.routeNativeElement?.querySelector('.reference-index')?.textContent,
+    ).not.toContain('titleFormat');
     await harness.navigateByUrl('/docs/api/exports');
-    expect(harness.routeNativeElement?.textContent).toContain('447 matching exported symbols');
+    expect(harness.routeNativeElement?.textContent).toContain('Types & exports');
     await harness.navigateByUrl('/docs/api/events');
-    expect(harness.routeNativeElement?.textContent).toContain('78 matching event-bus names');
+    expect(harness.routeNativeElement?.textContent).toContain('78 entries');
     await harness.navigateByUrl('/docs/api/server');
     expect(harness.routeNativeElement?.textContent).toContain('Storage interface');
     await harness.navigateByUrl('/features');

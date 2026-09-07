@@ -26,7 +26,24 @@ Open [the local preview](http://localhost:4200).
 - Setup guides: `/docs/` — JavaScript, Angular, React, Vue, Web Component, and React Native.
 - API reference: `/docs/api/` — 248 client options, 95 public APIs, 78 event names, 447 exported symbol records across 23 entrypoints, and complete PHP/ASP.NET Core route settings.
 
-### First-calendar onboarding
+### API reference maintenance
+
+The reference uses a compact searchable index and focused `?entry=eventClick`
+detail URLs. Existing `#option-eventClick` and `#api-setOption` links still open
+their entries. Deprecated entries are hidden from the index by default but remain
+directly accessible. Nested object fields, method parameters/returns, and exported
+type properties are generated from the pinned package declarations; named types
+link to their definitions.
+
+Editorial descriptions, usage fragments, and related examples live in
+`src/app/api-guidance.ts`. `node scripts/verify-api-examples.mjs` checks the option
+and method snippets without running mutations. It also verifies event-bus names
+and rejects placeholder option descriptions. Runtime tests verify the explicitly
+listed default values. Unspecified declaration defaults remain labelled as
+unspecified rather than guessed. API snippets are TypeScript configuration
+fragments, not complete framework applications; they link to the full quickstarts.
+
+### First-calendar experience
 
 The homepage calendar supports creating and editing in-memory events. The docs
 start with complete frontend setup files, followed by practical next steps,

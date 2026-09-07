@@ -1072,6 +1072,334 @@ tbody th {
 .api-reference-shell code {
   font-family: 'SFMono-Regular', Consolas, monospace;
 }
+.reference-top {
+  padding-top: 28px;
+  padding-bottom: 24px;
+}
+.reference-top > div {
+  font-size: 12px;
+  color: var(--muted);
+}
+.reference-top h1 {
+  font-size: clamp(28px, 3vw, 40px);
+  margin: 12px 0 10px;
+  letter-spacing: -1px;
+}
+.reference-top p {
+  margin: 0;
+  font-size: 14px;
+}
+.reference-workspace {
+  display: grid;
+  grid-template-columns: 210px minmax(0, 1fr);
+  gap: 36px;
+  padding-bottom: 70px;
+  align-items: start;
+}
+.reference-sidebar {
+  position: sticky;
+  top: 100px;
+  max-height: calc(100vh - 115px);
+  overflow-y: auto;
+  padding-right: 18px;
+  border-right: 1px solid var(--line);
+  font-size: 13px;
+}
+.reference-sidebar nav {
+  display: grid;
+  gap: 5px;
+}
+.reference-sidebar nav a,
+.reference-sidebar nav button {
+  display: block;
+  padding: 9px 10px;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--ink);
+  text-align: start;
+  font: inherit;
+  text-decoration: none;
+  cursor: pointer;
+}
+.reference-sidebar [aria-current='page'],
+.reference-sidebar button[aria-pressed='true'] {
+  background: #e6f0e8;
+  color: var(--green);
+  font-weight: 700;
+}
+.reference-categories {
+  margin-top: 24px;
+}
+.reference-mobile-topics {
+  display: none;
+}
+.reference-categories h2 {
+  font-size: 11px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin: 0 10px 8px;
+}
+.reference-start {
+  display: block;
+  margin: 24px 10px 8px;
+  line-height: 1.6;
+}
+.reference-main {
+  min-width: 0;
+}
+.reference-search {
+  padding: 18px;
+  background: #f1f5f1;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+.reference-search label {
+  font-size: 12px;
+  font-weight: 600;
+}
+.reference-search input[type='search'] {
+  display: block;
+  width: 100%;
+  margin-top: 8px;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid #9eb6ab;
+  border-radius: 5px;
+  background: white;
+  font: inherit;
+  font-size: 14px;
+}
+.reference-filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  align-items: center;
+  margin-top: 12px;
+}
+.reference-filter-row select {
+  padding: 5px 8px;
+  margin-left: 8px;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  background: white;
+}
+.reference-check {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+}
+.reference-results {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  font-size: 12px;
+  color: var(--muted);
+  margin: 18px 0 10px;
+}
+.reference-index {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  overflow: hidden;
+  background: white;
+}
+.reference-index-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 20px;
+  column-gap: 12px;
+  padding: 16px 20px;
+  text-decoration: none;
+  border-bottom: 1px solid var(--line);
+}
+.reference-index-row:last-child {
+  border-bottom: 0;
+}
+.reference-index-row:hover {
+  background: #f1f6f3;
+}
+.reference-index-row > span:first-child {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.reference-index-row code {
+  font-size: 14px;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+.reference-index-row p {
+  font-size: 13px;
+  margin: 5px 0 0;
+  color: var(--muted);
+  grid-column: 1;
+}
+.reference-index-row > span:last-child {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  align-self: center;
+}
+.reference-more {
+  margin-top: 20px;
+}
+.reference-detail {
+  padding: 24px;
+  margin-top: 20px;
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+.reference-detail-nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 12px;
+  margin-bottom: 28px;
+}
+.reference-detail header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+.reference-detail h2 {
+  font-size: 25px;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.reference-detail h3 {
+  font-size: 16px;
+  margin-bottom: 12px;
+}
+.reference-detail section {
+  margin: 24px 0;
+}
+.reference-purpose {
+  font-size: 16px;
+  line-height: 1.7;
+}
+.reference-note {
+  padding: 14px 16px;
+  border-left: 3px solid #44846b;
+  background: #f3f7f4;
+  font-size: 13px;
+  line-height: 1.7;
+}
+.reference-type-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  font-size: 12px;
+  align-items: baseline;
+}
+.reference-type-links a,
+.reference-field-type {
+  overflow-wrap: anywhere;
+}
+.reference-facts {
+  margin: 24px 0;
+  font-size: 13px;
+}
+.reference-facts > div {
+  display: grid;
+  grid-template-columns: 130px minmax(0, 1fr);
+  gap: 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line);
+}
+.reference-facts dt {
+  font-weight: 700;
+}
+.reference-facts dd {
+  margin: 0;
+  line-height: 1.7;
+}
+.reference-properties {
+  margin: 24px 0;
+}
+.reference-properties summary {
+  padding: 12px 0;
+  cursor: pointer;
+  font-weight: 700;
+}
+.reference-properties table {
+  font-size: 12px;
+}
+.reference-properties td {
+  vertical-align: top;
+}
+.reference-properties small,
+.reference-field-type {
+  display: block;
+  margin-top: 6px;
+  font-size: 11px;
+}
+.reference-module {
+  display: block;
+  margin: 8px 0;
+  overflow-wrap: anywhere;
+}
+.reference-workspace :is(a, button, input, select, summary):focus-visible {
+  outline: 0;
+  box-shadow:
+    0 0 0 2px #fff,
+    0 0 0 4px #28775e;
+}
+@media (max-width: 850px) {
+  .reference-sidebar .reference-categories {
+    display: none;
+  }
+  .reference-mobile-topics {
+    display: block;
+    margin-top: 14px;
+  }
+  .reference-mobile-topics summary {
+    padding: 10px;
+    border: 1px solid var(--line);
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  .reference-mobile-topics nav {
+    padding-top: 10px;
+  }
+  .reference-workspace {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+  }
+  .reference-sidebar {
+    position: static;
+    max-height: none;
+    border-right: 0;
+    padding: 0;
+  }
+  .reference-sidebar nav {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .reference-categories h2 {
+    width: 100%;
+  }
+  .reference-sidebar nav a,
+  .reference-sidebar nav button {
+    padding: 8px;
+    background: #f0f5f1;
+  }
+  .reference-start {
+    margin: 12px 0;
+  }
+  .reference-detail {
+    padding: 16px;
+  }
+  .reference-facts > div {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 4px;
+  }
+  .reference-results {
+    display: block;
+  }
+}
 .api-reference-heading {
   padding-bottom: 42px;
 }

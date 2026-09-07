@@ -146,9 +146,37 @@ function optionEntries(interfaceName, inherited = new Set()) {
         defaultValue: defaultMatch?.[1]?.trim() || '',
         deprecated,
         source: interfaceName,
+        members: membersOf(member.type ? checker.getTypeFromTypeNode(member.type) : undefined),
       },
     ];
   });
+}
+
+// Only inspect declared object properties, not built-in Array/Date/DOM prototypes.
+// Keep one level per record; named member types link to their own exported record.
+function membersOf(type) {
+  if (!type) return [];
+  // Union alternatives must not become one misleading table of required fields.
+  // Keep the union signature and link to each named alternative instead.
+  if (type.isUnion()) return [];
+  const branches = [type];
+  const result = new Map();
+  for (const branch of branches) {
+    if (checker.isArrayType(branch) || checker.isTupleType(branch)) continue;
+    for (const property of checker.getPropertiesOfType(branch)) {
+      const declaration = property.declarations?.[0];
+      if (!declaration || !declaration.getSourceFile().fileName.includes('@wts-calendar/core'))
+        continue;
+      if (!ts.isPropertySignature(declaration) && !ts.isMethodSignature(declaration)) continue;
+      result.set(property.name, {
+        name: property.name,
+        type: declaration.type?.getText().replace(/\s+/g, ' ').trim() || 'unknown',
+        optional: Boolean(declaration.questionToken),
+        description: ts.displayPartsToString(property.getDocumentationComment(checker)),
+      });
+    }
+  }
+  return [...result.values()];
 }
 
 const baseOptions = optionEntries('CalendarOptions');
@@ -172,6 +200,29 @@ const methods = calendarClass.members.flatMap((member) => {
     `Public WtsCalendar ${ts.isGetAccessorDeclaration(member) ? 'property' : 'API method'}.`,
   );
   const deprecated = tagsOf(symbol).find((tag) => tag.name === 'deprecated')?.text || '';
+  const callable =
+    symbol &&
+    checker.getSignaturesOfType(
+      checker.getTypeOfSymbolAtLocation(symbol, member),
+      ts.SignatureKind.Call,
+    )[0];
+  const parameters =
+    callable?.parameters.map((parameter) => {
+      const declaration = parameter.valueDeclaration || parameter.declarations[0];
+      return {
+        name: parameter.name,
+        type: checker.typeToString(
+          checker.getTypeOfSymbolAtLocation(parameter, declaration),
+          declaration,
+          ts.TypeFormatFlags.NoTruncation,
+        ),
+        optional: Boolean(declaration.questionToken || declaration.initializer),
+        description: ts.displayPartsToString(parameter.getDocumentationComment(checker)),
+      };
+    }) || [];
+  const returnType = callable
+    ? checker.typeToString(callable.getReturnType(), member, ts.TypeFormatFlags.NoTruncation)
+    : '';
   if (ts.isPropertyDeclaration(member)) {
     return [
       {
@@ -180,6 +231,8 @@ const methods = calendarClass.members.flatMap((member) => {
         kind: 'Method',
         description,
         deprecated,
+        parameters,
+        returnType,
       },
     ];
   }
@@ -191,6 +244,8 @@ const methods = calendarClass.members.flatMap((member) => {
         kind: 'Method',
         description,
         deprecated,
+        parameters,
+        returnType,
       },
     ];
   }
@@ -202,6 +257,8 @@ const methods = calendarClass.members.flatMap((member) => {
         kind: 'Property',
         description,
         deprecated,
+        parameters,
+        returnType,
       },
     ];
   }
@@ -260,6 +317,7 @@ for (const { entrypoint, path } of entrypointExports) {
         signature,
         description: textOf(symbol, `Public ${kind.toLocaleLowerCase()} export.`),
         exportedFrom: [entrypoint],
+        members: membersOf(checker.getDeclaredTypeOfSymbol(symbol)),
       });
   }
 }
@@ -267,8 +325,48 @@ const symbols = [...symbolMap.values()].sort(
   (a, b) => a.name.localeCompare(b.name) || a.kind.localeCompare(b.kind),
 );
 
+// Public contracts also reference types such as IEvent that are not re-exported
+// from the root entrypoint. Document those fields without claiming an import path.
+const declarations = new Map();
+for (const source of program.getSourceFiles()) {
+  if (!source.fileName.includes('@wts-calendar/core')) continue;
+  for (const node of source.statements) {
+    if ((ts.isInterfaceDeclaration(node) || ts.isTypeAliasDeclaration(node)) && node.name) {
+      declarations.set(node.name.text, checker.getSymbolAtLocation(node.name));
+    }
+  }
+}
+const known = new Set(symbols.map((s) => s.name));
+const referencedTypes = [];
+let referenceText = JSON.stringify([options, methods, symbols]);
+while (true) {
+  const names = [...new Set(referenceText.match(/\b[A-Z][A-Za-z0-9_]+\b/g) || [])];
+  const added = [];
+  for (const name of names) {
+    if (known.has(name) || !declarations.has(name)) continue;
+    known.add(name);
+    const symbol = declarations.get(name);
+    if (!symbol) continue;
+    const record = {
+      name,
+      kind: symbolKind(symbol),
+      signature: symbolSignature(symbol),
+      description: textOf(
+        symbol,
+        'Supporting type referenced by the public API; not a root package export.',
+      ),
+      exportedFrom: [],
+      members: membersOf(checker.getDeclaredTypeOfSymbol(symbol)),
+    };
+    referencedTypes.push(record);
+    added.push(record);
+  }
+  if (!added.length) break;
+  referenceText = JSON.stringify(added);
+}
+
 const generated = await format(
-  `// Generated by scripts/generate-api-reference.mjs from @wts-calendar/core declarations.\n// Do not edit by hand. Run npm run docs:api:generate after changing the pinned package.\n\nexport const CLIENT_PACKAGE = ${JSON.stringify({ name: packageJson.name, version: packageJson.version, entrypoints }, null, 2)} as const;\n\nexport const CLIENT_OPTIONS = ${JSON.stringify(options, null, 2)} as const;\n\nexport const CLIENT_METHODS = ${JSON.stringify(methods, null, 2)} as const;\n\nexport const CLIENT_EVENTS = ${JSON.stringify(events, null, 2)} as const;\n\nexport const CLIENT_SYMBOLS = ${JSON.stringify(symbols, null, 2)} as const;\n\nexport const CLIENT_API_COUNTS = { options: CLIENT_OPTIONS.length, methods: CLIENT_METHODS.length, events: CLIENT_EVENTS.length, symbols: CLIENT_SYMBOLS.length, entrypoints: CLIENT_PACKAGE.entrypoints.length } as const;\n`,
+  `// Generated by scripts/generate-api-reference.mjs from @wts-calendar/core declarations.\n// Do not edit by hand. Run npm run docs:api:generate after changing the pinned package.\n\nexport const CLIENT_PACKAGE = ${JSON.stringify({ name: packageJson.name, version: packageJson.version, entrypoints }, null, 2)} as const;\n\nexport const CLIENT_OPTIONS = ${JSON.stringify(options, null, 2)} as const;\n\nexport const CLIENT_METHODS = ${JSON.stringify(methods, null, 2)} as const;\n\nexport const CLIENT_EVENTS = ${JSON.stringify(events, null, 2)} as const;\n\nexport const CLIENT_SYMBOLS = ${JSON.stringify(symbols, null, 2)} as const;\n\nexport const CLIENT_REFERENCE_TYPES = ${JSON.stringify(referencedTypes, null, 2)} as const;\n\nexport const CLIENT_API_COUNTS = { options: CLIENT_OPTIONS.length, methods: CLIENT_METHODS.length, events: CLIENT_EVENTS.length, symbols: CLIENT_SYMBOLS.length, entrypoints: CLIENT_PACKAGE.entrypoints.length } as const;\n`,
   { parser: 'typescript', printWidth: 100, singleQuote: true },
 );
 
