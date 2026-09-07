@@ -1,6 +1,7 @@
 import { Component, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { DOCS_BASE, DOCS_ROOT } from './site-data';
+import { DOCS_BASE } from './site-data';
+import { QUICK_STARTS } from './quick-starts';
 import { CodeCard } from './code-card';
 import {
   BROWSER_SERVER_ADAPTER,
@@ -14,21 +15,41 @@ import {
       <span class="eyebrow">DEVELOPER DOCUMENTATION</span>
       <h1>Your first calendar.<br /><em>Your own stack.</em></h1>
       <p>
-        Use the JavaScript core directly or choose a framework wrapper. Add the optional PHP or
-        ASP.NET Core server package when your application needs authenticated, durable event APIs.
+        Render a calendar with a visible event, then add editing and connect your data. Choose your
+        framework below. Standard examples run without an account or license key.
       </p>
     </section>
     <div class="docs-layout container">
       <section class="docs-main">
+        <nav class="docs-links" aria-label="Getting started sections">
+          <a routerLink="/docs" fragment="quickstart">Build your first calendar</a>
+          <a routerLink="/docs" fragment="next-steps">Add editing & views</a>
+          <a routerLink="/docs" fragment="troubleshooting">Troubleshooting</a>
+          <a routerLink="/docs" fragment="backend">Optional backend</a>
+        </nav>
         <div class="notice">
+          <strong>Try the result before installing.</strong>
+          <p>
+            Open the event editor example, click a date to add an event, then click an event to edit
+            it. Changes stay in your browser session.
+          </p>
+          <a routerLink="/examples/event-editor">Try the editable calendar →</a>
+        </div>
+        <details class="reference-shortcut">
+          <summary>Already integrating? Open the API reference.</summary>
           <strong>Looking for an exact option, method, route, or default?</strong>
           <p>
             The generated API reference covers every client option and public calendar API, plus the
             complete PHP and ASP.NET Core route-level contracts.
           </p>
           <a routerLink="/docs/api">Search the complete API reference →</a>
-        </div>
-        <h2>1. Choose your frontend integration</h2>
+        </details>
+        <h2 id="quickstart">1. Build your first calendar</h2>
+        <p>
+          Web starters require Node.js 22.22.3 or a compatible version supported by your framework.
+          If you already have an application, install the WTS packages from the command below and
+          adapt the component files. The examples use published core 1.1.1.
+        </p>
         <div class="segmented" aria-label="Framework">
           @for (item of frameworks; track item.name) {
             <button
@@ -42,8 +63,91 @@ import {
         </div>
         <app-code-card label="Install command" [code]="framework().install" />
         <p>{{ framework().note }}</p>
+        @if (framework().name !== 'React Native') {
+          <p>
+            <a
+              class="button"
+              [href]="'starters/' + framework().name.toLowerCase().replaceAll(' ', '-') + '.tar.gz'"
+              download
+              >Download {{ framework().name }} starter →</a
+            >
+          </p>
+          <p>
+            Or extract the starter, run <code>npm install</code> and <code>npm run dev</code>, then
+            open the local address printed in your terminal.
+          </p>
+        }
+        @for (file of framework().files; track file.name) {
+          <app-code-card [label]="file.name" [code]="file.code" />
+        }
+        <div class="notice" role="note">
+          <strong>Expected result: September 2026 with “Team planning” on September 7.</strong>
+          <p>
+            The view and event dates intentionally match. Once it works, use your application’s
+            dates and events. Browser wrappers need the global calendar stylesheet; native screens
+            do not.
+          </p>
+        </div>
         <a [href]="framework().url" class="text-link">Read {{ framework().name }} setup guide ↗</a>
-        <h2>2. Add a backend when your application needs one</h2>
+        <h2 id="next-steps">2. Make it useful for your product</h2>
+        <div class="server-responsibility-grid">
+          <section>
+            <h3>Add and edit events</h3>
+            <p>
+              Use the built-in dialog for date clicks, selection, event updates, and validation.
+            </p>
+            <a routerLink="/examples/event-editor">Open the editor & framework code →</a>
+          </section>
+          <section>
+            <h3>Switch between month, week, and day</h3>
+            <p>Add the optional TimeGrid module and choose the views in your calendar header.</p>
+            <a routerLink="/examples/time-grid-week">Open TimeGrid & configuration →</a>
+          </section>
+          <section>
+            <h3>Load your events</h3>
+            <p>Start with an events array, then load the visible date range from your own API.</p>
+            <a routerLink="/examples/event-sources">Explore sources & caching →</a>
+          </section>
+          <section>
+            <h3>Plan people and resources <span class="badge premium">Premium</span></h3>
+            <p>
+              See the package screenshot, integration code, and supported behavior before requesting
+              a license.
+            </p>
+            <a routerLink="/premium/resource-grid">Read the resource planning guide →</a>
+          </section>
+        </div>
+        <h2 id="troubleshooting">3. If your first calendar does not appear</h2>
+        <dl class="quickstart-help">
+          <dt>The grid has no styling</dt>
+          <dd>
+            Import the calendar CSS globally. Angular component-scoped styles do not replace the
+            global import.
+          </dd>
+          <dt>The calendar appears, then disappears</dt>
+          <dd>
+            Call destroy() only when removing the calendar. Framework wrappers perform their own
+            cleanup.
+          </dd>
+          <dt>The sample event is missing</dt>
+          <dd>
+            Keep viewDate and the sample event in the same month. Use the sample dates above before
+            changing them.
+          </dd>
+          <dt>A week or day view is unavailable</dt>
+          <dd>
+            Import timeGridModule from &#64;wts-calendar/core/time-grid and include it in plugins.
+            The default entry includes month and DayGrid views.
+          </dd>
+          <dt>I see a browser-only or server-rendering error</dt>
+          <dd>
+            Mount the JavaScript core after its DOM element exists. In server-rendered React
+            applications, place the calendar wrapper in a client component and follow your
+            framework’s CSS loading rules.
+          </dd>
+        </dl>
+        <a routerLink="/docs/api">Search options and defaults →</a>
+        <h2 id="backend">4. Add a backend when your application needs one</h2>
         <p>
           Frontend wrappers render the calendar. The PHP and ASP.NET Core packages implement the
           same server-side event REST contract while your application keeps control of
@@ -143,7 +247,7 @@ import {
             </ul>
           </section>
         </div>
-        <h2>3. Connect every frontend to the same endpoint</h2>
+        <h3>Connect every frontend to the same endpoint</h3>
         <p>
           Angular, React, and Vue use the core REST adapter. It carries mutation versions through
           <code>ETag</code> and <code>If-Match</code> so the server can reject stale edits. React
@@ -152,12 +256,6 @@ import {
         </p>
         <app-code-card label="Angular, React and Vue data adapter" [code]="browserServerAdapter" />
         <app-code-card label="React Native API loading" [code]="reactNativeServerClient" />
-        <h2>4. Start with the core</h2>
-        <p>
-          This minimal JavaScript example uses only Standard features. Framework components manage
-          mounting and teardown for you.
-        </p>
-        <app-code-card label="JavaScript / TypeScript" [code]="quickStart" />
         <h2>5. Explore one feature at a time</h2>
         <p>
           The examples directory shows the feature options and runtime behavior together. Optional
@@ -197,44 +295,7 @@ export class DocsPage {
   readonly serverIntegration = signal(this.serverIntegrations[0]!);
   readonly browserServerAdapter = BROWSER_SERVER_ADAPTER;
   readonly reactNativeServerClient = REACT_NATIVE_SERVER_CLIENT;
-  readonly frameworks = [
-    {
-      name: 'JavaScript',
-      install: 'npm install @wts-calendar/core',
-      url: DOCS_BASE + 'README.md',
-      note: 'Mount the core into a browser element, then call destroy() when removing it.',
-    },
-    {
-      name: 'Angular',
-      install: 'npm install @wts-calendar/core @wts-calendar/angular',
-      url: DOCS_ROOT + 'angular/README.md',
-      note: 'A standalone component with typed options, events, outputs, and a controller.',
-    },
-    {
-      name: 'React',
-      install: 'npm install @wts-calendar/core @wts-calendar/react',
-      url: 'https://www.npmjs.com/package/@wts-calendar/react',
-      note: 'Use the React wrapper and its ref-based API. Follow the package README for supported React versions.',
-    },
-    {
-      name: 'Vue',
-      install: 'npm install @wts-calendar/core @wts-calendar/vue',
-      url: 'https://www.npmjs.com/package/@wts-calendar/vue',
-      note: 'A Vue 3 wrapper with reactive inputs and calendar API access.',
-    },
-    {
-      name: 'Web Component',
-      install: 'npm install @wts-calendar/core',
-      url: DOCS_BASE + 'README.md',
-      note: 'Import the web-component entry and follow its registration and property API guide.',
-    },
-    {
-      name: 'React Native',
-      install: 'npm install @wts-calendar/core @wts-calendar/react-native',
-      url: 'https://www.npmjs.com/package/@wts-calendar/react-native',
-      note: 'A separate integration for Android and iOS. This browser showcase is not a native-device test. Follow peer-dependency and platform setup in the package README.',
-    },
-  ];
+  readonly frameworks = QUICK_STARTS;
   readonly framework = signal(this.frameworks[0]);
   readonly guides = [
     { name: 'API reference', file: 'docs/API.md' },
@@ -250,18 +311,4 @@ export class DocsPage {
     { name: 'Migration', file: 'docs/MIGRATION.md' },
     { name: 'Troubleshooting', file: 'docs/TROUBLESHOOTING.md' },
   ];
-  readonly quickStart = [
-    "import { WtsCalendar } from '@wts-calendar/core';",
-    "import '@wts-calendar/core/styles/calendar.css';",
-    '',
-    'const calendar = new WtsCalendar({',
-    "  container: document.querySelector('#calendar'),",
-    "  view: 'month',",
-    "  viewDate: '2026-09-07',",
-    "  events: [{ id: 'hello', title: 'Hello, calendar', start: '2026-09-07' }],",
-    '});',
-    '',
-    '// On unmount:',
-    '// calendar.destroy();',
-  ].join('\n');
 }

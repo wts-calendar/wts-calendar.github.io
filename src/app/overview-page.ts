@@ -11,27 +11,29 @@ import { DEMOS } from './site-data';
         <span class="eyebrow"
           ><span class="status-dot" aria-hidden="true"></span> YOUR SCHEDULE. YOUR WAY.</span
         >
-        <h1>One calendar.<br />Every kind of<br /><em>schedule.</em></h1>
+        <h1>Add a calendar.<br />Make every event<br /><em>editable.</em></h1>
         <p>
-          A flexible JavaScript calendar for the way you build. Beautiful views, thoughtful
-          interactions, and a home in your favorite framework.
+          Build team calendars with event dialogs, drag and resize, recurring events, and time
+          zones. Use typed components for Angular, React, and Vue with your own data and backend.
         </p>
         <div class="actions">
-          <a routerLink="/examples" class="button primary"
-            >Explore examples <span aria-hidden="true">→</span></a
-          ><a routerLink="/docs" class="button">Get started</a>
+          <a routerLink="/examples/event-editor" class="button primary"
+            >Try adding an event <span aria-hidden="true">→</span></a
+          ><a routerLink="/docs" fragment="quickstart" class="button">Build your first calendar</a>
         </div>
         <div class="install-line">
           <span aria-hidden="true">$</span><code>npm install &#64;wts-calendar/core</code>
         </div>
-        <p class="hero-note">TypeScript · Framework wrappers · MIT-licensed Standard</p>
+        <p class="hero-note">
+          Standard: MIT · No license key to start · Premium resource planning available
+        </p>
       </div>
       <div class="hero-preview">
         <div class="preview-caption">
-          <span><span class="status-dot" aria-hidden="true"></span> A LITTLE LESS CHAOS</span
-          ><span>Built with WTS Calendar</span>
+          <span><span class="status-dot" aria-hidden="true"></span> YOUR FIRST CALENDAR</span
+          ><span>Click a date or an event</span>
         </div>
-        <app-calendar-demo [demo]="month" [compact]="true" />
+        <app-calendar-demo [demo]="editor" [compact]="true" />
       </div>
     </section>
     <section class="framework-strip container" aria-label="Supported integrations">
@@ -144,7 +146,7 @@ import { DEMOS } from './site-data';
   `,
 })
 export class OverviewPage {
-  readonly month = DEMOS[0];
+  readonly editor = DEMOS.find((demo) => demo.id === 'event-editor')!;
   readonly cells = Array.from({ length: 28 }, (_, i) => i + 1);
   readonly demoCount = DEMOS.length;
 }

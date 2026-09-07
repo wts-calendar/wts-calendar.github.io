@@ -5,6 +5,10 @@ import { JSDOM } from 'jsdom';
 import { baseHref, directory, indexFiles, parse, siteOrigin } from './pages-lib.mjs';
 
 const titles = new Set();
+for (const id of ['javascript', 'react', 'vue', 'web-component', 'angular']) {
+  const archive = readFileSync(join(directory, 'starters', id + '.tar.gz'));
+  assert.equal(archive.readUInt16BE(0), 0x1f8b, 'Missing or invalid starter archive: ' + id);
+}
 const canonicals = new Set();
 const premiumIds = new Set(
   JSON.parse(

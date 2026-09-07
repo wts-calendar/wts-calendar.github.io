@@ -2,6 +2,9 @@
   "name": "wts-calendar-angular-example",
   "version": "0.0.0",
   "scripts": {
+    "prebuild": "node scripts/prepare-starters.mjs",
+    "prebuild:pages": "node scripts/prepare-starters.mjs",
+    "prebuild:pages:org": "node scripts/prepare-starters.mjs",
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",

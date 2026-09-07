@@ -26,6 +26,27 @@ Open [the local preview](http://localhost:4200).
 - Setup guides: `/docs/` — JavaScript, Angular, React, Vue, Web Component, and React Native.
 - API reference: `/docs/api/` — 248 client options, 95 public APIs, 78 event names, 447 exported symbol records across 23 entrypoints, and complete PHP/ASP.NET Core route settings.
 
+### First-calendar onboarding
+
+The homepage calendar supports creating and editing in-memory events. The docs
+start with complete frontend setup files, followed by practical next steps,
+troubleshooting, and optional backend integration. Server packages are not needed
+to render the first calendar.
+
+The five downloadable web starters are generated from
+`src/app/quick-starts.ts`, the same source used by the visible code cards. Every
+production build creates `/starters/*.tar.gz`; these generated archives are not
+committed. To check clean published-package installations and builds:
+
+```bash
+node scripts/prepare-starters.mjs
+node scripts/verify-starters.mjs
+```
+
+Validation needs npm registry access and uses temporary directories. React Native
+has a separate screen example for an existing native app, not a web starter;
+Android/iOS execution is not covered by this web build check.
+
 The catalogue currently lists 94 capabilities: 63 Standard and 31 Premium. These
 are feature listings, not a compatibility guarantee. The package documentation
 are linked to a source-generated, searchable API reference.

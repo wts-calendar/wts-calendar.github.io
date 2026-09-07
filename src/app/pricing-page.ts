@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { FEATURES, FEATURE_GROUPS, LICENSE_REQUEST } from './site-data';
+import { FEATURES, FEATURE_GROUPS, LICENSE_REQUEST, EVALUATION_REQUEST } from './site-data';
 @Component({
   selector: 'app-pricing-page',
   imports: [RouterLink],
@@ -49,10 +49,36 @@ import { FEATURES, FEATURE_GROUPS, LICENSE_REQUEST } from './site-data';
           <li>Feature-specific signed license entitlement</li>
         </ul>
         <p class="fine-print">
-          Scope, pricing, terms, and support are confirmed privately. No automatic purchase or trial
-          is offered here.
+          Pricing is quoted for your requested features and deployment scope. Before purchasing,
+          contact us to discuss evaluation availability and confirm the license terms.
         </p>
       </article>
+    </section>
+    <section class="narrow-container section-space" id="evaluation">
+      <span class="eyebrow">EVALUATE WITH YOUR OWN USE CASE</span>
+      <h2>Know what you need before requesting a key.</h2>
+      <ol class="evaluation-steps">
+        <li>
+          <strong>Try Standard.</strong> Test the event editor, views, and your framework
+          integration without a license key.
+          <a routerLink="/examples/event-editor">Open the editable calendar →</a>
+        </li>
+        <li>
+          <strong>Review the Premium guide.</strong> Each feature includes a package screenshot,
+          integration code, supported behavior, and limitations.
+          <a routerLink="/premium/resource-grid">Start with resource planning →</a>
+        </li>
+        <li>
+          <strong>Send your requirements.</strong> Include your framework, desired features,
+          developer count, and deployment scope. Ask about evaluation availability, price, updates,
+          support, and redistribution terms.
+        </li>
+      </ol>
+      <a class="button primary" [href]="evaluationRequest">Ask about pricing & evaluation →</a>
+      <p class="fine-print">
+        Evaluation access and commercial terms are confirmed by email before a key is issued. This
+        inquiry does not create a purchase or guarantee a trial. No provider passwords are needed.
+      </p>
     </section>
     <section class="narrow-container section-space">
       <div class="section-heading">
@@ -140,6 +166,7 @@ import { FEATURES, FEATURE_GROUPS, LICENSE_REQUEST } from './site-data';
 })
 export class PricingPage {
   readonly licenseRequest = LICENSE_REQUEST;
+  readonly evaluationRequest = EVALUATION_REQUEST;
   readonly rows = FEATURE_GROUPS.map((name) => ({
     name,
     premium: FEATURES.filter((f) => f.group === name).every((f) => f.tier === 'Premium'),

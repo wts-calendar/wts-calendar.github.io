@@ -39,9 +39,9 @@ export const SEO_PAGES: readonly PageSeo[] = [
   {
     path: '/docs/',
     label: 'Documentation',
-    title: 'Calendar Documentation, PHP & ASP.NET Core APIs | WTS Calendar',
+    title: 'Calendar Quickstart: React, Angular, Vue & JavaScript | WTS Calendar',
     description:
-      'Get started with WTS Calendar in JavaScript, Angular, React, Vue, React Native, PHP, Laravel or ASP.NET Core. Find frontend setup, REST API, ETag, and storage examples.',
+      'Build your first WTS Calendar with complete JavaScript, Angular, React, Vue, Web Component and React Native examples. Add editing, troubleshoot setup, and connect optional PHP or .NET APIs.',
   },
   {
     path: '/docs/api/',

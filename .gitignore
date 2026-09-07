@@ -42,3 +42,5 @@ __screenshots__/
 # System files
 .DS_Store
 Thumbs.db
+# Generated from src/app/quick-starts.ts during builds.
+/public/starters/*.tar.gz

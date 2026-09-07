@@ -5,6 +5,40 @@
 .compact .calendar-surface .wts-calender[data-calendar-view-engine='month'] {
   --month-day-cell-min-height: 68px;
 }
+.quickstart-help dt {
+  font-weight: 650;
+  margin-top: 20px;
+}
+.quickstart-help dd {
+  margin: 6px 0 16px;
+  color: var(--muted);
+}
+.evaluation-steps {
+  padding-left: 24px;
+}
+.evaluation-steps li {
+  padding: 8px 0;
+}
+.evaluation-steps a {
+  display: block;
+  margin-top: 6px;
+}
+.reference-shortcut {
+  margin-top: 24px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+.reference-shortcut summary {
+  cursor: pointer;
+  font-weight: 650;
+}
+.reference-shortcut p {
+  margin-top: 12px;
+}
+.docs-main [id] {
+  scroll-margin-top: 24px;
+}
 :root {
   --green: #13685a;
   --green-dark: #104a40;
@@ -304,7 +338,7 @@ main {
   padding-top: 74px;
   padding-bottom: 62px;
   display: grid;
-  grid-template-columns: 0.85fr 1.25fr;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.25fr);
   gap: 44px;
   align-items: center;
 }
@@ -312,6 +346,9 @@ main {
   font-size: clamp(42px, 5vw, 70px);
   letter-spacing: -0.047em;
   line-height: 1.04;
+}
+.hero-copy {
+  min-width: 0;
 }
 .hero-copy > p {
   max-width: 420px;

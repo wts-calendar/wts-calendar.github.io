@@ -1,4 +1,4 @@
-export const REPOSITORY = 'https://github.com/Suman201/wts-calendar-angular-example';
+export const REPOSITORY = 'https://github.com/wts-calendar/wts-calendar.github.io/tree/wts/source';
 export const DOCS_ROOT =
   'https://github.com/wts-calendar/wts-calendar.github.io/blob/wts/source/package-docs/';
 export const DOCS_BASE = DOCS_ROOT + 'core/';
@@ -6,6 +6,16 @@ export const DOCS_BASE = DOCS_ROOT + 'core/';
 export const PREMIUM_CONTACT_EMAIL: string = 'suman.mandal@webskitters.com';
 export const LICENSE_REQUEST = PREMIUM_CONTACT_EMAIL
   ? 'mailto:' + PREMIUM_CONTACT_EMAIL + '?subject=WTS%20Calendar%20premium%20license%20request'
+  : '';
+export const EVALUATION_REQUEST = PREMIUM_CONTACT_EMAIL
+  ? 'mailto:' +
+    PREMIUM_CONTACT_EMAIL +
+    '?subject=' +
+    encodeURIComponent('WTS Calendar pricing and evaluation inquiry') +
+    '&body=' +
+    encodeURIComponent(
+      'Hello,\n\nI would like to discuss WTS Calendar Premium.\n\nFramework and version:\nFeatures I need:\nNumber of developers:\nApplication and deployment scope:\nEvaluation use case:\n\nPlease confirm pricing, evaluation availability, license scope, updates, and support terms.\n',
+    )
   : '';
 export const PREMIUM_PREVIEWS: Readonly<Record<string, { src: string; alt: string }>> = {
   'Resources & planning': {
