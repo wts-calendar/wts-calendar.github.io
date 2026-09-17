@@ -5,6 +5,8 @@ import {
   controlValue,
   controlsForView,
   runtimeChange,
+  controlAvailable,
+  RUNTIME_PACKAGE_VERSION,
   type RuntimeControl,
   type RuntimeSnapshot,
 } from './runtime-option-schema';
@@ -12,15 +14,16 @@ import {
 @Component({
   selector: 'app-runtime-options',
   template: `
-    <details class="runtime-options" [open]="demoId() === 'themes'">
-      <summary>
-        Configure live options <span>{{ controls().length }} options for this view</span>
-      </summary>
+    <section class="runtime-options">
+      <header class="runtime-options-header">
+        <div>
+          <span class="eyebrow">CONFIGURATION</span>
+          <h2>Configurable options</h2>
+        </div>
+        <span>{{ controls().length }} for this view</span>
+      </header>
       <div class="runtime-options-content">
-        <p>
-          Changes apply immediately through <code>calendar.setOptions()</code>. Switch views to
-          explore their relevant options.
-        </p>
+        <p>Changes apply immediately through <code>calendar.setOptions()</code>.</p>
         <div class="runtime-options-actions">
           <label class="runtime-search"
             >Find an option
@@ -51,8 +54,8 @@ import {
           </button>
         </div>
         <p class="runtime-reset-note">
-          Reset keeps the current view, date, and event edits. Language and time-zone controls stay
-          in their dedicated examples. Search checks every group for this view.
+          Reset keeps the current view, date, and event edits. Localization and time zone stay in
+          the Customization sidebar. Search checks every group for this view.
         </p>
         @for (group of groups(); track group.name) {
           <fieldset [disabled]="!options()">
@@ -60,11 +63,52 @@ import {
             <div class="runtime-options-grid">
               @for (control of group.controls; track id(control)) {
                 <div class="runtime-option" [attr.data-runtime-option]="id(control)">
-                  <label [for]="'runtime-' + id(control)">{{ control.label }}</label>
-                  @if (control.choices; as choices) {
+                  @if (control.preset === 'business-hours-days') {
+                    <span class="runtime-option-label">{{ control.label }}</span>
+                  } @else {
+                    <label [for]="'runtime-' + id(control)">{{ control.label }}</label>
+                  }
+                  @if (control.preset === 'business-hours-days') {
+                    <div
+                      class="runtime-weekdays"
+                      [id]="'runtime-' + id(control)"
+                      role="group"
+                      aria-label="Business days"
+                      [attr.aria-describedby]="'runtime-help-' + id(control)"
+                    >
+                      @for (day of weekdays; track day.value) {
+                        <label [attr.title]="day.label">
+                          <input
+                            type="checkbox"
+                            [checked]="weekdayChecked(day.value)"
+                            [disabled]="!businessHoursEnabled()"
+                            (change)="changeWeekday(control, day.value, $event)"
+                          />
+                          <span>{{ day.short }}</span>
+                        </label>
+                      }
+                    </div>
+                  } @else if (
+                    control.preset === 'business-hours-start' ||
+                    control.preset === 'business-hours-end'
+                  ) {
+                    <input
+                      class="runtime-time"
+                      type="text"
+                      inputmode="numeric"
+                      maxlength="5"
+                      placeholder="HH:mm"
+                      [id]="'runtime-' + id(control)"
+                      [value]="rawValue(control)"
+                      [disabled]="!businessHoursEnabled()"
+                      [attr.aria-describedby]="'runtime-help-' + id(control)"
+                      (change)="change(control, $event)"
+                    />
+                  } @else if (control.choices; as choices) {
                     <select
                       [id]="'runtime-' + id(control)"
                       [value]="value(control)"
+                      [disabled]="!available(control)"
                       [attr.aria-describedby]="'runtime-help-' + id(control)"
                       (change)="change(control, $event)"
                     >
@@ -94,6 +138,15 @@ import {
                   <p [id]="'runtime-help-' + id(control)">
                     <code>{{ id(control) }}</code> · {{ control.help }}
                   </p>
+                  @if (!available(control)) {
+                    <p>
+                      Unavailable in core {{ packageVersion }}.
+                      <a href="docs/appearance">Appearance guide →</a>
+                    </p>
+                  }
+                  @if (validationTarget() === id(control)) {
+                    <p class="runtime-validation" role="alert">{{ validationError() }}</p>
+                  }
                 </div>
               }
             </div>
@@ -105,10 +158,12 @@ import {
           </p>
         }
       </div>
-    </details>
+    </section>
   `,
 })
 export class RuntimeOptions {
+  readonly available = controlAvailable;
+  readonly packageVersion = RUNTIME_PACKAGE_VERSION;
   readonly demoId = input.required<string>();
   readonly view = input.required<string>();
   readonly options = input<RuntimeSnapshot | null>(null);
@@ -116,7 +171,18 @@ export class RuntimeOptions {
   readonly apply = output<CalendarOptionChanges>();
   readonly reset = output<void>();
   readonly query = signal('');
-  readonly selectedGroup = signal('recommended');
+  readonly selectedGroup = signal('all');
+  readonly validationError = signal('');
+  readonly validationTarget = signal('');
+  readonly weekdays = [
+    { value: 1, short: 'M', label: 'Monday' },
+    { value: 2, short: 'T', label: 'Tuesday' },
+    { value: 3, short: 'W', label: 'Wednesday' },
+    { value: 4, short: 'T', label: 'Thursday' },
+    { value: 5, short: 'F', label: 'Friday' },
+    { value: 6, short: 'S', label: 'Saturday' },
+    { value: 0, short: 'S', label: 'Sunday' },
+  ] as const;
   readonly controls = computed(() => controlsForView(this.demoId(), this.view()));
   readonly groupNames = computed(() => [
     ...new Set(this.controls().map((control) => control.group)),
@@ -124,7 +190,7 @@ export class RuntimeOptions {
   readonly groupValue = computed(() =>
     ['recommended', 'all', ...this.groupNames()].includes(this.selectedGroup())
       ? this.selectedGroup()
-      : 'recommended',
+      : 'all',
   );
   readonly recommendedGroup = computed(() => {
     if (this.demoId() === 'themes') return 'Appearance';
@@ -168,8 +234,20 @@ export class RuntimeOptions {
   value(control: RuntimeControl): string {
     return this.encoded(controlValue(this.options(), control, this.view()));
   }
+  rawValue(control: RuntimeControl): string {
+    return String(controlValue(this.options(), control, this.view()) ?? '');
+  }
   checked(control: RuntimeControl): boolean {
     return controlValue(this.options(), control) === true;
+  }
+  businessHoursEnabled(): boolean {
+    const control = this.controls().find((item) => item.preset === 'business-hours-policy');
+    return control ? this.checked(control) : false;
+  }
+  weekdayChecked(day: number): boolean {
+    const control = this.controls().find((item) => item.preset === 'business-hours-days');
+    const value = control ? controlValue(this.options(), control) : [];
+    return Array.isArray(value) && value.includes(day);
   }
   knownValue(control: RuntimeControl): boolean {
     return Boolean(
@@ -177,15 +255,43 @@ export class RuntimeOptions {
     );
   }
   change(control: RuntimeControl, event: Event): void {
+    if (!controlAvailable(control)) return;
     const target = event.target as HTMLInputElement | HTMLSelectElement;
-    const value = control.choices
-      ? control.choices.find((choice) => this.encoded(choice.value) === target.value)?.value
-      : (target as HTMLInputElement).checked;
+    const value =
+      control.preset === 'business-hours-start' || control.preset === 'business-hours-end'
+        ? target.value
+        : control.choices
+          ? control.choices.find((choice) => this.encoded(choice.value) === target.value)?.value
+          : (target as HTMLInputElement).checked;
     if (!this.options()) return;
-    this.apply.emit(runtimeChange(control, value));
+    this.applyControl(control, value);
     // Rejected API updates must not leave the input displaying an unapplied
     // value. Successful changes are rebound from the next API snapshot.
-    if (control.choices) target.value = this.value(control);
+    if (control.preset === 'business-hours-start' || control.preset === 'business-hours-end')
+      target.value = this.rawValue(control);
+    else if (control.choices) target.value = this.value(control);
     else (target as HTMLInputElement).checked = this.checked(control);
+  }
+  changeWeekday(control: RuntimeControl, day: number, event: Event): void {
+    if (!this.options()) return;
+    const target = event.target as HTMLInputElement;
+    const current = Array.isArray(controlValue(this.options(), control))
+      ? (controlValue(this.options(), control) as number[])
+      : [];
+    const days = new Set(current);
+    if (target.checked) days.add(day);
+    else days.delete(day);
+    this.applyControl(control, [...days]);
+    target.checked = this.weekdayChecked(day);
+  }
+  private applyControl(control: RuntimeControl, value: unknown): void {
+    try {
+      this.apply.emit(runtimeChange(control, value, this.options()));
+      this.validationError.set('');
+      this.validationTarget.set('');
+    } catch (error) {
+      this.validationError.set(error instanceof Error ? error.message : String(error));
+      this.validationTarget.set(this.id(control));
+    }
   }
 }

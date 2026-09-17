@@ -8,9 +8,9 @@ afterEach(() => vi.restoreAllMocks());
 
 describe('Locale catalog', () => {
   const choices = createLocaleChoices(calendarLocales, ['en-US', 'invalid_locale']);
-  it('includes every package pack and every browser-supported CLDR locale without duplicates', () => {
+  it('offers each browser-supported language once and includes every package language', () => {
     const values = choices.map((choice) => choice.value);
-    expect(values.length).toBeGreaterThan(200);
+    expect(values.length).toBeGreaterThan(100);
     expect(new Set(values).size).toBe(values.length);
     for (const pack of calendarLocales) expect(values).toContain(pack.code);
     const canonical = catalog.locales.flatMap((code) => {
@@ -22,22 +22,21 @@ describe('Locale catalog', () => {
     });
     for (const code of Intl.DateTimeFormat.supportedLocalesOf(canonical, {
       localeMatcher: 'lookup',
-    }))
-      expect(values).toContain(code);
-    expect(values).toContain('en-US');
+    })) expect(values).toContain(new Intl.Locale(code).language);
+    expect(values).toContain('en');
     expect(values).not.toContain('invalid_locale');
   });
-  it('searches English names, native names, accents, and regional locale codes', () => {
-    const french = choices.find((choice) => choice.value === 'fr-CA')!;
+  it('shows only the language while retaining native names and locale aliases for search', () => {
+    const french = choices.find((choice) => choice.value === 'fr')!;
     expect(normalizeSearch(french.label)).toContain('french');
-    expect(normalizeSearch(french.label)).toContain('francais');
-    expect(normalizeSearch(french.value)).toBe('fr ca');
-    expect(choices.find((choice) => choice.value === 'bn')?.label).toContain('বাংলা');
+    expect(normalizeSearch(french.keywords ?? '')).toContain('francais');
+    expect(normalizeSearch(french.keywords ?? '')).toContain('fr ca');
+    expect(choices.find((choice) => choice.value === 'bn')?.label).toBe('Bangla');
+    expect(choices.every((choice) => choice.detail === undefined)).toBe(true);
   });
-  it('does not misrepresent date formatting as translated package UI', () => {
-    expect(choices.find((choice) => choice.value === 'fr-CA')?.packageTranslations).toBe(true);
+  it('tracks package translations without displaying that metadata in the option', () => {
+    expect(choices.find((choice) => choice.value === 'fr')?.packageTranslations).toBe(true);
     expect(choices.find((choice) => choice.value === 'bn')?.packageTranslations).toBe(false);
-    expect(choices.find((choice) => choice.value === 'bn')?.detail).toContain('English UI labels');
   });
   it('handles Arabic, Hebrew, Persian, Urdu and script-dependent directions', () => {
     for (const code of ['ar', 'he', 'fa', 'ur', 'pa-Arab'])
@@ -56,6 +55,7 @@ describe('Time-zone catalog', () => {
       .filter((c) => c.value !== 'local')
       .map((c) => new Intl.DateTimeFormat('en', { timeZone: c.value }).resolvedOptions().timeZone);
     expect(new Set(canonical).size).toBe(canonical.length);
+    expect(choices.every((choice) => choice.detail === undefined)).toBe(true);
     for (const zone of Intl.supportedValuesOf('timeZone'))
       expect(canonical).toContain(
         new Intl.DateTimeFormat('en', { timeZone: zone }).resolvedOptions().timeZone,

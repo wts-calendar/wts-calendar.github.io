@@ -37,6 +37,13 @@ export const SEO_PAGES: readonly PageSeo[] = [
       'Compare MIT-licensed Standard features and Premium resource planning, interoperability and workflows. Contact WTS Calendar for pricing and a license key.',
   },
   {
+    path: '/contact/',
+    label: 'Contact',
+    title: 'Contact WTS Calendar | Product & Integration Support',
+    description:
+      'Contact WTS Calendar about package integration, product capabilities, documentation, technical questions, or commercial support for your application.',
+  },
+  {
     path: '/docs/',
     label: 'Documentation',
     title: 'Calendar Quickstart: React, Angular, Vue & JavaScript | WTS Calendar',
@@ -49,6 +56,13 @@ export const SEO_PAGES: readonly PageSeo[] = [
     title: 'Complete Calendar API & Options Reference | WTS Calendar',
     description:
       'Search every WTS Calendar client option and public method plus complete PHP and ASP.NET Core routes, settings, event fields, errors, storage, and production guidance.',
+  },
+  {
+    path: '/docs/appearance/',
+    label: 'Themes & appearance',
+    title: 'Themes & Responsive Appearance | WTS Calendar',
+    description:
+      'Use WTS Calendar MUI, shadcn/ui and Angular Material adapters, responsive dayNarrowWidth labels, and automatic eventContrastColor in the published package.',
   },
   {
     path: '/docs/api/methods/',

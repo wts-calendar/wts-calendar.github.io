@@ -10,6 +10,7 @@ import {
   controlId,
   runtimeChange,
   RUNTIME_CONTROLS,
+  controlAvailable,
 } from './runtime-option-schema';
 import { DEMOS } from './site-data';
 
@@ -72,7 +73,7 @@ describe('Runtime option contracts', () => {
       ),
     ).toBe(false);
   });
-  it('shows view-relevant options and requires the loaded interaction module', () => {
+  it('shows interaction controls on every supported grid view', () => {
     const ids = (demo: string, view: string) => controlsForView(demo, view).map(controlId);
     expect(ids('month', 'month')).toContain('dayMaxEvents');
     expect(ids('month', 'month')).not.toContain('slotDuration');
@@ -80,7 +81,8 @@ describe('Runtime option contracts', () => {
     expect(ids('themes', 'week')).not.toContain('dayMaxEvents');
     expect(ids('themes', 'list-week')).toContain('listView.showEmptyDays');
     expect(ids('themes', 'list-week')).not.toContain('editable');
-    expect(ids('time-grid-week', 'week')).not.toContain('editable');
+    expect(ids('time-grid-week', 'week')).toContain('editable');
+    expect(ids('month', 'month')).toContain('businessHoursPolicy');
     expect(ids('interactions', 'week')).toContain('editable');
     expect(ids('multi-month', 'multi-month')).toContain('multiMonth.columns');
   });
@@ -90,6 +92,56 @@ describe('Runtime option contracts', () => {
     const list = RUNTIME_CONTROLS.find((control) => control.member === 'showEmptyDays')!;
     expect(runtimeChange(list, true)).toEqual({ listView: { showEmptyDays: true } });
     expect(() => runtimeChange(list, 'true')).toThrow('supported value');
+    const businessHours = RUNTIME_CONTROLS.find(
+      (control) => control.preset === 'business-hours-policy',
+    )!;
+    expect(runtimeChange(businessHours, true)).toEqual({
+      businessHours: {
+        daysOfWeek: [1, 2, 3, 4, 5],
+        startTime: '09:00',
+        endTime: '17:00',
+      },
+      eventConstraint: 'businessHours',
+      selectConstraint: 'businessHours',
+    });
+    expect(
+      controlValue(
+        {
+          businessHours: true,
+          eventConstraint: 'businessHours',
+          selectConstraint: 'businessHours',
+        },
+        businessHours,
+      ),
+    ).toBe(true);
+    const days = RUNTIME_CONTROLS.find((control) => control.preset === 'business-hours-days')!;
+    const start = RUNTIME_CONTROLS.find((control) => control.preset === 'business-hours-start')!;
+    const configured = {
+      businessHours: [
+        { daysOfWeek: [1, 2, 3, 4, 5], startTime: '09:00', endTime: '12:00' },
+        { daysOfWeek: [1, 2, 3, 4, 5], startTime: '13:00', endTime: '17:00' },
+      ],
+      eventConstraint: 'businessHours',
+      selectConstraint: 'businessHours',
+    };
+    expect(runtimeChange(days, [1, 3, 5], configured).businessHours).toEqual([
+      { daysOfWeek: [1, 3, 5], startTime: '09:00', endTime: '12:00' },
+      { daysOfWeek: [1, 2, 3, 4, 5], startTime: '13:00', endTime: '17:00' },
+    ]);
+    expect(runtimeChange(start, '08:30', configured).businessHours).toEqual([
+      { daysOfWeek: [1, 2, 3, 4, 5], startTime: '08:30', endTime: '12:00' },
+      { daysOfWeek: [1, 2, 3, 4, 5], startTime: '13:00', endTime: '17:00' },
+    ]);
+    expect(
+      runtimeChange(start, '08:30', {
+        businessHours: { startTime: '09:00', endTime: '17:00' },
+      }).businessHours,
+    ).toEqual({
+      daysOfWeek: [0, 1, 2, 3, 4, 5, 6],
+      startTime: '08:30',
+      endTime: '17:00',
+    });
+    expect(() => runtimeChange(days, [], configured)).toThrow('one business day');
   });
   it('shows the effective per-view duration when it overrides the global value', () => {
     const duration = RUNTIME_CONTROLS.find((control) => control.key === 'slotDuration')!;
@@ -174,7 +226,13 @@ describe('Live options with the published package', () => {
       async () => {
         const { fixture, component, api, change } = await mount(id);
         const root = fixture.nativeElement.querySelector('.wts-calender');
-        const controls = controlsForView(id, api.getView().type);
+        const controls = controlsForView(id, api.getView().type).filter(
+          (control) =>
+            controlAvailable(control) &&
+            !['business-hours-days', 'business-hours-start', 'business-hours-end'].includes(
+              control.preset ?? '',
+            ),
+        );
         for (const control of controls) {
           const before = controlValue(component.runtimeOptions(), control);
           const value = control.choices
@@ -307,7 +365,7 @@ describe('Live options with the published package', () => {
     fixture.destroy();
   });
   it('resets time zones without moving the displayed civil date', async () => {
-    const { fixture, component, api } = await mount('time-zones');
+    const { fixture, component, api } = await mount('themes');
     component.setTimeZone('Asia/Kolkata');
     api.changeView('day', '2026-09-21');
     await api.whenIdle();

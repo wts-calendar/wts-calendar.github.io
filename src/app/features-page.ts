@@ -6,11 +6,17 @@ import { premiumScreenshot } from './premium-screenshots';
   selector: 'app-features-page',
   imports: [RouterLink],
   template: ` <section class="page-heading container">
-      <span class="eyebrow">THE FEATURE DIRECTORY</span>
-      <h1>Find your next<br /><em>possibility.</em></h1>
+      <span class="eyebrow">REFERENCE / FEATURES</span>
+      <h1>Calendar capabilities</h1>
       <p>
-        From a simple month calendar to advanced scheduling. Explore the package, see what is
-        included, and find your starting point.
+        Search the implemented views, event behavior, integrations, and Premium modules. Each item
+        links to a runnable example or its integration guide.
+      </p>
+      <p>
+        <a routerLink="/docs/appearance"
+          >MUI, shadcn/ui, Angular Material, responsive day labels, and automatic event contrast
+          →</a
+        >
       </p>
     </section>
     <section class="container catalogue" aria-label="Feature catalogue">
@@ -74,7 +80,11 @@ import { premiumScreenshot } from './premium-screenshots';
                     >Try example <span aria-hidden="true">→</span></a
                   >
                 } @else {
-                  <a [href]="docs + feature.guide" class="card-link"
+                  <a
+                    [href]="docs + feature.guide"
+                    class="card-link"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     >Read guide <span aria-hidden="true">↗</span></a
                   >
                 }

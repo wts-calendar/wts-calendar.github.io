@@ -12,8 +12,8 @@ import {
   selector: 'app-docs-page',
   imports: [RouterLink, CodeCard],
   template: ` <section class="page-heading container">
-      <span class="eyebrow">DEVELOPER DOCUMENTATION</span>
-      <h1>Your first calendar.<br /><em>Your own stack.</em></h1>
+      <span class="eyebrow">DOCUMENTATION / QUICKSTART</span>
+      <h1>Build with WTS Calendar</h1>
       <p>
         Render a calendar with a visible event, then add editing and connect your data. Choose your
         framework below. Standard examples run without an account or license key.
@@ -26,6 +26,7 @@ import {
           <a routerLink="/docs" fragment="next-steps">Add editing & views</a>
           <a routerLink="/docs" fragment="troubleshooting">Troubleshooting</a>
           <a routerLink="/docs" fragment="backend">Optional backend</a>
+          <a routerLink="/docs/appearance">Themes & appearance</a>
         </nav>
         <div class="notice">
           <strong>Try the result before installing.</strong>
@@ -48,7 +49,7 @@ import {
         <p>
           Web starters require Node.js 22.22.3 or a compatible version supported by your framework.
           If you already have an application, install the WTS packages from the command below and
-          adapt the component files. The examples use published core 1.1.1.
+          adapt the component files. The examples use published core 1.1.3.
         </p>
         <div class="segmented" aria-label="Framework">
           @for (item of frameworks; track item.name) {
@@ -88,7 +89,9 @@ import {
             do not.
           </p>
         </div>
-        <a [href]="framework().url" class="text-link">Read {{ framework().name }} setup guide ↗</a>
+        <a [href]="framework().url" class="text-link" target="_blank" rel="noopener noreferrer"
+          >Read {{ framework().name }} setup guide ↗</a
+        >
         <h2 id="next-steps">2. Make it useful for your product</h2>
         <div class="server-responsibility-grid">
           <section>
@@ -178,7 +181,12 @@ import {
           <a [href]="serverIntegration().packageUrl" class="text-link">
             {{ serverIntegration().packageLabel }} ↗
           </a>
-          <a [href]="serverIntegration().exampleUrl" class="text-link">
+          <a
+            [href]="serverIntegration().exampleUrl"
+            class="text-link"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             {{ serverIntegration().exampleLabel }} ↗
           </a>
         </div>
@@ -275,7 +283,9 @@ import {
         <span class="eyebrow">REFERENCE LIBRARY</span>
         <a routerLink="/docs/api"><strong>Complete API & options reference →</strong></a>
         @for (guide of guides; track guide.file) {
-          <a [href]="docs + guide.file">{{ guide.name }} ↗</a>
+          <a [href]="docs + guide.file" target="_blank" rel="noopener noreferrer"
+            >{{ guide.name }} ↗</a
+          >
         }
         <div class="notice">
           <strong>Moving an existing calendar to WTS?</strong>

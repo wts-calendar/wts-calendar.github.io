@@ -100,5 +100,5 @@ console.log(
     docs.length +
     ' local guide targets, ' +
     premium.length +
-    ' Premium guides, safe static previews, standard-only runtime modules, email-only license contact.',
+    ' Premium guides, safe static previews, standard-only runtime modules, private request-form contact.',
 );

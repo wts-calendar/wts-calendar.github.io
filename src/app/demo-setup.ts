@@ -4,18 +4,19 @@ import { DEMOS, LIST_VIEWS } from './site-data';
 import { DEMO_DATE, sampleEvents } from './sample-data';
 
 const GRID_VIEWS = ['month', 'week', 'day'] as const;
+const DAY_GRID_VIEWS = ['day-grid-week', 'day-grid-day'] as const;
 const STANDARD_VIEWS = [...GRID_VIEWS, 'list-week'] as const;
-// Feature demos switch the same calendar instance; dedicated layout examples
-// stay focused on their named view. List has its own range controls.
+// Primary and feature demos switch the same calendar instance. Specialized
+// long-range layouts stay focused, while List keeps its own range controls.
 export const DEMO_HEADER_VIEWS: Readonly<Record<string, readonly string[]>> = {
+  month: GRID_VIEWS,
+  'day-grid-week': DAY_GRID_VIEWS,
   list: LIST_VIEWS,
   interactions: GRID_VIEWS,
   'event-editor': GRID_VIEWS,
   // List views intentionally omit background shading.
   background: GRID_VIEWS,
   themes: STANDARD_VIEWS,
-  'time-zones': STANDARD_VIEWS,
-  'locale-rtl': STANDARD_VIEWS,
   'render-hooks': STANDARD_VIEWS,
   accessibility: STANDARD_VIEWS,
 };
@@ -64,7 +65,8 @@ export async function createDemoSetup(
   if (availableViews.some((view) => view.startsWith('list'))) {
     use('listModule', 'list', (await import('@wts-calendar/core/list')).listModule);
   }
-  if (['interactions', 'constraints', 'event-editor', 'accessibility'].includes(id)) {
+  const supportsGridInteraction = availableViews.some((view) => !view.startsWith('list'));
+  if (supportsGridInteraction) {
     use(
       'interactionModule',
       'interaction',
@@ -98,8 +100,8 @@ export async function createDemoSetup(
     // unnecessary inside an example card (and adds a gutter to month galleries).
     footerScrollbarSticky: false,
     dayMaxEvents: 3,
-    editable: ['interactions', 'constraints', 'event-editor', 'accessibility'].includes(id),
-    selectable: ['interactions', 'constraints', 'event-editor'].includes(id),
+    editable: supportsGridInteraction,
+    selectable: supportsGridInteraction,
     plugins,
   };
   const events = sampleEvents();
@@ -120,6 +122,8 @@ export async function createDemoSetup(
       month: 'Month',
       week: 'Week',
       day: 'Day',
+      'day-grid-week': 'Week',
+      'day-grid-day': 'Day',
       'list-day': 'Day',
       'list-week': id === 'list' ? 'Week' : 'List',
       'list-month': 'Month',
@@ -131,6 +135,8 @@ export async function createDemoSetup(
       month: 'Show month view',
       week: 'Show week view',
       day: 'Show day view',
+      'day-grid-week': 'Show week DayGrid',
+      'day-grid-day': 'Show day DayGrid',
       'list-day': 'Show day agenda',
       'list-week': 'Show week agenda',
       'list-month': 'Show month agenda',
@@ -145,17 +151,9 @@ export async function createDemoSetup(
         },
       };
     }
-    if (id === 'locale-rtl') {
-      // Let the selected package language pack translate the native view labels.
-      options.buttonText = { prev: '‹', next: '›' };
-    }
   }
   if (availableViews.some((view) => view === 'day' || view === 'week')) {
     Object.assign(options, { slotMinTime: '07:00', slotMaxTime: '20:00', scrollTime: '08:00' });
-  }
-  if (id === 'time-zones') {
-    // A full-day range keeps shifted events reachable in every display zone.
-    Object.assign(options, { slotMinTime: '00:00', slotMaxTime: '24:00' });
   }
   // Galleries and single-row DayGrids follow their content. Only month and
   // hourly/list previews need a full-height frame.

@@ -73,11 +73,11 @@ requires user-authorized OAuth. No WTS package includes a provider credential.
 ## Premium licenses
 
 Follow [Premium licensing](PREMIUM-LICENSING.md) when a developer asks how to
-enable paid features. A WTS premium license is a maintainer-issued, signed
-entitlement token; never describe it as a Google or Microsoft API key. Direct
-the developer to the documented maintainer contact route and never generate,
-invent, or expose a realistic token. The token must be verified with
-`verifyCalendarLicense` and the returned grant passed to the premium API.
+enable paid features. A WTS premium license is a backend-verified deployment entitlement; never
+describe it as a Google or Microsoft API key. Use `connectCalendarLicense`
+and pass the live session to premium APIs, or `WtsCalendar.create` to own
+verification and cleanup. Never invent or expose real deployment keys.
+The old signed-token APIs have been removed.
 
 ## Security and rendering
 

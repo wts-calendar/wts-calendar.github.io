@@ -1,12 +1,13 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal, viewChild } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink, RouterLinkActive } from '@angular/router';
 import { CalendarDemo } from './calendar-demo';
 import { DEMOS, LIST_VIEWS } from './site-data';
 import { PremiumNavigation } from './premium-navigation';
+import { SearchableSelect } from './searchable-select';
 @Component({
   selector: 'app-examples-page',
-  imports: [RouterLink, RouterLinkActive, CalendarDemo, PremiumNavigation],
+  imports: [RouterLink, RouterLinkActive, CalendarDemo, PremiumNavigation, SearchableSelect],
   template: ` <div class="examples-layout container">
     <aside class="examples-sidebar">
       <span class="eyebrow">EXAMPLE DIRECTORY</span>
@@ -20,6 +21,30 @@ import { PremiumNavigation } from './premium-navigation';
         @for (group of groups; track group) {
           @if (inGroup(group).length) {
             <h2>{{ group }}</h2>
+            @if (group === 'Customization') {
+              @if (calendarDemo(); as calendar) {
+                <div class="sidebar-intl-controls" aria-label="Calendar localization and time zone">
+                  <app-searchable-select
+                    controlId="sidebar-locale"
+                    label="Localization"
+                    placeholder="Search language…"
+                    [choices]="calendar.localeChoices()"
+                    [value]="calendar.selectedLocale()"
+                    [disabled]="!calendar.controller.ready()"
+                    (valueChange)="calendar.setLocale($event)"
+                  />
+                  <app-searchable-select
+                    controlId="sidebar-time-zone"
+                    label="Time zone"
+                    placeholder="Search time zone…"
+                    [choices]="calendar.timeZoneChoices()"
+                    [value]="calendar.selectedTimeZone()"
+                    [disabled]="!calendar.controller.ready()"
+                    (valueChange)="calendar.setTimeZone($event)"
+                  />
+                </div>
+              }
+            }
             @for (example of inGroup(group); track example.id) {
               <a
                 [routerLink]="['/examples', example.id]"
@@ -39,6 +64,12 @@ import { PremiumNavigation } from './premium-navigation';
       </div>
     </aside>
     <section class="example-main">
+      <p class="reference-note">
+        <a routerLink="/docs/appearance"
+          >New theme integrations, responsive labels & automatic contrast</a
+        >
+        · Unreleased; examples use the installed package.
+      </p>
       @for (demo of selected(); track demo.id + ':' + demo.view) {
         <div class="example-heading">
           <div class="breadcrumb">
@@ -70,6 +101,7 @@ import { PremiumNavigation } from './premium-navigation';
 })
 export class ExamplesPage {
   readonly query = signal('');
+  readonly calendarDemo = viewChild(CalendarDemo);
   private readonly route = inject(ActivatedRoute);
   private readonly params = toSignal(this.route.paramMap);
   private readonly queryParams = toSignal(this.route.queryParamMap);
@@ -90,6 +122,7 @@ export class ExamplesPage {
     return DEMOS.filter(
       (demo) =>
         demo.group === group &&
+        demo.directory !== false &&
         demo.title.toLowerCase().includes(this.query().trim().toLowerCase()),
     );
   }

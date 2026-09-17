@@ -32,7 +32,7 @@ try {
       );
     };
     const angular = id === 'angular';
-    const dependencies = { '@wts-calendar/core': '1.1.1' };
+    const dependencies = { '@wts-calendar/core': '1.1.3' };
     const devDependencies = { typescript: '~6.0.2' };
     if (id === 'react')
       Object.assign(dependencies, {

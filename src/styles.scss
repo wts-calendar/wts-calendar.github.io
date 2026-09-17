@@ -40,13 +40,13 @@
   scroll-margin-top: 24px;
 }
 :root {
-  --green: #13685a;
-  --green-dark: #104a40;
-  --ink: #18352e;
-  --muted: #586c64;
-  --line: #dce5df;
-  --paper: #fcfdfb;
-  --wash: #f1f6f1;
+  --green: #0b6b5f;
+  --green-dark: #075047;
+  --ink: #17211e;
+  --muted: #5d6a65;
+  --line: #d4ddd8;
+  --paper: #fbfcfa;
+  --wash: #f1f4f2;
   --gold: #775014;
   color-scheme: light;
   font-family:
@@ -64,8 +64,14 @@
 }
 body {
   margin: 0;
-  font-size: 15px;
-  line-height: 1.6;
+  font-size: 14px;
+  line-height: 1.55;
+  background:
+    linear-gradient(90deg, transparent 31px, #e8eeea 32px, transparent 33px) 0 0 / 100% 100%,
+    var(--paper);
+}
+body:has(.license-request-dialog[open]) {
+  overflow: hidden;
 }
 a {
   color: var(--green);
@@ -91,7 +97,7 @@ button {
   border: 1px solid var(--line);
   color: var(--ink);
   padding: 9px 14px;
-  border-radius: 6px;
+  border-radius: 4px;
   line-height: 1.4;
 }
 button:hover {
@@ -108,7 +114,7 @@ select {
   color: var(--ink);
   background: white;
   border: 1px solid #aabcb1;
-  border-radius: 5px;
+  border-radius: 3px;
   min-height: 44px;
 }
 input[type='checkbox'] {
@@ -131,16 +137,16 @@ p {
 h1,
 h2,
 h3 {
-  font-weight: 550;
-  letter-spacing: -0.035em;
-  line-height: 1.12;
+  font-weight: 650;
+  letter-spacing: -0.025em;
+  line-height: 1.15;
 }
 h1 {
-  font-size: clamp(42px, 5vw, 68px);
-  margin-bottom: 24px;
+  font-size: clamp(36px, 4vw, 54px);
+  margin-bottom: 18px;
 }
 h2 {
-  font-size: clamp(28px, 3vw, 42px);
+  font-size: clamp(25px, 2.6vw, 34px);
 }
 h3 {
   font-size: 20px;
@@ -150,9 +156,10 @@ p {
   color: var(--muted);
 }
 em {
-  font-family: Georgia, 'Times New Roman', serif;
-  font-weight: 400;
-  color: var(--green);
+  font-family: inherit;
+  font-style: normal;
+  font-weight: inherit;
+  color: inherit;
 }
 // Keep focus inside the control, without the portal or package's outer rings.
 :focus {
@@ -176,13 +183,13 @@ main {
   min-height: 60vh;
 }
 .container {
-  max-width: 1380px;
+  max-width: 1240px;
   margin: 0 auto;
-  padding-left: 5%;
-  padding-right: 5%;
+  padding-left: 32px;
+  padding-right: 32px;
 }
 .narrow-container {
-  max-width: 1120px;
+  max-width: 1080px;
   margin: 0 auto;
   padding: 0 32px;
 }
@@ -192,8 +199,8 @@ main {
   gap: 7px;
   color: var(--ink);
   font-weight: 750;
-  font-size: 23px;
-  letter-spacing: -1px;
+  font-size: 18px;
+  letter-spacing: -0.5px;
   white-space: nowrap;
 }
 .brand-light {
@@ -203,13 +210,13 @@ main {
 .brand-mark {
   background: var(--green);
   color: #fff;
-  width: 34px;
-  height: 34px;
-  border-radius: 9px;
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 20px;
+  font-size: 16px;
   font-weight: 700;
   margin-right: 4px;
   letter-spacing: -2px;
@@ -218,15 +225,15 @@ main {
   display: inline-flex;
   justify-content: center;
   align-items: center;
-  gap: 24px;
-  min-height: 48px;
-  padding: 11px 22px;
+  gap: 10px;
+  min-height: 42px;
+  padding: 9px 16px;
   border: 1px solid #c8d7cc;
   background: white;
   color: var(--ink);
   font-weight: 650;
   font-size: 14px;
-  border-radius: 6px;
+  border-radius: 4px;
   text-align: center;
   line-height: 1.5;
 }
@@ -248,11 +255,12 @@ main {
 }
 .eyebrow {
   display: block;
-  color: var(--green);
-  font-size: 11px;
-  letter-spacing: 1.8px;
-  font-weight: 750;
-  margin-bottom: 22px;
+  color: var(--muted);
+  font-family: 'SFMono-Regular', Consolas, monospace;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  font-weight: 650;
+  margin-bottom: 14px;
 }
 .status-dot {
   width: 7px;
@@ -276,7 +284,7 @@ main {
   color: #2d6249;
   background: #edf6ed;
   padding: 3px 8px;
-  border-radius: 4px;
+  border-radius: 3px;
   font-size: 10px;
   font-weight: 750;
   letter-spacing: 0.5px;
@@ -303,12 +311,13 @@ main {
   line-height: 1.7;
 }
 .page-heading {
-  padding-top: 70px;
-  padding-bottom: 42px;
+  padding-top: 52px;
+  padding-bottom: 30px;
+  border-bottom: 1px solid var(--line);
 }
 .page-heading > p {
   max-width: 650px;
-  font-size: 17px;
+  font-size: 15px;
 }
 .centered {
   text-align: center;
@@ -318,15 +327,15 @@ main {
   margin-right: auto;
 }
 .section-space {
-  padding-top: 72px;
-  padding-bottom: 32px;
+  padding-top: 52px;
+  padding-bottom: 24px;
 }
 .section-heading {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
   gap: 32px;
-  margin-bottom: 32px;
+  margin-bottom: 24px;
 }
 .section-heading h2 {
   margin-bottom: 0;
@@ -335,28 +344,29 @@ main {
   font-size: 15px;
 }
 .hero {
-  padding-top: 74px;
-  padding-bottom: 62px;
+  padding-top: 52px;
+  padding-bottom: 48px;
   display: grid;
   grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.25fr);
-  gap: 44px;
+  gap: 52px;
   align-items: center;
 }
 .hero h1 {
-  font-size: clamp(42px, 5vw, 70px);
-  letter-spacing: -0.047em;
-  line-height: 1.04;
+  max-width: 620px;
+  font-size: clamp(38px, 4.2vw, 58px);
+  letter-spacing: -0.04em;
+  line-height: 1.06;
 }
 .hero-copy {
   min-width: 0;
 }
 .hero-copy > p {
-  max-width: 420px;
-  font-size: 16px;
-  line-height: 1.8;
+  max-width: 520px;
+  font-size: 15px;
+  line-height: 1.65;
 }
 .hero .actions {
-  margin: 30px 0 24px;
+  margin: 24px 0 18px;
 }
 .hero-note {
   font-size: 11px !important;
@@ -380,23 +390,18 @@ main {
   font-size: 9px;
   letter-spacing: 0.9px;
   color: var(--muted);
-  margin: 0 6px 12px;
+  margin: 0 0 8px;
+  font-family: 'SFMono-Regular', Consolas, monospace;
 }
 .hero-preview {
   position: relative;
   min-width: 0;
 }
 .hero-preview:before {
-  content: '';
-  position: absolute;
-  inset: 32px -16px -18px 26px;
-  border-radius: 20px;
-  background: #e4eee2;
-  z-index: -1;
-  transform: rotate(2deg);
+  display: none;
 }
 .hero-preview .calendar-demo {
-  box-shadow: 0 14px 40px #254d3210;
+  box-shadow: none;
 }
 .framework-strip {
   border-top: 1px solid var(--line);
@@ -405,45 +410,49 @@ main {
   align-items: center;
   justify-content: space-between;
   gap: 24px;
-  padding-top: 26px;
-  padding-bottom: 26px;
+  padding-top: 18px;
+  padding-bottom: 18px;
   flex-wrap: wrap;
 }
 .framework-strip p {
   margin: 0;
-  font-size: 12px;
+  font-family: 'SFMono-Regular', Consolas, monospace;
+  font-size: 10px;
+  letter-spacing: 0.06em;
 }
 .framework-strip a {
-  font-size: 14px;
-  font-weight: 650;
+  font-size: 12px;
+  font-weight: 600;
   color: var(--ink);
 }
 .view-cards {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 22px;
+  gap: 14px;
 }
 .view-card {
   border: 1px solid var(--line);
-  border-radius: 10px;
+  border-radius: 3px;
   overflow: hidden;
   color: var(--ink);
   background: white;
-  transition: transform 0.15s;
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease;
 }
 .view-card:hover {
   text-decoration: none;
-  transform: translateY(-3px);
   border-color: #9ebaab;
+  background: #f7f9f7;
 }
 .view-card > div:last-child {
-  padding: 22px;
+  padding: 18px;
   border-top: 1px solid var(--line);
 }
 .view-card h3 {
   display: flex;
   justify-content: space-between;
-  font-size: 18px;
+  font-size: 16px;
 }
 .view-card h3 span {
   font-size: 16px;
@@ -456,11 +465,11 @@ main {
 .mini-calendar,
 .mini-week,
 .mini-list {
-  height: 200px;
-  margin: 20px;
+  height: 176px;
+  margin: 12px;
   overflow: hidden;
   border: 1px solid var(--line);
-  border-radius: 5px;
+  border-radius: 2px;
   background: #fcfefb;
 }
 .mini-calendar {
@@ -547,18 +556,25 @@ main {
 }
 .feature-band {
   background: var(--wash);
-  margin: 64px 0;
-  padding: 65px 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  margin: 48px 0;
+  padding: 48px 0;
 }
 .benefit-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 40px;
-  margin-top: 50px;
+  gap: 0;
+  margin-top: 32px;
+  border: 1px solid var(--line);
+  background: var(--paper);
 }
 .benefit-grid article {
-  border-top: 1px solid #b9cebc;
-  padding-top: 24px;
+  padding: 24px;
+  border-right: 1px solid var(--line);
+}
+.benefit-grid article:last-child {
+  border-right: 0;
 }
 .benefit-number {
   font-size: 10px;
@@ -566,7 +582,7 @@ main {
   color: var(--green);
 }
 .benefit-grid h3 {
-  margin: 20px 0 15px;
+  margin: 16px 0 12px;
   max-width: 280px;
 }
 .benefit-grid p {
@@ -579,12 +595,13 @@ main {
 .premium-banner {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 65px;
-  padding-top: 30px;
-  padding-bottom: 30px;
+  gap: 48px;
+  padding-top: 36px;
+  padding-bottom: 36px;
+  border-top: 1px solid var(--line);
 }
 .premium-banner h2 {
-  margin: 22px 0;
+  margin: 16px 0;
 }
 .premium-banner p {
   max-width: 480px;
@@ -609,10 +626,11 @@ main {
   display: grid;
   grid-template-columns: 2fr 1fr 160px;
   gap: 16px;
-  padding: 24px;
-  background: var(--wash);
+  padding: 18px;
+  background: white;
   border: 1px solid var(--line);
-  border-radius: 9px;
+  border-top: 3px solid var(--green);
+  border-radius: 3px;
 }
 .results-line {
   display: flex;
@@ -625,22 +643,22 @@ main {
   font-size: 13px;
 }
 .feature-section {
-  margin: 42px 0;
+  margin: 36px 0;
 }
 .feature-section > h2 {
-  font-size: 25px;
-  margin-bottom: 24px;
+  font-size: 22px;
+  margin-bottom: 18px;
 }
 .feature-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
+  gap: 12px;
 }
 .feature-card {
   border: 1px solid var(--line);
   background: white;
-  padding: 22px;
-  border-radius: 8px;
+  padding: 18px;
+  border-radius: 3px;
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -671,7 +689,7 @@ main {
   aspect-ratio: 7 / 4;
   object-fit: contain;
   border: 1px solid var(--line);
-  border-radius: 6px;
+  border-radius: 2px;
   background: var(--wash);
 }
 .premium-document-layout {
@@ -739,14 +757,14 @@ main {
   margin: 28px 0;
   padding: 12px;
   border: 1px solid #e3d7bb;
-  border-radius: 12px;
+  border-radius: 3px;
   background: #fffef9;
 }
 .premium-feature-figure img {
   display: block;
   width: 100%;
   height: auto;
-  border-radius: 8px;
+  border-radius: 2px;
 }
 .premium-feature-figure figcaption {
   padding: 10px 4px 2px;
@@ -783,7 +801,7 @@ main {
 }
 .premium-reference {
   border: 1px solid var(--line);
-  border-radius: 8px;
+  border-radius: 3px;
   background: white;
 }
 .premium-reference > div {
@@ -808,7 +826,7 @@ main {
 .premium-boundaries {
   padding: 24px;
   border-left: 3px solid #c6a059;
-  border-radius: 0 8px 8px 0;
+  border-radius: 0 3px 3px 0;
   background: #fffaf0;
 }
 .premium-boundaries ul {
@@ -817,7 +835,7 @@ main {
 .premium-license-callout {
   padding: 28px;
   border: 1px solid var(--line);
-  border-radius: 12px;
+  border-radius: 3px;
   background: var(--wash);
 }
 .premium-license-callout h2 {
@@ -887,25 +905,26 @@ main {
 .pricing-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 24px;
+  gap: 14px;
 }
 .plan {
+  position: relative;
   border: 1px solid var(--line);
   background: white;
-  border-radius: 10px;
-  padding: 35px;
+  border-radius: 3px;
+  padding: 28px;
   display: flex;
   flex-direction: column;
 }
 .plan h2 {
-  margin: 24px 0 12px;
-  font-size: 30px;
+  margin: 18px 0 8px;
+  font-size: 26px;
 }
 .plan .price {
-  font-size: 42px;
+  font-size: 36px;
   letter-spacing: -1px;
   line-height: 1.3;
-  margin: 12px 0 28px;
+  margin: 10px 0 22px;
   min-height: 56px;
 }
 .plan .price span {
@@ -920,9 +939,15 @@ main {
   align-items: center;
 }
 .premium-plan {
-  border-top: 4px solid #a88942;
-  padding-top: 32px;
+  border-top-color: #a88942;
+  padding-top: 28px;
+  box-shadow: inset 0 2px 0 #a88942;
   background: #fefdf8;
+}
+.premium-plan > .badge {
+  position: absolute;
+  top: 16px;
+  right: 18px;
 }
 .check-list {
   padding: 0;
@@ -957,7 +982,7 @@ table caption {
 }
 th,
 td {
-  padding: 17px;
+  padding: 13px 16px;
   border-bottom: 1px solid var(--line);
 }
 thead {
@@ -969,9 +994,139 @@ tbody th {
 .table-scroll {
   overflow-x: auto;
 }
+.comparison-heading {
+  align-items: flex-end;
+}
+.comparison-heading h2 {
+  margin-bottom: 6px;
+}
+.comparison-heading p {
+  max-width: 620px;
+  margin: 0;
+  font-size: 14px;
+}
+.capability-comparison {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: white;
+  box-shadow: 0 12px 32px rgb(23 33 30 / 4%);
+}
+.plan-comparison {
+  min-width: 680px;
+  table-layout: fixed;
+}
+.plan-comparison caption {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+.plan-comparison thead {
+  background: #f5f7f5;
+}
+.plan-comparison th,
+.plan-comparison td {
+  padding: 17px 20px;
+  vertical-align: middle;
+}
+.plan-comparison thead th {
+  border-bottom-color: #c4d0ca;
+}
+.plan-comparison thead th:first-child {
+  width: 50%;
+  color: var(--muted);
+  font-size: 11px;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+.plan-comparison thead th:not(:first-child) {
+  width: 25%;
+}
+.plan-comparison tbody tr:last-child > * {
+  border-bottom: 0;
+}
+.plan-comparison tbody tr:hover > * {
+  background: #fafcfb;
+}
+.plan-comparison .premium-column {
+  border-left: 1px solid #e8dfc8;
+  background: #fffdf7;
+}
+.plan-comparison tbody tr:hover > .premium-column {
+  background: #fbf7ea;
+}
+.plan-column-title,
+.plan-column-note,
+.capability-title,
+.capability-description {
+  display: block;
+}
+.plan-column-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+}
+.plan-column-note {
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 450;
+}
+.capability-title {
+  font-size: 14px;
+  font-weight: 650;
+  color: var(--ink);
+}
+.capability-description {
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.45;
+}
+.coverage-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #28483f;
+  font-size: 12px;
+  font-weight: 650;
+  white-space: nowrap;
+}
+.status-mark {
+  display: inline-grid;
+  width: 22px;
+  height: 22px;
+  place-items: center;
+  border-radius: 50%;
+  background: #e8f4ee;
+  color: var(--green-dark);
+  font-size: 12px;
+  line-height: 1;
+}
+.coverage-status.unavailable {
+  color: #718079;
+  font-weight: 500;
+}
+.coverage-status.unavailable .status-mark {
+  background: #f0f2f1;
+  color: #7b8781;
+}
+.coverage-status.premium-access {
+  color: var(--gold);
+}
+.coverage-status.premium-access .status-mark {
+  background: #f9edcf;
+  color: var(--gold);
+}
 .faq details {
   border-bottom: 1px solid var(--line);
-  padding: 21px 0;
+  padding: 16px 0;
 }
 .faq summary {
   font-size: 16px;
@@ -986,7 +1141,8 @@ tbody th {
 .docs-layout {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 280px;
-  gap: 65px;
+  gap: 48px;
+  padding-top: 36px;
 }
 .docs-main h2 {
   font-size: 25px;
@@ -997,7 +1153,10 @@ tbody th {
 }
 .docs-aside {
   border-left: 1px solid var(--line);
-  padding-left: 30px;
+  padding-left: 24px;
+  position: sticky;
+  top: 88px;
+  align-self: start;
 }
 .docs-aside > a {
   display: block;
@@ -1015,7 +1174,7 @@ tbody th {
   overflow-x: auto;
   margin: 18px 0 24px;
   border: 1px solid var(--line);
-  border-radius: 10px;
+  border-radius: 3px;
 }
 .docs-contract-table {
   width: 100%;
@@ -1048,7 +1207,8 @@ tbody th {
 }
 .server-responsibility-grid section {
   padding: 20px;
-  border-radius: 10px;
+  border: 1px solid var(--line);
+  border-radius: 3px;
   background: var(--wash);
 }
 .server-responsibility-grid h3 {
@@ -1706,7 +1866,7 @@ tbody th {
 .code-panel {
   background: #142f28;
   color: #e4eee8;
-  border-radius: 7px;
+  border-radius: 3px;
   margin: 20px 0;
   overflow: hidden;
   font-size: 12px;
@@ -1775,7 +1935,7 @@ tbody th {
 .notice {
   background: var(--wash);
   border: 1px solid var(--line);
-  border-radius: 6px;
+  border-radius: 3px;
   padding: 20px;
   margin: 28px 0;
   font-size: 13px;
@@ -1789,14 +1949,23 @@ tbody th {
   border-color: #e5ad9d;
 }
 .examples-layout {
+  max-width: 1540px;
   display: grid;
   grid-template-columns: 225px minmax(0, 1fr);
   gap: 38px;
   padding-top: 40px;
 }
 .examples-sidebar {
+  position: sticky;
+  top: 18px;
+  align-self: start;
+  max-height: calc(100vh - 36px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
   border-right: 1px solid var(--line);
   padding-right: 24px;
+  padding-bottom: 18px;
+  scrollbar-width: thin;
 }
 .examples-sidebar .eyebrow {
   font-size: 10px;
@@ -1822,6 +1991,51 @@ tbody th {
   background: #e7f1e7;
   color: var(--green);
   font-weight: 650;
+}
+.sidebar-intl-controls {
+  display: grid;
+  gap: 1px;
+  margin: 0 -6px 10px;
+}
+.sidebar-intl-controls .searchable-select {
+  display: grid;
+  grid-template-columns: 74px minmax(0, 1fr);
+  align-items: center;
+  max-width: none;
+  min-height: 32px;
+  padding-inline-start: 11px;
+  border-radius: 4px;
+}
+.sidebar-intl-controls .searchable-select:hover,
+.sidebar-intl-controls .searchable-select:focus-within {
+  background: var(--wash);
+}
+.sidebar-intl-controls .searchable-select label {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--muted);
+}
+.sidebar-intl-controls .searchable-select-field {
+  position: static;
+}
+.sidebar-intl-controls .searchable-select input {
+  min-height: 32px;
+  padding: 5px 27px 5px 6px;
+  border: 0;
+  background: transparent;
+  font-size: 11px;
+  color: var(--muted);
+}
+.sidebar-intl-controls .searchable-select-help {
+  display: none;
+}
+.sidebar-intl-controls .searchable-select-chevron {
+  inset-inline-end: 9px;
+  top: 7px;
+}
+.sidebar-intl-controls .searchable-select-popup {
+  top: calc(100% + 2px);
 }
 .premium-sidebar {
   margin-top: 30px;
@@ -1871,14 +2085,214 @@ app-calendar-demo {
   display: block;
   min-width: 0;
 }
+.calendar-workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 290px;
+  gap: 20px;
+  align-items: start;
+}
+.calendar-workspace.compact {
+  grid-template-columns: minmax(0, 1fr);
+}
+.calendar-config-panel {
+  position: sticky;
+  top: 18px;
+  max-height: calc(100vh - 36px);
+  overflow-y: auto;
+  padding-inline-start: 18px;
+  border-inline-start: 1px solid var(--line);
+  scrollbar-width: thin;
+}
+.calendar-demo-extras {
+  margin-top: 16px;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  background: white;
+}
+.wts-event-editor-backdrop.wts-event-editor-backdrop {
+  padding: clamp(10px, 2vw, 24px);
+  background: rgb(15 23 42 / 50%);
+  backdrop-filter: saturate(0.8) blur(2px);
+}
+.wts-event-editor.wts-event-editor {
+  width: min(580px, 100%);
+  max-height: min(90dvh, 760px);
+  border-radius: 12px;
+  box-shadow: 0 18px 54px rgb(15 23 42 / 24%);
+  scrollbar-width: thin;
+  font-size: 13px;
+  line-height: 1.4;
+}
+.wts-event-editor.wts-event-editor .wts-event-editor__header {
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px 11px;
+}
+.wts-event-editor.wts-event-editor .wts-event-editor__title {
+  font-size: 1.125rem;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+}
+.wts-event-editor.wts-event-editor .wts-event-editor__description {
+  margin-top: 2px;
+  font-size: 0.875rem;
+}
+.wts-event-editor.wts-event-editor button {
+  min-width: 36px;
+  min-height: 36px;
+  border-radius: 7px;
+}
+.wts-event-editor.wts-event-editor .wts-event-editor__close {
+  border-color: transparent;
+  background: #f3f6f5;
+  font-size: 1.2rem;
+}
+.wts-event-editor.wts-event-editor .wts-event-editor__close:hover {
+  background: #e9eeec;
+}
+.wts-event-editor.wts-event-editor .wts-event-editor__body {
+  padding: 14px 16px 16px;
+}
+.wts-event-editor.wts-event-editor .wts-event-editor__grid {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 11px 12px;
+}
+.wts-event-editor.wts-event-editor .wts-event-editor__field {
+  grid-column: span 3;
+  gap: 4px;
+}
+.wts-event-editor.wts-event-editor .wts-event-editor__field:has(> .wts-event-editor__check),
+.wts-event-editor.wts-event-editor .wts-event-editor__field:has(> select[name='resourceId']),
+.wts-event-editor.wts-event-editor .wts-event-editor__field:has(> select[name='timeZone']) {
+  grid-column: span 2;
+}
+.wts-event-editor.wts-event-editor .wts-event-editor__field--wide {
+  grid-column: 1 / -1;
+}
+.wts-event-editor.wts-event-editor .wts-event-editor__field label {
+  font-size: 0.92rem;
+}
+.wts-event-editor.wts-event-editor input,
+.wts-event-editor.wts-event-editor select,
+.wts-event-editor.wts-event-editor textarea {
+  min-height: 38px;
+  border-radius: 6px;
+  padding: 7px 9px;
+}
+.wts-event-editor.wts-event-editor textarea {
+  min-height: 64px;
+}
+.wts-event-editor.wts-event-editor .wts-event-editor__check {
+  min-height: 38px;
+  gap: 8px;
+}
+.wts-event-editor.wts-event-editor .wts-event-editor__check input {
+  width: 18px;
+  min-height: 18px;
+}
+.wts-event-editor.wts-event-editor .wts-event-editor__errors {
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  border-width: 1px;
+  border-radius: 7px;
+}
+.wts-event-editor.wts-event-editor .wts-event-editor__footer {
+  gap: 8px;
+  padding: 10px 16px 13px;
+}
+.wts-event-editor.wts-event-editor .wts-event-editor__footer button {
+  padding: 7px 14px;
+}
+.wts-event-editor.wts-event-editor .wts-event-editor__primary {
+  box-shadow: 0 1px 2px rgb(15 23 42 / 16%);
+}
+.example-recurrence-editor {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px 12px;
+  margin: 0;
+  padding: 10px 12px 12px;
+  border: 1px solid var(--wts-calendar-border, #d7dee8);
+  border-radius: 8px;
+  background: #f8faf9;
+}
+.example-recurrence-editor legend {
+  padding: 0 3px;
+  font-weight: 650;
+}
+.example-recurrence-editor [hidden] {
+  display: none !important;
+}
+.example-recurrence-editor > label {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 4px;
+  font-weight: 650;
+}
+.example-recurrence-editor input,
+.example-recurrence-editor select {
+  width: 100%;
+  min-height: 38px;
+  border: 1px solid var(--wts-calendar-border, #aeb9c8);
+  border-radius: 6px;
+  padding: 7px 9px;
+  background: var(--wts-calendar-surface, #fff);
+  color: inherit;
+  font: inherit;
+}
+.example-recurrence-weekdays {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.example-recurrence-weekdays label {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 30px;
+  padding: 4px 8px;
+  border: 1px solid var(--wts-calendar-border, #d7dee8);
+  border-radius: 999px;
+  font-weight: 600;
+}
+.example-recurrence-weekdays input {
+  width: 16px;
+  min-height: 16px;
+  margin: 0;
+  padding: 0;
+}
+@media (max-width: 540px) {
+  .wts-event-editor-backdrop.wts-event-editor-backdrop {
+    padding: 0;
+  }
+  .wts-event-editor.wts-event-editor {
+    height: 100%;
+    max-height: none;
+    border-radius: 0;
+  }
+  .wts-event-editor.wts-event-editor .wts-event-editor__grid,
+  .example-recurrence-editor {
+    grid-template-columns: 1fr;
+  }
+  .wts-event-editor.wts-event-editor .wts-event-editor__field,
+  .wts-event-editor.wts-event-editor .wts-event-editor__field:has(> .wts-event-editor__check),
+  .wts-event-editor.wts-event-editor .wts-event-editor__field:has(> select[name='resourceId']),
+  .wts-event-editor.wts-event-editor .wts-event-editor__field:has(> select[name='timeZone']),
+  .wts-event-editor.wts-event-editor .wts-event-editor__field--wide,
+  .example-recurrence-weekdays {
+    grid-column: auto;
+  }
+}
 .calendar-demo {
   border: 1px solid var(--line);
-  border-radius: 12px;
+  border-radius: 3px;
   background: white;
   overflow: hidden;
   color: var(--ink);
   min-width: 0;
-  box-shadow: 0 3px 14px #18352e05;
+  box-shadow: none;
 }
 .calendar-toolbar {
   display: flex;
@@ -1909,9 +2323,9 @@ app-calendar-demo {
   padding: 0;
   width: 32px;
 }
-.calendar-toolbar .badge {
-  align-self: center;
-  font-size: 8px;
+.calendar-toolbar-balance {
+  width: 168px;
+  height: 1px;
 }
 .calendar-surface {
   // Keep the calendar frame separate from the card and its status divider.
@@ -2374,23 +2788,35 @@ app-calendar-demo {
   min-height: 38px;
 }
 .runtime-options {
-  border-top: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
-  padding: 14px 16px;
-  background: var(--wash);
+  padding: 0 2px 18px 0;
   font-size: 12px;
 
-  summary {
-    cursor: pointer;
-    font-weight: 650;
+  .runtime-options-header {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--line);
   }
-  summary span {
-    margin-inline-start: 12px;
-    font-weight: 400;
+  .runtime-options-header .eyebrow {
+    display: block;
+    margin-bottom: 3px;
+    font-size: 9px;
+  }
+  .runtime-options-header h2 {
+    margin: 0;
+    font-size: 17px;
+    letter-spacing: -0.25px;
+  }
+  .runtime-options-header > span {
+    flex: 0 0 auto;
+    padding-bottom: 2px;
+    font-size: 10px;
     color: var(--muted);
   }
   .runtime-options-content {
-    padding-top: 12px;
+    padding-top: 14px;
   }
   p {
     margin: 0 0 12px;
@@ -2398,10 +2824,11 @@ app-calendar-demo {
     line-height: 1.5;
   }
   .runtime-options-actions {
-    display: flex;
-    align-items: end;
-    gap: 12px;
-    margin-bottom: 10px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-items: stretch;
+    gap: 10px;
+    margin-bottom: 12px;
   }
   .runtime-search {
     display: grid;
@@ -2416,16 +2843,19 @@ app-calendar-demo {
     font-weight: 600;
   }
   .runtime-group select {
-    min-height: 44px;
-    padding: 8px;
+    min-height: 38px;
+    padding: 7px 9px;
     font-size: 12px;
   }
   .runtime-search input {
     width: 100%;
     min-width: 0;
+    min-height: 38px;
+    padding: 7px 9px;
   }
   button {
     font-size: 12px;
+    min-height: 36px;
   }
   .runtime-reset-note {
     font-size: 11px;
@@ -2446,8 +2876,8 @@ app-calendar-demo {
   }
   .runtime-options-grid {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 16px;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 14px;
   }
   .runtime-option {
     display: grid;
@@ -2455,7 +2885,8 @@ app-calendar-demo {
     gap: 7px;
     align-content: start;
   }
-  .runtime-option label {
+  .runtime-option > label,
+  .runtime-option-label {
     font-weight: 600;
     align-self: center;
   }
@@ -2472,6 +2903,59 @@ app-calendar-demo {
     accent-color: var(--green);
     margin: 0;
   }
+  .runtime-time {
+    width: 76px;
+    min-height: 32px;
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    padding: 5px 7px;
+    background: white;
+    color: inherit;
+    font: inherit;
+    text-align: center;
+  }
+  .runtime-weekdays {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(7, minmax(26px, 1fr));
+    gap: 3px;
+  }
+  .runtime-weekdays label {
+    position: relative;
+    display: grid;
+    min-width: 0;
+    cursor: pointer;
+  }
+  .runtime-weekdays input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .runtime-weekdays span {
+    display: grid;
+    min-height: 28px;
+    place-items: center;
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 650;
+  }
+  .runtime-weekdays input:checked + span {
+    border-color: #86aaa2;
+    background: #e8f4ee;
+    color: var(--green);
+  }
+  .runtime-weekdays input:focus-visible + span,
+  .runtime-time:focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: 1px;
+  }
+  .runtime-weekdays input:disabled + span,
+  .runtime-time:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
   .runtime-option p {
     grid-column: 1 / -1;
     font-size: 11px;
@@ -2481,6 +2965,9 @@ app-calendar-demo {
   .runtime-option code {
     color: var(--green);
     font-size: 10px;
+  }
+  .runtime-option .runtime-validation {
+    color: #a23b2b;
   }
   .runtime-empty button {
     text-decoration: underline;
@@ -2518,9 +3005,24 @@ app-calendar-demo {
   font-size: 12px;
   margin: 18px 0 8px;
 }
-@media (max-width: 1000px) {
+@media (max-width: 1500px) {
+  .calendar-workspace {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .calendar-config-panel {
+    position: static;
+    max-height: none;
+    overflow: visible;
+    padding: 18px 0 0;
+    border-inline-start: 0;
+    border-top: 1px solid var(--line);
+  }
   .runtime-options .runtime-options-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .runtime-options .runtime-options-actions {
+    grid-template-columns: minmax(0, 1fr) minmax(150px, 0.6fr) auto;
+    align-items: end;
   }
 }
 @media (max-width: 560px) {
@@ -2531,13 +3033,16 @@ app-calendar-demo {
     align-items: stretch;
     flex-direction: column;
   }
-  .runtime-options summary span {
-    display: block;
-    margin: 5px 0 0 16px;
+  .runtime-options .runtime-options-header {
+    align-items: start;
+    flex-direction: column;
+    gap: 4px;
   }
 }
 @media print {
-  app-runtime-options {
+  app-runtime-options,
+  .calendar-config-panel,
+  .calendar-demo-extras {
     display: none !important;
   }
 }
@@ -2572,7 +3077,7 @@ app-calendar-demo {
 }
 .premium-preview {
   border: 1px solid #e3d7bb;
-  border-radius: 9px;
+  border-radius: 3px;
   background: #fffdf7;
   padding: 16px;
   margin: 0 0 24px;
@@ -2581,7 +3086,7 @@ app-calendar-demo {
   display: block;
   width: 100%;
   height: auto;
-  border-radius: 5px;
+  border-radius: 2px;
 }
 .premium-preview figcaption {
   font-size: 11px;
@@ -2732,6 +3237,9 @@ app-calendar-demo {
     padding-top: 25px;
   }
   .examples-sidebar {
+    position: static;
+    max-height: none;
+    overflow: visible;
     border: 1px solid var(--line);
     border-radius: 8px;
     padding: 16px;
@@ -2744,6 +3252,9 @@ app-calendar-demo {
     gap: 0 12px;
   }
   .examples-sidebar nav h2 {
+    grid-column: 1/-1;
+  }
+  .examples-sidebar nav .sidebar-intl-controls {
     grid-column: 1/-1;
   }
   .examples-sidebar .premium-sidebar {
@@ -2764,9 +3275,6 @@ app-calendar-demo {
     gap: 12px;
     padding: 12px;
   }
-  .calendar-toolbar .badge {
-    display: none;
-  }
   .calendar-toolbar h2 {
     font-size: 15px;
   }
@@ -2779,6 +3287,9 @@ app-calendar-demo {
   .compact .calendar-toolbar {
     flex-direction: row;
   }
+  .calendar-toolbar-balance {
+    display: none;
+  }
   .preview-caption {
     font-size: 8px;
   }
@@ -2786,7 +3297,7 @@ app-calendar-demo {
     padding: 25px;
   }
   .premium-plan {
-    padding-top: 22px;
+    padding-top: 25px;
   }
 }
 @media (max-width: 420px) {

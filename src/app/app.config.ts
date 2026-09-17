@@ -14,6 +14,7 @@ export const routes: Routes = [
     loadComponent: () => import('./premium-feature-page').then((m) => m.PremiumFeaturePage),
   },
   { path: 'pricing', loadComponent: () => import('./pricing-page').then((m) => m.PricingPage) },
+  { path: 'contact', loadComponent: () => import('./contact-page').then((m) => m.ContactPage) },
   {
     path: 'docs/api',
     data: { kind: 'options' },
@@ -24,12 +25,21 @@ export const routes: Routes = [
     data: { kind: section === 'exports' ? 'symbols' : section },
     loadComponent: () => import('./api-reference-page').then((m) => m.ApiReferencePage),
   })),
+  {
+    path: 'docs/appearance',
+    loadComponent: () => import('./appearance-page').then((m) => m.AppearancePage),
+  },
   { path: 'docs', loadComponent: () => import('./docs-page').then((m) => m.DocsPage) },
   { path: 'examples', pathMatch: 'full', redirectTo: 'examples/month' },
   ...['day', 'week', 'month', 'year'].map((period) => ({
     path: 'examples/list-' + period,
     pathMatch: 'full' as const,
     redirectTo: '/examples/list?period=' + period,
+  })),
+  ...['time-zones', 'locale-rtl'].map((id) => ({
+    path: 'examples/' + id,
+    pathMatch: 'full' as const,
+    redirectTo: '/examples/month',
   })),
   {
     path: 'examples/:id',

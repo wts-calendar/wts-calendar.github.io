@@ -16,14 +16,13 @@
     Menu
   </button>
   <nav id="site-nav" aria-label="Main navigation" [class.open]="menuOpen()">
+    <a routerLink="/docs" routerLinkActive="active">Docs</a>
     <a routerLink="/examples" routerLinkActive="active">Examples</a>
-    <a routerLink="/features" routerLinkActive="active">Features</a>
-    <a routerLink="/docs" routerLinkActive="active">Documentation</a>
+    <a routerLink="/features" routerLinkActive="active">API & features</a>
     <a routerLink="/pricing" routerLinkActive="active">Pricing</a>
-    <a [href]="repository">Portal on GitHub ↗</a>
-    <a routerLink="/docs" class="button primary small"
-      >Get started <span aria-hidden="true">→</span></a
-    >
+    <a routerLink="/contact" routerLinkActive="active">Contact</a>
+    <a [href]="repository" target="_blank" rel="noopener noreferrer">GitHub</a>
+    <a routerLink="/docs" fragment="quickstart" class="button primary small">Install package</a>
   </nav>
 </header>
 <main id="main-content" #main tabindex="-1"><router-outlet /></main>
@@ -34,19 +33,20 @@
         >calendar</span
       ></a
     >
-    <p>Make room for what matters.</p>
+    <p>Calendar UI and server adapters for product teams.</p>
   </div>
   <div>
     <strong>Explore</strong><a routerLink="/examples">Examples</a
-    ><a routerLink="/features">All features</a><a routerLink="/pricing">Pricing & licensing</a>
+    ><a routerLink="/features">All features</a><a routerLink="/pricing">Pricing & licensing</a
+    ><a routerLink="/contact">Contact us</a>
   </div>
   <div>
     <strong>Build</strong><a routerLink="/docs">Documentation</a
     ><a routerLink="/docs/api">API & options reference</a
     ><a href="https://www.npmjs.com/package/@wts-calendar/core">npm package ↗</a
-    ><a [href]="repository">Portal source on GitHub ↗</a>
+    ><a [href]="repository" target="_blank" rel="noopener noreferrer"
+      >Portal source on GitHub ↗</a
+    >
   </div>
-  <p class="footer-note">
-    Standard features: MIT. Premium capabilities require a separate license.
-  </p>
+  <p class="footer-note">Core package: MIT. Premium modules require package-wide Premium authorization.</p>
 </footer>

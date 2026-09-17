@@ -4,19 +4,6 @@ export const DOCS_ROOT =
 export const DOCS_BASE = DOCS_ROOT + 'core/';
 // Set only to the owner's confirmed public licensing contact.
 export const PREMIUM_CONTACT_EMAIL: string = 'suman.mandal@webskitters.com';
-export const LICENSE_REQUEST = PREMIUM_CONTACT_EMAIL
-  ? 'mailto:' + PREMIUM_CONTACT_EMAIL + '?subject=WTS%20Calendar%20premium%20license%20request'
-  : '';
-export const EVALUATION_REQUEST = PREMIUM_CONTACT_EMAIL
-  ? 'mailto:' +
-    PREMIUM_CONTACT_EMAIL +
-    '?subject=' +
-    encodeURIComponent('WTS Calendar pricing and evaluation inquiry') +
-    '&body=' +
-    encodeURIComponent(
-      'Hello,\n\nI would like to discuss WTS Calendar Premium.\n\nFramework and version:\nFeatures I need:\nNumber of developers:\nApplication and deployment scope:\nEvaluation use case:\n\nPlease confirm pricing, evaluation availability, license scope, updates, and support terms.\n',
-    )
-  : '';
 export const PREMIUM_PREVIEWS: Readonly<Record<string, { src: string; alt: string }>> = {
   'Resources & planning': {
     src: 'previews/premium/resource-non-resource-timeline.jpg',
@@ -37,22 +24,31 @@ export interface Demo {
   group: string;
   view: string;
   description: string;
+  directory?: boolean;
 }
+const CONSOLIDATED_VIEW_DEMOS = new Set([
+  'day-grid-day',
+  'time-grid-week',
+  'time-grid-day',
+  'event-editor',
+  'interactions',
+  'constraints',
+]);
 export const LIST_VIEWS = ['list-day', 'list-week', 'list-month', 'list-year'] as const;
 export const DEMOS: readonly Demo[] = [
   [
     'month',
-    'Month',
+    'Month, week & day',
     'Views',
     'month',
-    'A familiar month grid with timed events, multi-day events, and overflow links.',
+    'Switch one calendar between month, hourly week, and hourly day views.',
   ],
   [
     'day-grid-week',
-    'DayGrid week',
+    'DayGrid week & day',
     'Views',
     'day-grid-week',
-    'A week at a glance without hourly slots.',
+    'Switch between week and day layouts without hourly slots.',
   ],
   [
     'day-grid-day',
@@ -155,20 +151,6 @@ export const DEMOS: readonly Demo[] = [
     'Compare themes, color schemes, and weekend visibility across month, week, day, and list views.',
   ],
   [
-    'time-zones',
-    'Time zones',
-    'Customization',
-    'week',
-    'Search browser-supported time zones and compare the same events across month, week, day, and list views.',
-  ],
-  [
-    'locale-rtl',
-    'Localization & RTL',
-    'Customization',
-    'month',
-    'Search languages and date locales, then compare month, week, day, and list views with automatic text direction.',
-  ],
-  [
     'render-hooks',
     'Event render hooks',
     'Customization',
@@ -182,7 +164,14 @@ export const DEMOS: readonly Demo[] = [
     'month',
     'Explore keyboard focus, event activation, and printing across month, week, day, and list views.',
   ],
-].map(([id, title, group, view, description]) => ({ id, title, group, view, description }));
+].map(([id, title, group, view, description]) => ({
+  id,
+  title,
+  group,
+  view,
+  description,
+  directory: !CONSOLIDATED_VIEW_DEMOS.has(id),
+}));
 
 export interface Feature {
   id: string;
@@ -254,7 +243,7 @@ export const FEATURES: readonly Feature[] = [
     [
       'Time zones & DST',
       'Local, UTC, and IANA time zones with date-adapter handling.',
-      'time-zones',
+      'month',
     ],
     [
       'Event display & ordering',
@@ -285,19 +274,19 @@ export const FEATURES: readonly Feature[] = [
       'Typed date clicks, event clicks, and hover lifecycle.',
       'month',
     ],
-    ['Date & time selection', 'Select ranges with constraints and cancellation.', 'interactions'],
+    ['Date & time selection', 'Select ranges with constraints and cancellation.', 'month'],
     [
       'Event dragging',
       'Move events with pointer, touch, or supported keyboard controls.',
-      'interactions',
+      'month',
     ],
-    ['Event resizing', 'Adjust event boundaries with validation and rollback.', 'interactions'],
+    ['Event resizing', 'Adjust event boundaries with validation and rollback.', 'month'],
     ['External dragging', 'Turn external elements into draggable event sources.'],
     ['Cross-calendar transfer', 'Copy or move events with receive and leave callbacks.'],
     [
       'Touch interactions',
       'Long press, movement thresholds, and scroll cancellation.',
-      'interactions',
+      'month',
     ],
     [
       'Keyboard interactions',
@@ -308,9 +297,9 @@ export const FEATURES: readonly Feature[] = [
     [
       'Business hours & constraints',
       'Availability windows, overlap policies, and allow callbacks.',
-      'constraints',
+      'month',
     ],
-    ['Undo, redo & transactions', 'Reversible event mutations with history state.', 'event-editor'],
+    ['Undo, redo & transactions', 'Reversible event mutations with history state.', 'month'],
     ['Overflow popovers', 'Accessible overflow controls and dismissible event lists.', 'month'],
   ]),
   ...entries('Customization', 'Free', [
@@ -324,7 +313,7 @@ export const FEATURES: readonly Feature[] = [
     [
       'Localization & RTL',
       'Locale text, date formatting, week rules, and direction.',
-      'locale-rtl',
+      'month',
     ],
     ['Hidden days & weekends', 'Control visible weekdays and weekend display.', 'themes'],
     [

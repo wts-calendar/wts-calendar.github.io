@@ -13,7 +13,7 @@
       ["resourceId", "Associate each assigned event with its resource's ID."]
     ],
     "steps": [
-      "Verify a license with the resource-scheduling entitlement and register the optional resource scheduling module.",
+      "Connect a verified Premium session and register the optional resource scheduling module.",
       "Load resources and events with stable IDs, then set the visible date and time zone.",
       "Handle selection and mutation callbacks in your application and persist accepted changes if needed."
     ],
@@ -451,7 +451,7 @@
       ]
     ],
     "steps": [
-      "Register the repeated-tasks module with its own repeated-task-views entitlement.",
+      "Connect a verified Premium session and register the repeated-tasks module.",
       "Map task categories, occurrence dates, status, and labels into the task model.",
       "Connect source refresh or pagination and persist accepted task changes in your application."
     ],
@@ -695,7 +695,7 @@
       ]
     ],
     "steps": [
-      "Verify the WTS entitlement and obtain separate provider authorization appropriate to the intended read/write operations.",
+      "Connect a verified WTS Premium session and obtain separate provider authorization appropriate to the intended read/write operations.",
       "Pull a bounded initial range, retain IDs and version metadata, then inspect the reconciliation plan.",
       "Resolve conflicts before pushing and keep the returned cursor and remote base for subsequent cycles."
     ],
@@ -733,7 +733,7 @@
       ["delta cursor", "Retain the provider's delta link together with the prior remote snapshot."]
     ],
     "steps": [
-      "Obtain customer-managed Microsoft authorization separately from the WTS entitlement.",
+      "Obtain customer-managed Microsoft authorization separately from the WTS Premium license.",
       "Create the adapter, pull the required range, and inspect normalized event metadata.",
       "Reconcile local/remote changes and apply intended writes through your application's sync workflow."
     ],
@@ -771,7 +771,7 @@
       ]
     ],
     "steps": [
-      "Verify the WTS entitlement and confirm the CalDAV server allows your application's origin and authentication method.",
+      "Connect a verified WTS Premium session and confirm the CalDAV server allows your application's origin and authentication method.",
       "Read the initial calendar range and retain the returned synchronization information.",
       "Reconcile event changes before conditional PUT or DELETE operations."
     ],

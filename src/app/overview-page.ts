@@ -8,36 +8,30 @@ import { DEMOS } from './site-data';
   template: `
     <section class="hero container">
       <div class="hero-copy">
-        <span class="eyebrow"
-          ><span class="status-dot" aria-hidden="true"></span> YOUR SCHEDULE. YOUR WAY.</span
-        >
-        <h1>Add a calendar.<br />Make every event<br /><em>editable.</em></h1>
+        <span class="eyebrow">WTS CALENDAR / CORE</span>
+        <h1>Calendar infrastructure for real product workflows.</h1>
         <p>
-          Build team calendars with event dialogs, drag and resize, recurring events, and time
-          zones. Use typed components for Angular, React, and Vue with your own data and backend.
+          Month, week, agenda, editing, recurrence, localization, and resource planning. Use the
+          same typed calendar API from Angular, React, Vue, or plain JavaScript.
         </p>
         <div class="actions">
-          <a routerLink="/examples/event-editor" class="button primary"
-            >Try adding an event <span aria-hidden="true">→</span></a
-          ><a routerLink="/docs" fragment="quickstart" class="button">Build your first calendar</a>
+          <a routerLink="/docs" fragment="quickstart" class="button primary">Install and render</a
+          ><a routerLink="/examples/event-editor" class="button">Open interactive example</a>
         </div>
         <div class="install-line">
           <span aria-hidden="true">$</span><code>npm install &#64;wts-calendar/core</code>
         </div>
-        <p class="hero-note">
-          Standard: MIT · No license key to start · Premium resource planning available
-        </p>
+        <p class="hero-note">MIT core · Framework adapters · Optional commercial modules</p>
       </div>
       <div class="hero-preview">
         <div class="preview-caption">
-          <span><span class="status-dot" aria-hidden="true"></span> YOUR FIRST CALENDAR</span
-          ><span>Click a date or an event</span>
+          <span>INTERACTIVE / EVENT EDITOR</span><span>Click a date or event</span>
         </div>
         <app-calendar-demo [demo]="editor" [compact]="true" />
       </div>
     </section>
     <section class="framework-strip container" aria-label="Supported integrations">
-      <p>Fits into your stack.</p>
+      <p>FRAMEWORK ADAPTERS</p>
       <a routerLink="/docs">JavaScript</a><a routerLink="/docs">Angular</a
       ><a routerLink="/docs">React</a><a routerLink="/docs">Vue</a
       ><a routerLink="/docs">Web Components</a><a routerLink="/docs">React Native</a
@@ -47,10 +41,10 @@ import { DEMOS } from './site-data';
     <section class="container section-space">
       <div class="section-heading">
         <div>
-          <span class="eyebrow">A DIFFERENT VIEW ON YOUR DAY</span>
-          <h2>The big picture.<br />And every little detail.</h2>
+          <span class="eyebrow">CALENDAR VIEWS</span>
+          <h2>Start with the layout your product needs.</h2>
         </div>
-        <p>Browse interactive examples.<br />Find the view that fits your product.</p>
+        <p>Every preview links to a working example and its current configuration.</p>
       </div>
       <div class="view-cards">
         <a class="view-card" routerLink="/examples/month"
@@ -60,8 +54,8 @@ import { DEMOS } from './site-data';
             }
           </div>
           <div>
-            <h3>Month & multi-month <span>↗</span></h3>
-            <p>See what is coming. Make space for what is next.</p>
+            <h3>Month & multi-month</h3>
+            <p>Dense date grids for planning and overview screens.</p>
           </div></a
         >
         <a class="view-card" routerLink="/examples/time-grid-week"
@@ -70,8 +64,8 @@ import { DEMOS } from './site-data';
             ><b class="block-two">Focus time</b><b class="block-three">Team review</b>
           </div>
           <div>
-            <h3>Week & day <span>↗</span></h3>
-            <p>Give every appointment its own place in the day.</p>
+            <h3>Week & day</h3>
+            <p>Timed layouts for appointments and operational schedules.</p>
           </div></a
         >
         <a class="view-card" routerLink="/examples/list"
@@ -83,46 +77,44 @@ import { DEMOS } from './site-data';
             <p><span>15:00</span>Customer catch-up</p>
           </div>
           <div>
-            <h3>Agenda & lists <span>↗</span></h3>
-            <p>A clear, chronological look at the days ahead.</p>
+            <h3>Agenda & lists</h3>
+            <p>Chronological event lists for compact product surfaces.</p>
           </div></a
         >
       </div>
-      <a routerLink="/examples" class="text-link section-link"
-        >Explore all {{ demoCount }} examples →</a
-      >
+      <a routerLink="/examples" class="text-link section-link">Browse {{ demoCount }} examples</a>
     </section>
     <section class="feature-band">
       <div class="container">
-        <span class="eyebrow">THE DETAILS ARE BUILT IN</span>
-        <h2>Less calendar plumbing.<br /><em>More of your product.</em></h2>
+        <span class="eyebrow">CORE CAPABILITIES</span>
+        <h2>Common calendar behavior, already wired.</h2>
         <div class="benefit-grid">
           <article>
-            <span class="benefit-number">01 / INTERACT</span>
-            <h3>Make every change feel natural.</h3>
+            <span class="benefit-number">01 / INTERACTION</span>
+            <h3>Edit events without rebuilding the basics.</h3>
             <p>
               Drag, resize, select, and edit. Build on typed callbacks and reversible event
               mutations.
             </p>
-            <a routerLink="/examples/interactions">Try interactions →</a>
+            <a routerLink="/examples/interactions">Interaction examples</a>
           </article>
           <article>
             <span class="benefit-number">02 / INTEGRATE</span>
-            <h3>Your data. Your architecture.</h3>
+            <h3>Keep your existing data layer.</h3>
             <p>
               Use event sources, recurrence, time zones, and optional adapters without adopting a
               hosted backend.
             </p>
-            <a routerLink="/examples/event-sources">Explore event sources →</a>
+            <a routerLink="/examples/event-sources">Event source examples</a>
           </article>
           <article>
-            <span class="benefit-number">03 / MAKE IT YOURS</span>
-            <h3>A calendar that belongs.</h3>
+            <span class="benefit-number">03 / CUSTOMIZE</span>
+            <h3>Match the rest of your interface.</h3>
             <p>
               Shape the view with themes, localized text, render hooks, and a third-party plugin
               SDK.
             </p>
-            <a routerLink="/features">Browse all features →</a>
+            <a routerLink="/features">Complete feature index</a>
           </article>
         </div>
       </div>
@@ -130,7 +122,7 @@ import { DEMOS } from './site-data';
     <section class="container premium-banner">
       <div>
         <span class="badge premium">Premium</span>
-        <h2>For schedules with<br />more moving parts.</h2>
+        <h2>Commercial modules for complex operations.</h2>
         <p>
           Resource planning, premium interoperability, and enterprise workflows. Listed clearly,
           licensed separately.
@@ -140,7 +132,7 @@ import { DEMOS } from './site-data';
         <span>Resource scheduling & timelines</span><span>Capacity, shifts & planning</span
         ><span>Calendar synchronization & migration</span
         ><span>Approvals, policies & workflows</span
-        ><a routerLink="/premium/resource-grid" class="button primary">Explore Premium guides →</a>
+        ><a routerLink="/premium/resource-grid" class="button primary">Open Premium guides</a>
       </div>
     </section>
   `,
@@ -148,5 +140,5 @@ import { DEMOS } from './site-data';
 export class OverviewPage {
   readonly editor = DEMOS.find((demo) => demo.id === 'event-editor')!;
   readonly cells = Array.from({ length: 28 }, (_, i) => i + 1);
-  readonly demoCount = DEMOS.length;
+  readonly demoCount = DEMOS.filter((demo) => demo.directory !== false).length;
 }

@@ -13,7 +13,10 @@ assert.deepEqual(new Set(examples.map((item) => item.id)), new Set(guides.map((i
 const files = new Map();
 for (const example of examples) {
   assert.match(example.install, /^npm install @wts-calendar\/core(?: moment)?$/);
-  assert.match(example.code, /verifyCalendarLicense\('YOUR_WTS_LICENSE_KEY'\)/);
+  assert.match(
+    example.code,
+    /connectCalendarLicense\(\{ licenseKey: 'YOUR_WTS_LICENSE_KEY' \}\)/,
+  );
   assert.ok(example.notes.length > 0, 'Missing integration responsibilities: ' + example.id);
   assert.ok(
     !/eyJ[A-Za-z0-9_-]{15,}\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+/.test(JSON.stringify(example)),
@@ -40,6 +43,10 @@ for (const example of examples) {
     assert.ok(
       example.code.includes('calendar.destroy()'),
       'UI example needs cleanup: ' + example.id,
+    );
+    assert.ok(
+      example.code.includes('license.destroy()'),
+      'UI example needs license-session cleanup: ' + example.id,
     );
   }
   files.set(resolve(root, '.premium-doc-check', example.id + '.ts'), example.code);

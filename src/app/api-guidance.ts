@@ -39,6 +39,21 @@ export const VERIFIED_DEFAULTS = {
 } as const;
 
 export const OPTION_GUIDES: Record<string, ApiGuide> = {
+  eventContrastColor: {
+    description:
+      'Choose black or white event text automatically from the rendered solid background, or provide a fixed CSS foreground color.',
+    defaultValue: 'Unset; existing theme styling is preserved.',
+    value: "'auto'",
+    note: 'Available in core 1.1.3. Explicit event/source textColor or contrastColor and global eventTextColor take precedence. Theme variables and ancestor class/style changes are supported; images/gradients retain existing text styling. Background events and explicitly styled custom content are not recolored.',
+    demo: 'themes',
+  },
+  dayNarrowWidth: {
+    description: 'Column-width threshold in CSS pixels for compact localized day/date labels.',
+    defaultValue: '100; 0 disables.',
+    value: '120',
+    note: 'Available in core 1.1.3. Uses actual rendered column width, not viewport width. Supports Month/DayGrid, MultiMonth/year, and TimeGrid date headers. Does not shrink columns; explicit weekDaysFormat and custom content win. Date hooks receive isNarrow. Full accessible dates are preserved.',
+    demo: 'month',
+  },
   container: {
     description:
       'The existing DOM element into which the calendar mounts. Framework wrappers supply this element for you.',
@@ -185,23 +200,23 @@ export const OPTION_GUIDES: Record<string, ApiGuide> = {
   locale: {
     value: "'bn'",
     note: 'Locale affects date formatting. Load a matching locale pack when you need translated package UI labels.',
-    demo: 'locale-rtl',
+    demo: 'month',
   },
   localization: {
     description: 'Compatibility name for locale. Prefer locale in new integrations.',
     value: "'bn'",
-    demo: 'locale-rtl',
+    demo: 'month',
   },
   timeZone: {
     value: "'Asia/Kolkata'",
     note: 'Use an IANA identifier, local, or UTC. An offset-aware event timestamp represents an instant; an offset-free timestamp needs a wall-clock interpretation.',
-    demo: 'time-zones',
+    demo: 'month',
   },
-  direction: { value: "'rtl'", demo: 'locale-rtl' },
+  direction: { value: "'rtl'", demo: 'month' },
   startOfWeek: {
     value: '1',
     note: 'Sunday is 0; Monday is 1. When omitted, locale week data determines the first day.',
-    demo: 'locale-rtl',
+    demo: 'month',
   },
   dayMaxEvents: { value: '3', demo: 'month' },
   weekends: { value: 'false', demo: 'month' },
@@ -233,7 +248,7 @@ export const OPTION_GUIDES: Record<string, ApiGuide> = {
   resources: {
     description:
       'Initial resource records used by Premium resource views. Events refer to resources by their identifiers.',
-    note: 'Use setResources/addResource/updateResource after construction. A valid Premium entitlement and the resource-scheduling module are required.',
+    note: 'Use setResources/addResource/updateResource after construction. A verified package-wide Premium session and the resource-scheduling module are required.',
   },
   resourceSources: {
     description:
@@ -243,7 +258,7 @@ export const OPTION_GUIDES: Record<string, ApiGuide> = {
   task: {
     description:
       'Initial task category data for repeated-task layouts. Open TaskInterface for its fields.',
-    note: 'Repeated-task layouts require their optional module and Premium entitlement.',
+    note: 'Repeated-task layouts require their optional module and a verified package-wide Premium session.',
   },
   customHTML: {
     description:
@@ -265,7 +280,7 @@ export const OPTION_GUIDES: Record<string, ApiGuide> = {
   weekDaysFormat: {
     description:
       'Formatting pattern for the weekday headings. Use it to choose compact or longer date labels.',
-    demo: 'locale-rtl',
+    demo: 'month',
   },
   dayOffOnWeekDays: {
     description:
@@ -284,7 +299,7 @@ export const OPTION_GUIDES: Record<string, ApiGuide> = {
   apikey: {
     description:
       'Rejected legacy credential field. Do not provide this option; plain API keys are not accepted for Premium licensing.',
-    note: 'Use the documented signed-license integration. Provider credentials, such as Google OAuth tokens, are separate from the WTS license.',
+    note: 'Use connectCalendarLicense({ licenseKey }) or WtsCalendar.create(options, { licenseKey }) for backend-verified Premium access. Provider credentials, such as Google OAuth tokens, are separate from the WTS license.',
   },
 };
 

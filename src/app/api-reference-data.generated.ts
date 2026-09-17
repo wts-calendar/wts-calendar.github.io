@@ -3,7 +3,7 @@
 
 export const CLIENT_PACKAGE = {
   name: '@wts-calendar/core',
-  version: '1.1.1',
+  version: '1.1.3',
   entrypoints: [
     '.',
     './native',
@@ -12,6 +12,9 @@ export const CLIENT_PACKAGE = {
     './google-calendar',
     './format-moment',
     './format-luxon3',
+    './theme-mui',
+    './theme-shadcn',
+    './theme-angular-material',
     './interaction',
     './time-grid',
     './multi-month',
@@ -20,6 +23,8 @@ export const CLIENT_PACKAGE = {
     './advanced-resource-planning',
     './premium-interoperability',
     './enterprise-workflow',
+    './time-machine',
+    './time-machine-panel',
     './developer-tools',
     './testing',
     './data-adapter-sdk',
@@ -105,6 +110,19 @@ export const CLIENT_OPTIONS = [
     access: 'Standard',
     category: 'Core configuration',
     description: 'Global background-event color.',
+    defaultValue: '',
+    deprecated: '',
+    source: 'CalendarOptions',
+    members: [],
+  },
+  {
+    name: 'branding',
+    type: "'visible' | 'hidden'",
+    required: false,
+    runtime: true,
+    access: 'Standard',
+    category: 'Core configuration',
+    description: 'Controls the optional "Powered by WTS Calendar" documentation link.',
     defaultValue: '',
     deprecated: '',
     source: 'CalendarOptions',
@@ -491,6 +509,20 @@ export const CLIENT_OPTIONS = [
     members: [],
   },
   {
+    name: 'dayNarrowWidth',
+    type: 'number',
+    required: false,
+    runtime: true,
+    access: 'Standard',
+    category: 'Views & time',
+    description:
+      'Day-column width in CSS pixels below which date labels become compact. Default 100; 0 disables.',
+    defaultValue: '',
+    deprecated: '',
+    source: 'CalendarOptions',
+    members: [],
+  },
+  {
     name: 'dayOffOnWeekDays',
     type: 'Array<number>',
     required: false,
@@ -817,6 +849,20 @@ export const CLIENT_OPTIONS = [
     category: 'Events & interaction',
     description:
       'Replaces the default foreground event label. Strings are rendered as text; DOM nodes must belong to the configured calendar document.',
+    defaultValue: '',
+    deprecated: '',
+    source: 'CalendarOptions',
+    members: [],
+  },
+  {
+    name: 'eventContrastColor',
+    type: 'string',
+    required: false,
+    runtime: true,
+    access: 'Standard',
+    category: 'Events & interaction',
+    description:
+      'Foreground text color, or `auto` to choose black/white against the rendered background. Unset preserves the theme. Event/source text colors and `eventTextColor` take precedence. Background events are unaffected.',
     defaultValue: '',
     deprecated: '',
     source: 'CalendarOptions',
@@ -1632,29 +1678,16 @@ export const CLIENT_OPTIONS = [
   },
   {
     name: 'license',
-    type: 'CalendarLicenseGrant',
+    type: 'CalendarLicenseSession',
     required: false,
     runtime: false,
     access: 'Standard',
     category: 'Data & integrations',
-    description: 'Verified premium grant returned by `verifyCalendarLicense`.',
+    description: 'Live backend-verified session returned by `connectCalendarLicense`.',
     defaultValue: '',
     deprecated: '',
     source: 'CalendarOptions',
-    members: [
-      {
-        name: 'claims',
-        type: 'CalendarLicenseClaims',
-        optional: false,
-        description: '',
-      },
-      {
-        name: '__@calendarLicenseGrantBrand@210',
-        type: 'true',
-        optional: false,
-        description: '',
-      },
-    ],
+    members: [],
   },
   {
     name: 'listView',
@@ -3337,6 +3370,12 @@ export const CLIENT_OPTIONS = [
         type: 'string',
         optional: true,
         description: '',
+      },
+      {
+        name: 'focus',
+        type: 'string',
+        optional: true,
+        description: 'Keyboard focus ring color, including design-system integrations.',
       },
       {
         name: 'todayBackground',
@@ -5216,9 +5255,9 @@ export const CLIENT_METHODS = [
     returnType: '',
   },
   {
-    name: 'createLicensed',
+    name: 'create',
     signature:
-      'static createLicensed(option: CalenderOptiopn | CalenderOptiopnRepeatedTask, token: string): Promise<WtsCalendar>;',
+      'static create(option: CalenderOptiopn | CalenderOptiopnRepeatedTask, connection?: CalendarLicenseConnectionOptions): Promise<WtsCalendar>;',
     kind: 'Method',
     description: 'Public WtsCalendar API method.',
     deprecated: '',
@@ -5230,9 +5269,9 @@ export const CLIENT_METHODS = [
         description: '',
       },
       {
-        name: 'token',
-        type: 'string',
-        optional: false,
+        name: 'connection',
+        type: 'CalendarLicenseConnectionOptions | undefined',
+        optional: true,
         description: '',
       },
     ],
@@ -5348,7 +5387,7 @@ export const CLIENT_SYMBOLS = [
     members: [
       {
         name: 'license',
-        type: 'CalendarLicenseGrant',
+        type: 'CalendarLicenseSession',
         optional: false,
         description: '',
       },
@@ -5381,6 +5420,28 @@ export const CLIENT_SYMBOLS = [
         type: 'string',
         optional: true,
         description: 'Defaults to the current browser origin. Required outside a browser.',
+      },
+    ],
+  },
+  {
+    name: 'AngularMaterialCalendarThemeOptions',
+    kind: 'Interface',
+    signature: 'Interface AngularMaterialCalendarThemeOptions',
+    description: 'Public interface export.',
+    exportedFrom: ['./theme-angular-material'],
+    members: [
+      {
+        name: 'colorScheme',
+        type: 'CalendarColorScheme',
+        optional: true,
+        description:
+          "WTS fallback scheme; Angular Material colors follow the app's CSS color-scheme.",
+      },
+      {
+        name: 'themeTokens',
+        type: 'CalendarThemeTokens',
+        optional: true,
+        description: 'Individual overrides, applied after the Angular Material mapping.',
       },
     ],
   },
@@ -6806,6 +6867,12 @@ export const CLIENT_SYMBOLS = [
         optional: false,
         description: '',
       },
+      {
+        name: 'isNarrow',
+        type: 'boolean',
+        optional: false,
+        description: 'The rendered day column is narrower than dayNarrowWidth.',
+      },
     ],
   },
   {
@@ -6850,6 +6917,12 @@ export const CLIENT_SYMBOLS = [
         type: 'boolean',
         optional: false,
         description: '',
+      },
+      {
+        name: 'isNarrow',
+        type: 'boolean',
+        optional: false,
+        description: 'The rendered day column is narrower than dayNarrowWidth.',
       },
     ],
   },
@@ -7746,6 +7819,13 @@ export const CLIENT_SYMBOLS = [
           'Maximum visible events per month cell. `false` disables the limit and\n`true` uses the adaptive default of three.',
       },
       {
+        name: 'dayNarrowWidth',
+        type: 'number',
+        optional: true,
+        description:
+          'Day-column width in CSS pixels below which date labels become compact. Default 100; 0 disables.',
+      },
+      {
         name: 'moreLinkClick',
         type: 'CalendarMoreLinkAction',
         optional: true,
@@ -7834,6 +7914,13 @@ export const CLIENT_SYMBOLS = [
         type: 'string',
         optional: true,
         description: 'Global text color used on foreground events.',
+      },
+      {
+        name: 'eventContrastColor',
+        type: 'string',
+        optional: true,
+        description:
+          'Foreground text color, or `auto` to choose black/white against the rendered\nbackground. Unset preserves the theme. Event/source text colors and\n`eventTextColor` take precedence. Background events are unaffected.',
       },
       {
         name: 'backgroundEventColor',
@@ -8305,9 +8392,15 @@ export const CLIENT_SYMBOLS = [
       },
       {
         name: 'license',
-        type: 'CalendarLicenseGrant',
+        type: 'CalendarLicenseSession',
         optional: true,
-        description: 'Verified premium grant returned by `verifyCalendarLicense`.',
+        description: 'Live backend-verified session returned by `connectCalendarLicense`.',
+      },
+      {
+        name: 'branding',
+        type: "'visible' | 'hidden'",
+        optional: true,
+        description: 'Controls the optional "Powered by WTS Calendar" documentation link.',
       },
       {
         name: 'apikey',
@@ -9591,6 +9684,12 @@ export const CLIENT_SYMBOLS = [
         description: '',
       },
       {
+        name: 'recurring',
+        type: 'CalendarEventInput["recurring"]',
+        optional: true,
+        description: '',
+      },
+      {
         name: 'custom',
         type: 'CalendarEventEditorCustomValues',
         optional: true,
@@ -9850,6 +9949,12 @@ export const CLIENT_SYMBOLS = [
         description: '',
       },
       {
+        name: 'allowRecurrence',
+        type: 'boolean',
+        optional: true,
+        description: '',
+      },
+      {
         name: 'closeOnSuccess',
         type: 'boolean',
         optional: true,
@@ -9931,6 +10036,15 @@ export const CLIENT_SYMBOLS = [
     kind: 'Type',
     signature:
       'type CalendarEventEditorPersistenceResult = void | boolean | "committed" | "conflict" | "rejected" | { status: "committed" | "conflict" | "rejected"; message?: string; }',
+    description: 'Public type export.',
+    exportedFrom: ['./event-editor'],
+    members: [],
+  },
+  {
+    name: 'CalendarEventEditorRecurrenceFrequency',
+    kind: 'Type',
+    signature:
+      'type CalendarEventEditorRecurrenceFrequency = "none" | "daily" | "weekly" | "monthly" | "annually" | "custom"',
     description: 'Public type export.',
     exportedFrom: ['./event-editor'],
     members: [],
@@ -10056,6 +10170,30 @@ export const CLIENT_SYMBOLS = [
       {
         name: 'scope',
         type: 'CalendarRecurringEditScope',
+        optional: false,
+        description: '',
+      },
+      {
+        name: 'recurrenceFrequency',
+        type: 'CalendarEventEditorRecurrenceFrequency',
+        optional: false,
+        description: '',
+      },
+      {
+        name: 'recurrenceInterval',
+        type: 'number',
+        optional: false,
+        description: '',
+      },
+      {
+        name: 'recurrenceDaysOfWeek',
+        type: 'readonly number[]',
+        optional: false,
+        description: '',
+      },
+      {
+        name: 'recurrenceEndDate',
+        type: 'string',
         optional: false,
         description: '',
       },
@@ -13446,71 +13584,74 @@ export const CLIENT_SYMBOLS = [
     ],
   },
   {
-    name: 'CalendarLicenseClaims',
+    name: 'CalendarLicenseConnectionOptions',
     kind: 'Interface',
-    signature: 'Interface CalendarLicenseClaims',
+    signature: 'Interface CalendarLicenseConnectionOptions',
     description: 'Public interface export.',
     exportedFrom: ['.', './all'],
     members: [
       {
-        name: 'iss',
-        type: '"wts-calendar-license"',
-        optional: false,
-        description: '',
-      },
-      {
-        name: 'aud',
-        type: '"wts-calendar-v2"',
-        optional: false,
-        description: '',
-      },
-      {
-        name: 'sub',
+        name: 'licenseKey',
         type: 'string',
         optional: false,
-        description: '',
+        description: 'Browser-visible deployment key, NOT a privileged server credential.',
       },
       {
-        name: 'jti',
+        name: 'verificationUrl',
         type: 'string',
-        optional: false,
+        optional: true,
+        description:
+          'Defaults to https://package-portal.dedicateddevelopers.us/api/public/licenses/verify. Override only for a trusted staging/proxy endpoint.',
+      },
+      {
+        name: 'domain',
+        type: 'string',
+        optional: true,
+        description: 'Derived from document.location in browsers. Required without a document.',
+      },
+      {
+        name: 'document',
+        type: 'Document',
+        optional: true,
         description: '',
       },
       {
-        name: 'iat',
-        type: 'number',
-        optional: false,
+        name: 'signal',
+        type: 'AbortSignal',
+        optional: true,
         description: '',
       },
       {
-        name: 'nbf',
+        name: 'requestTimeoutMs',
         type: 'number',
         optional: true,
         description: '',
       },
       {
-        name: 'exp',
+        name: 'refreshIntervalMs',
         type: 'number',
-        optional: false,
-        description: '',
+        optional: true,
+        description:
+          'Best-effort revalidation. Default one hour; outages do not revoke perpetual use.',
       },
       {
-        name: 'tier',
-        type: '"premium" | "enterprise"',
-        optional: false,
-        description: '',
+        name: 'allowInsecureDevelopmentEndpoint',
+        type: 'boolean',
+        optional: true,
+        description:
+          'Private HTTP endpoints are allowed only when the consuming page is also local.',
       },
       {
-        name: 'features',
-        type: 'readonly CalendarPremiumFeature[]',
-        optional: false,
-        description: '',
-      },
-      {
-        name: 'origins',
-        type: 'readonly string[]',
+        name: 'onStatusChange',
+        type: '(status: CalendarLicenseStatus) => void',
         optional: true,
         description: '',
+      },
+      {
+        name: 'fetch',
+        type: 'typeof globalThis.fetch',
+        optional: true,
+        description: 'Host transport override; it must preserve HTTPS and authorization semantics.',
       },
     ],
   },
@@ -13526,32 +13667,27 @@ export const CLIENT_SYMBOLS = [
     name: 'CalendarLicenseErrorReason',
     kind: 'Type',
     signature:
-      'type CalendarLicenseErrorReason = "claims" | "crypto-unavailable" | "expired" | "feature" | "malformed" | "not-active" | "origin" | "signature" | "untrusted-key" | "unverified"',
+      'type CalendarLicenseErrorReason = "configuration" | "network" | "protocol" | "revoked" | "aborted" | "version-not-covered" | "feature" | "malformed" | "origin" | "unverified"',
     description: 'Public type export.',
     exportedFrom: ['.', './all'],
     members: [],
   },
   {
-    name: 'CalendarLicenseGrant',
-    kind: 'Interface',
-    signature: 'Interface CalendarLicenseGrant',
-    description:
-      'An opaque grant returned only by `verifyCalendarLicense`. It can be reused by calendars covered by the same license.',
+    name: 'CalendarLicenseSession',
+    kind: 'Class',
+    signature: 'Class CalendarLicenseSession',
+    description: 'Live backend authorization. No signed tokens or persistent cache.',
     exportedFrom: ['.', './all'],
-    members: [
-      {
-        name: 'claims',
-        type: 'CalendarLicenseClaims',
-        optional: false,
-        description: '',
-      },
-      {
-        name: '__@calendarLicenseGrantBrand@210',
-        type: 'true',
-        optional: false,
-        description: '',
-      },
-    ],
+    members: [],
+  },
+  {
+    name: 'CalendarLicenseState',
+    kind: 'Type',
+    signature:
+      'type CalendarLicenseState = "verifying" | "active" | "refreshing" | "offline" | "updates-expired" | "revoked" | "invalid" | "destroyed"',
+    description: 'Public type export.',
+    exportedFrom: ['.', './all'],
+    members: [],
   },
   {
     name: 'CalendarLicenseStatus',
@@ -13579,8 +13715,26 @@ export const CLIENT_SYMBOLS = [
         description: '',
       },
       {
-        name: 'expiresAt',
+        name: 'updatesUntil',
         type: 'Date',
+        optional: true,
+        description: '',
+      },
+      {
+        name: 'supportUntil',
+        type: 'Date',
+        optional: true,
+        description: '',
+      },
+      {
+        name: 'licenseModel',
+        type: '"PERPETUAL_VERSION"',
+        optional: true,
+        description: '',
+      },
+      {
+        name: 'packageVersion',
+        type: 'string',
         optional: true,
         description: '',
       },
@@ -13588,6 +13742,19 @@ export const CLIENT_SYMBOLS = [
         name: 'features',
         type: 'readonly CalendarPremiumFeature[]',
         optional: false,
+        description:
+          'Capabilities defined by this installed package, available with verified Premium access.',
+      },
+      {
+        name: 'state',
+        type: 'CalendarLicenseState',
+        optional: true,
+        description: '',
+      },
+      {
+        name: 'lastVerifiedAt',
+        type: 'Date',
+        optional: true,
         description: '',
       },
     ],
@@ -14009,6 +14176,51 @@ export const CLIENT_SYMBOLS = [
         name: 'isTimeGrid',
         type: 'boolean',
         optional: false,
+        description: '',
+      },
+    ],
+  },
+  {
+    name: 'CalendarMuiTheme',
+    kind: 'Interface',
+    signature: 'Interface CalendarMuiTheme',
+    description: "Structural subset of Material UI's Theme; no MUI or React runtime dependency.",
+    exportedFrom: ['./theme-mui'],
+    members: [
+      {
+        name: 'palette',
+        type: 'MuiCalendarPalette',
+        optional: false,
+        description: '',
+      },
+      {
+        name: 'direction',
+        type: "'ltr' | 'rtl'",
+        optional: true,
+        description: '',
+      },
+      {
+        name: 'typography',
+        type: '{ fontFamily?: string; }',
+        optional: true,
+        description: '',
+      },
+      {
+        name: 'shape',
+        type: '{ borderRadius?: number | string; }',
+        optional: true,
+        description: '',
+      },
+      {
+        name: 'shadows',
+        type: 'readonly string[]',
+        optional: true,
+        description: '',
+      },
+      {
+        name: 'vars',
+        type: "{ palette?: { primary?: Partial<MuiCalendarPalette['primary']>; background?: Partial<MuiCalendarPalette['background']>; text?: Partial<MuiCalendarPalette['text']>; divider?: string; action?: MuiCalendarPalette['action']; }; shape?: { borderRadius?: number | string; }; shadows?: readonly string[]; }",
+        optional: true,
         description: '',
       },
     ],
@@ -14730,6 +14942,13 @@ export const CLIENT_SYMBOLS = [
           'Maximum visible events per month cell. `false` disables the limit and\n`true` uses the adaptive default of three.',
       },
       {
+        name: 'dayNarrowWidth',
+        type: 'number',
+        optional: true,
+        description:
+          'Day-column width in CSS pixels below which date labels become compact. Default 100; 0 disables.',
+      },
+      {
         name: 'moreLinkClick',
         type: 'CalendarMoreLinkAction',
         optional: true,
@@ -14818,6 +15037,13 @@ export const CLIENT_SYMBOLS = [
         type: 'string',
         optional: true,
         description: 'Global text color used on foreground events.',
+      },
+      {
+        name: 'eventContrastColor',
+        type: 'string',
+        optional: true,
+        description:
+          'Foreground text color, or `auto` to choose black/white against the rendered\nbackground. Unset preserves the theme. Event/source text colors and\n`eventTextColor` take precedence. Background events are unaffected.',
       },
       {
         name: 'backgroundEventColor',
@@ -15280,6 +15506,12 @@ export const CLIENT_SYMBOLS = [
         type: 'Views',
         optional: true,
         description: '',
+      },
+      {
+        name: 'branding',
+        type: "'visible' | 'hidden'",
+        optional: true,
+        description: 'Controls the optional "Powered by WTS Calendar" documentation link.',
       },
       {
         name: 'viewDate',
@@ -16154,6 +16386,13 @@ export const CLIENT_SYMBOLS = [
           'Maximum visible events per month cell. `false` disables the limit and\n`true` uses the adaptive default of three.',
       },
       {
+        name: 'dayNarrowWidth',
+        type: 'number',
+        optional: true,
+        description:
+          'Day-column width in CSS pixels below which date labels become compact. Default 100; 0 disables.',
+      },
+      {
         name: 'moreLinkClick',
         type: 'CalendarMoreLinkAction',
         optional: true,
@@ -16242,6 +16481,13 @@ export const CLIENT_SYMBOLS = [
         type: 'string',
         optional: true,
         description: 'Global text color used on foreground events.',
+      },
+      {
+        name: 'eventContrastColor',
+        type: 'string',
+        optional: true,
+        description:
+          'Foreground text color, or `auto` to choose black/white against the rendered\nbackground. Unset preserves the theme. Event/source text colors and\n`eventTextColor` take precedence. Background events are unaffected.',
       },
       {
         name: 'backgroundEventColor',
@@ -16719,9 +16965,15 @@ export const CLIENT_SYMBOLS = [
       },
       {
         name: 'license',
-        type: 'CalendarLicenseGrant',
+        type: 'CalendarLicenseSession',
         optional: true,
-        description: 'Verified premium grant returned by `verifyCalendarLicense`.',
+        description: 'Live backend-verified session returned by `connectCalendarLicense`.',
+      },
+      {
+        name: 'branding',
+        type: "'visible' | 'hidden'",
+        optional: true,
+        description: 'Controls the optional "Powered by WTS Calendar" documentation link.',
       },
       {
         name: 'apikey',
@@ -18001,6 +18253,13 @@ export const CLIENT_SYMBOLS = [
           'Maximum visible events per month cell. `false` disables the limit and\n`true` uses the adaptive default of three.',
       },
       {
+        name: 'dayNarrowWidth',
+        type: 'number',
+        optional: true,
+        description:
+          'Day-column width in CSS pixels below which date labels become compact. Default 100; 0 disables.',
+      },
+      {
         name: 'moreLinkClick',
         type: 'CalendarMoreLinkAction',
         optional: true,
@@ -18089,6 +18348,13 @@ export const CLIENT_SYMBOLS = [
         type: 'string',
         optional: true,
         description: 'Global text color used on foreground events.',
+      },
+      {
+        name: 'eventContrastColor',
+        type: 'string',
+        optional: true,
+        description:
+          'Foreground text color, or `auto` to choose black/white against the rendered\nbackground. Unset preserves the theme. Event/source text colors and\n`eventTextColor` take precedence. Background events are unaffected.',
       },
       {
         name: 'backgroundEventColor',
@@ -18566,9 +18832,15 @@ export const CLIENT_SYMBOLS = [
       },
       {
         name: 'license',
-        type: 'CalendarLicenseGrant',
+        type: 'CalendarLicenseSession',
         optional: true,
-        description: 'Verified premium grant returned by `verifyCalendarLicense`.',
+        description: 'Live backend-verified session returned by `connectCalendarLicense`.',
+      },
+      {
+        name: 'branding',
+        type: "'visible' | 'hidden'",
+        optional: true,
+        description: 'Controls the optional "Powered by WTS Calendar" documentation link.',
       },
       {
         name: 'apikey',
@@ -22258,6 +22530,12 @@ export const CLIENT_SYMBOLS = [
         description: '',
       },
       {
+        name: 'focus',
+        type: 'string',
+        optional: true,
+        description: 'Keyboard focus ring color, including design-system integrations.',
+      },
+      {
         name: 'todayBackground',
         type: 'string',
         optional: true,
@@ -22403,6 +22681,158 @@ export const CLIENT_SYMBOLS = [
         type: 'readonly string[]',
         optional: true,
         description: '',
+      },
+    ],
+  },
+  {
+    name: 'CalendarTimeMachine',
+    kind: 'Class',
+    signature: 'Class CalendarTimeMachine',
+    description:
+      'Premium, DOM-free recorded-state engine. Local mode changes ONLY its own dataset. No calendar mutation, provider write, email, payment, or workflow hook is replayed.',
+    exportedFrom: ['./time-machine'],
+    members: [],
+  },
+  {
+    name: 'CalendarTimeMachineOptions',
+    kind: 'Interface',
+    signature: 'Interface CalendarTimeMachineOptions',
+    description: 'Public interface export.',
+    exportedFrom: ['./time-machine'],
+    members: [
+      {
+        name: 'license',
+        type: 'CalendarLicenseSession',
+        optional: false,
+        description: '',
+      },
+      {
+        name: 'origin',
+        type: 'string',
+        optional: true,
+        description: '',
+      },
+      {
+        name: 'storage',
+        type: 'TimeMachineStorageAdapter',
+        optional: true,
+        description: '',
+      },
+      {
+        name: 'authorizeRestore',
+        type: '(context: TimeMachineRestoreContext) => boolean | Promise<boolean>',
+        optional: true,
+        description: 'Mandatory for restore, deny by default. Re-evaluated on every confirmation.',
+      },
+      {
+        name: 'validateRestore',
+        type: '(context: TimeMachineRestoreContext) => boolean | Promise<boolean>',
+        optional: true,
+        description: 'Application-specific constraints, including date and resource consistency.',
+      },
+      {
+        name: 'now',
+        type: '() => Date',
+        optional: true,
+        description: '',
+      },
+      {
+        name: 'idGenerator',
+        type: '() => string',
+        optional: true,
+        description: '',
+      },
+      {
+        name: 'maxRevisions',
+        type: 'number',
+        optional: true,
+        description:
+          'Limits fail explicitly; history is never silently pruned. Defaults: 200/10000/2 MiB.',
+      },
+      {
+        name: 'maxRecords',
+        type: 'number',
+        optional: true,
+        description: '',
+      },
+      {
+        name: 'maxRevisionBytes',
+        type: 'number',
+        optional: true,
+        description: '',
+      },
+      {
+        name: 'onListenerError',
+        type: '(error: unknown) => void',
+        optional: true,
+        description: '',
+      },
+    ],
+  },
+  {
+    name: 'CalendarTimeMachinePanel',
+    kind: 'Class',
+    signature: 'Class CalendarTimeMachinePanel',
+    description:
+      'Standalone accessible Premium panel. Mount beside, never inside, the live calendar.',
+    exportedFrom: ['./time-machine-panel'],
+    members: [],
+  },
+  {
+    name: 'CalendarTimeMachinePanelOptions',
+    kind: 'Interface',
+    signature: 'Interface CalendarTimeMachinePanelOptions',
+    description: 'Public interface export.',
+    exportedFrom: ['./time-machine-panel'],
+    members: [
+      {
+        name: 'container',
+        type: 'HTMLElement',
+        optional: false,
+        description: '',
+      },
+      {
+        name: 'machine',
+        type: 'CalendarTimeMachine',
+        optional: false,
+        description: '',
+      },
+      {
+        name: 'actorId',
+        type: '() => string',
+        optional: true,
+        description: 'Called at confirmation, not captured from a historical actor.',
+      },
+      {
+        name: 'readOnly',
+        type: 'boolean',
+        optional: true,
+        description: '',
+      },
+      {
+        name: 'showCalendar',
+        type: 'boolean',
+        optional: true,
+        description: 'Show an isolated, non-editable month for records with ISO start/end fields.',
+      },
+      {
+        name: 'locale',
+        type: 'string',
+        optional: true,
+        description:
+          'Calendar and timestamp locale. Panel control copy is English in this release.',
+      },
+      {
+        name: 'injectStyles',
+        type: 'boolean',
+        optional: true,
+        description: '',
+      },
+      {
+        name: 'pageSize',
+        type: 'number',
+        optional: true,
+        description: 'Maximum visible comparison/data rows per page. Default 50, maximum 200.',
       },
     ],
   },
@@ -23363,6 +23793,13 @@ export const CLIENT_SYMBOLS = [
           'Maximum visible events per month cell. `false` disables the limit and\n`true` uses the adaptive default of three.',
       },
       {
+        name: 'dayNarrowWidth',
+        type: 'number',
+        optional: true,
+        description:
+          'Day-column width in CSS pixels below which date labels become compact. Default 100; 0 disables.',
+      },
+      {
         name: 'moreLinkClick',
         type: 'CalendarMoreLinkAction',
         optional: true,
@@ -23451,6 +23888,13 @@ export const CLIENT_SYMBOLS = [
         type: 'string',
         optional: true,
         description: 'Global text color used on foreground events.',
+      },
+      {
+        name: 'eventContrastColor',
+        type: 'string',
+        optional: true,
+        description:
+          'Foreground text color, or `auto` to choose black/white against the rendered\nbackground. Unset preserves the theme. Event/source text colors and\n`eventTextColor` take precedence. Background events are unaffected.',
       },
       {
         name: 'backgroundEventColor',
@@ -23928,9 +24372,15 @@ export const CLIENT_SYMBOLS = [
       },
       {
         name: 'license',
-        type: 'CalendarLicenseGrant',
+        type: 'CalendarLicenseSession',
         optional: true,
-        description: 'Verified premium grant returned by `verifyCalendarLicense`.',
+        description: 'Live backend-verified session returned by `connectCalendarLicense`.',
+      },
+      {
+        name: 'branding',
+        type: "'visible' | 'hidden'",
+        optional: true,
+        description: 'Controls the optional "Powered by WTS Calendar" documentation link.',
       },
       {
         name: 'apikey',
@@ -24890,6 +25340,13 @@ export const CLIENT_SYMBOLS = [
           'Maximum visible events per month cell. `false` disables the limit and\n`true` uses the adaptive default of three.',
       },
       {
+        name: 'dayNarrowWidth',
+        type: 'number',
+        optional: true,
+        description:
+          'Day-column width in CSS pixels below which date labels become compact. Default 100; 0 disables.',
+      },
+      {
         name: 'moreLinkClick',
         type: 'CalendarMoreLinkAction',
         optional: true,
@@ -24978,6 +25435,13 @@ export const CLIENT_SYMBOLS = [
         type: 'string',
         optional: true,
         description: 'Global text color used on foreground events.',
+      },
+      {
+        name: 'eventContrastColor',
+        type: 'string',
+        optional: true,
+        description:
+          'Foreground text color, or `auto` to choose black/white against the rendered\nbackground. Unset preserves the theme. Event/source text colors and\n`eventTextColor` take precedence. Background events are unaffected.',
       },
       {
         name: 'backgroundEventColor',
@@ -25455,9 +25919,15 @@ export const CLIENT_SYMBOLS = [
       },
       {
         name: 'license',
-        type: 'CalendarLicenseGrant',
+        type: 'CalendarLicenseSession',
         optional: true,
-        description: 'Verified premium grant returned by `verifyCalendarLicense`.',
+        description: 'Live backend-verified session returned by `connectCalendarLicense`.',
+      },
+      {
+        name: 'branding',
+        type: "'visible' | 'hidden'",
+        optional: true,
+        description: 'Controls the optional "Powered by WTS Calendar" documentation link.',
       },
       {
         name: 'apikey',
@@ -25998,6 +26468,25 @@ export const CLIENT_SYMBOLS = [
     members: [],
   },
   {
+    name: 'connectCalendarLicense',
+    kind: 'Value',
+    signature:
+      'connectCalendarLicense: (options: CalendarLicenseConnectionOptions) => Promise<CalendarLicenseSession>',
+    description: 'Public value export.',
+    exportedFrom: ['.', './all'],
+    members: [],
+  },
+  {
+    name: 'createAngularMaterialCalendarTheme',
+    kind: 'Function',
+    signature:
+      'createAngularMaterialCalendarTheme: (options?: AngularMaterialCalendarThemeOptions) => Pick<CalendarOptions, "theme" | "colorScheme" | "themeTokens">',
+    description:
+      "Bind to Angular Material 19+ Material 3 system tokens generated by mat.theme(). No Angular imports or DOM reads. Inherited CSS variables and light-dark() remain live when the application's theme or color-scheme changes.",
+    exportedFrom: ['./theme-angular-material'],
+    members: [],
+  },
+  {
     name: 'createCalendarEventEditor',
     kind: 'Function',
     signature:
@@ -26020,6 +26509,15 @@ export const CLIENT_SYMBOLS = [
     signature: 'createCalendarTestClock: (initial?: Date | string | number) => CalendarTestClock',
     description: 'Public function export.',
     exportedFrom: ['./testing'],
+    members: [],
+  },
+  {
+    name: 'createCalendarTimeMachinePanel',
+    kind: 'Function',
+    signature:
+      'createCalendarTimeMachinePanel: (options: CalendarTimeMachinePanelOptions) => CalendarTimeMachinePanel',
+    description: 'Public function export.',
+    exportedFrom: ['./time-machine-panel'],
     members: [],
   },
   {
@@ -26050,6 +26548,15 @@ export const CLIENT_SYMBOLS = [
     members: [],
   },
   {
+    name: 'createMuiCalendarTheme',
+    kind: 'Function',
+    signature:
+      'createMuiCalendarTheme: (theme: CalendarMuiTheme, options?: MuiCalendarThemeOptions) => Pick<CalendarOptions, "theme" | "colorScheme" | "direction" | "themeTokens">',
+    description: 'Pass the result to initial options or calendar.setOptions().',
+    exportedFrom: ['./theme-mui'],
+    members: [],
+  },
+  {
     name: 'createNativeCalendar',
     kind: 'Function',
     signature:
@@ -26075,6 +26582,16 @@ export const CLIENT_SYMBOLS = [
       'createRestCalendarDataAdapter: <TRecord>(options: RestCalendarDataAdapterOptions<TRecord>) => CalendarDataAdapter<TRecord>',
     description: 'Public function export.',
     exportedFrom: ['./data-adapter-sdk'],
+    members: [],
+  },
+  {
+    name: 'createShadcnCalendarTheme',
+    kind: 'Function',
+    signature:
+      'createShadcnCalendarTheme: (options?: ShadcnCalendarThemeOptions) => Pick<CalendarOptions, "theme" | "colorScheme" | "themeTokens">',
+    description:
+      "Bind to shadcn/ui's semantic CSS variables. No DOM reads, Tailwind build step, or runtime dependency; changing an ancestor's .dark class updates the colors.",
+    exportedFrom: ['./theme-shadcn'],
     members: [],
   },
   {
@@ -26961,7 +27478,7 @@ export const CLIENT_SYMBOLS = [
     members: [
       {
         name: 'license',
-        type: 'CalendarLicenseGrant',
+        type: 'CalendarLicenseSession',
         optional: false,
         description: '',
       },
@@ -27357,6 +27874,27 @@ export const CLIENT_SYMBOLS = [
         type: 'CalendarTimeZone',
         optional: true,
         description: '',
+      },
+    ],
+  },
+  {
+    name: 'MuiCalendarThemeOptions',
+    kind: 'Interface',
+    signature: 'Interface MuiCalendarThemeOptions',
+    description: 'Public interface export.',
+    exportedFrom: ['./theme-mui'],
+    members: [
+      {
+        name: 'colorScheme',
+        type: 'CalendarColorScheme',
+        optional: true,
+        description: "CSS-variable themes follow their provider's mode without another render.",
+      },
+      {
+        name: 'themeTokens',
+        type: 'CalendarThemeTokens',
+        optional: true,
+        description: 'Individual overrides, applied after the Material UI mapping.',
       },
     ],
   },
@@ -27941,7 +28479,7 @@ export const CLIENT_SYMBOLS = [
     members: [
       {
         name: 'license',
-        type: 'CalendarLicenseGrant',
+        type: 'CalendarLicenseSession',
         optional: false,
         description: '',
       },
@@ -28041,6 +28579,33 @@ export const CLIENT_SYMBOLS = [
     description: 'Public function export.',
     exportedFrom: ['./icalendar'],
     members: [],
+  },
+  {
+    name: 'ShadcnCalendarThemeOptions',
+    kind: 'Interface',
+    signature: 'Interface ShadcnCalendarThemeOptions',
+    description: 'Public interface export.',
+    exportedFrom: ['./theme-shadcn'],
+    members: [
+      {
+        name: 'colorFormat',
+        type: "'css' | 'hsl'",
+        optional: true,
+        description: 'Use hsl for older themes whose color variables contain bare HSL channels.',
+      },
+      {
+        name: 'colorScheme',
+        type: 'CalendarColorScheme',
+        optional: true,
+        description: 'Palette colors follow inherited variables, not the OS color scheme.',
+      },
+      {
+        name: 'themeTokens',
+        type: 'CalendarThemeTokens',
+        optional: true,
+        description: 'Individual overrides, including fontFamily for an application font.',
+      },
+    ],
   },
   {
     name: 'TaskInterface',
@@ -28207,6 +28772,354 @@ export const CLIENT_SYMBOLS = [
     signature: 'timeGridModule: CalendarFeatureModule',
     description: 'Public value export.',
     exportedFrom: ['./time-grid', './all'],
+    members: [],
+  },
+  {
+    name: 'TimeMachineActor',
+    kind: 'Interface',
+    signature: 'Interface TimeMachineActor',
+    description: 'Public interface export.',
+    exportedFrom: ['./time-machine'],
+    members: [
+      {
+        name: 'actorId',
+        type: 'string',
+        optional: false,
+        description: '',
+      },
+      {
+        name: 'reason',
+        type: 'string',
+        optional: false,
+        description: '',
+      },
+    ],
+  },
+  {
+    name: 'TimeMachineAppendContext',
+    kind: 'Interface',
+    signature: 'Interface TimeMachineAppendContext',
+    description: 'Public interface export.',
+    exportedFrom: ['./time-machine'],
+    members: [
+      {
+        name: 'revision',
+        type: 'TimeMachineRevision',
+        optional: false,
+        description: '',
+      },
+      {
+        name: 'expectedHeadId',
+        type: 'string | null',
+        optional: false,
+        description: '',
+      },
+      {
+        name: 'restore',
+        type: 'TimeMachineRestorePlan',
+        optional: true,
+        description: '',
+      },
+    ],
+  },
+  {
+    name: 'TimeMachineConflictError',
+    kind: 'Class',
+    signature: 'Class TimeMachineConflictError',
+    description: 'Public class export.',
+    exportedFrom: ['./time-machine'],
+    members: [],
+  },
+  {
+    name: 'TimeMachineData',
+    kind: 'Interface',
+    signature: 'Interface TimeMachineData',
+    description: 'Public interface export.',
+    exportedFrom: ['./time-machine'],
+    members: [],
+  },
+  {
+    name: 'TimeMachineFieldChange',
+    kind: 'Interface',
+    signature: 'Interface TimeMachineFieldChange',
+    description: 'Public interface export.',
+    exportedFrom: ['./time-machine'],
+    members: [
+      {
+        name: 'field',
+        type: 'string',
+        optional: false,
+        description: '',
+      },
+      {
+        name: 'before',
+        type: 'TimeMachineFieldValue',
+        optional: false,
+        description: '',
+      },
+      {
+        name: 'after',
+        type: 'TimeMachineFieldValue',
+        optional: false,
+        description: '',
+      },
+    ],
+  },
+  {
+    name: 'TimeMachineFieldValue',
+    kind: 'Type',
+    signature:
+      'type TimeMachineFieldValue = Readonly<{ present: false; } | { present: true; value: TimeMachineValue; }>',
+    description: 'Presence is distinct from a field whose value is null.',
+    exportedFrom: ['./time-machine'],
+    members: [],
+  },
+  {
+    name: 'TimeMachineRecord',
+    kind: 'Interface',
+    signature: 'Interface TimeMachineRecord',
+    description: 'Public interface export.',
+    exportedFrom: ['./time-machine'],
+    members: [
+      {
+        name: 'id',
+        type: 'string',
+        optional: false,
+        description: '',
+      },
+      {
+        name: 'data',
+        type: 'TimeMachineData',
+        optional: false,
+        description: '',
+      },
+    ],
+  },
+  {
+    name: 'TimeMachineRecordChange',
+    kind: 'Interface',
+    signature: 'Interface TimeMachineRecordChange',
+    description: 'Public interface export.',
+    exportedFrom: ['./time-machine'],
+    members: [
+      {
+        name: 'recordId',
+        type: 'string',
+        optional: false,
+        description: '',
+      },
+      {
+        name: 'kind',
+        type: '"added" | "removed" | "updated"',
+        optional: false,
+        description: '',
+      },
+      {
+        name: 'before',
+        type: 'TimeMachineRecord',
+        optional: true,
+        description: '',
+      },
+      {
+        name: 'after',
+        type: 'TimeMachineRecord',
+        optional: true,
+        description: '',
+      },
+      {
+        name: 'fields',
+        type: 'readonly TimeMachineFieldChange[]',
+        optional: false,
+        description: '',
+      },
+    ],
+  },
+  {
+    name: 'TimeMachineRestoreContext',
+    kind: 'Interface',
+    signature: 'Interface TimeMachineRestoreContext',
+    description: 'Public interface export.',
+    exportedFrom: ['./time-machine'],
+    members: [
+      {
+        name: 'plan',
+        type: 'TimeMachineRestorePlan',
+        optional: false,
+        description: '',
+      },
+      {
+        name: 'signal',
+        type: 'AbortSignal',
+        optional: false,
+        description: '',
+      },
+      {
+        name: 'actorId',
+        type: 'string',
+        optional: false,
+        description: '',
+      },
+      {
+        name: 'reason',
+        type: 'string',
+        optional: false,
+        description: '',
+      },
+    ],
+  },
+  {
+    name: 'TimeMachineRestorePlan',
+    kind: 'Interface',
+    signature: 'Interface TimeMachineRestorePlan',
+    description: 'Public interface export.',
+    exportedFrom: ['./time-machine'],
+    members: [
+      {
+        name: 'targetRevisionId',
+        type: 'string',
+        optional: false,
+        description: '',
+      },
+      {
+        name: 'expectedHeadId',
+        type: 'string',
+        optional: false,
+        description: '',
+      },
+      {
+        name: 'changes',
+        type: 'readonly TimeMachineRecordChange[]',
+        optional: false,
+        description: '',
+      },
+      {
+        name: 'records',
+        type: 'readonly TimeMachineRecord[]',
+        optional: false,
+        description: '',
+      },
+    ],
+  },
+  {
+    name: 'TimeMachineRestoreSelection',
+    kind: 'Interface',
+    signature: 'Interface TimeMachineRestoreSelection',
+    description: 'Public interface export.',
+    exportedFrom: ['./time-machine'],
+    members: [
+      {
+        name: 'recordId',
+        type: 'string',
+        optional: false,
+        description: '',
+      },
+      {
+        name: 'fields',
+        type: 'readonly string[]',
+        optional: true,
+        description:
+          'Omit to restore record existence and its complete data. Top-level fields only.',
+      },
+    ],
+  },
+  {
+    name: 'TimeMachineRevision',
+    kind: 'Interface',
+    signature: 'Interface TimeMachineRevision',
+    description: 'Public interface export.',
+    exportedFrom: ['./time-machine'],
+    members: [
+      {
+        name: 'schemaVersion',
+        type: '1',
+        optional: false,
+        description: '',
+      },
+      {
+        name: 'id',
+        type: 'string',
+        optional: false,
+        description: '',
+      },
+      {
+        name: 'sequence',
+        type: 'number',
+        optional: false,
+        description: '',
+      },
+      {
+        name: 'parentId',
+        type: 'string | null',
+        optional: false,
+        description: '',
+      },
+      {
+        name: 'recordedAt',
+        type: 'string',
+        optional: false,
+        description: '',
+      },
+      {
+        name: 'kind',
+        type: '"capture" | "restore"',
+        optional: false,
+        description: '',
+      },
+      {
+        name: 'restoredFrom',
+        type: 'string',
+        optional: true,
+        description: '',
+      },
+      {
+        name: 'records',
+        type: 'readonly TimeMachineRecord[]',
+        optional: false,
+        description: '',
+      },
+      {
+        name: 'actorId',
+        type: 'string',
+        optional: false,
+        description: '',
+      },
+      {
+        name: 'reason',
+        type: 'string',
+        optional: false,
+        description: '',
+      },
+    ],
+  },
+  {
+    name: 'TimeMachineStorageAdapter',
+    kind: 'Interface',
+    signature: 'Interface TimeMachineStorageAdapter',
+    description:
+      'Customer-owned authoritative storage. append MUST compare-and-swap expectedHeadId and use revision.id for idempotency. A restore must commit business records and its new history revision in ONE transaction, after server authorization/validation. Resolving means committed, never merely queued for approval. A failed/ambiguous write requires refresh before retrying. Replay never calls this adapter.',
+    exportedFrom: ['./time-machine'],
+    members: [
+      {
+        name: 'load',
+        type: 'Promise<readonly TimeMachineRevision[]>',
+        optional: false,
+        description: '',
+      },
+      {
+        name: 'append',
+        type: 'Promise<void>',
+        optional: false,
+        description: '',
+      },
+    ],
+  },
+  {
+    name: 'TimeMachineValue',
+    kind: 'Type',
+    signature:
+      'type TimeMachineValue = null | boolean | number | string | readonly TimeMachineValue[] | TimeMachineData',
+    description: 'Serializable application data. Dates must be explicit ISO strings.',
+    exportedFrom: ['./time-machine'],
     members: [],
   },
   {
@@ -28972,6 +29885,13 @@ export const CLIENT_SYMBOLS = [
           'Maximum visible events per month cell. `false` disables the limit and\n`true` uses the adaptive default of three.',
       },
       {
+        name: 'dayNarrowWidth',
+        type: 'number',
+        optional: true,
+        description:
+          'Day-column width in CSS pixels below which date labels become compact. Default 100; 0 disables.',
+      },
+      {
         name: 'moreLinkClick',
         type: 'CalendarMoreLinkAction',
         optional: true,
@@ -29060,6 +29980,13 @@ export const CLIENT_SYMBOLS = [
         type: 'string',
         optional: true,
         description: 'Global text color used on foreground events.',
+      },
+      {
+        name: 'eventContrastColor',
+        type: 'string',
+        optional: true,
+        description:
+          'Foreground text color, or `auto` to choose black/white against the rendered\nbackground. Unset preserves the theme. Event/source text colors and\n`eventTextColor` take precedence. Background events are unaffected.',
       },
       {
         name: 'backgroundEventColor',
@@ -29525,9 +30452,15 @@ export const CLIENT_SYMBOLS = [
       },
       {
         name: 'license',
-        type: 'CalendarLicenseGrant',
+        type: 'CalendarLicenseSession',
         optional: true,
-        description: 'Verified premium grant returned by `verifyCalendarLicense`.',
+        description: 'Live backend-verified session returned by `connectCalendarLicense`.',
+      },
+      {
+        name: 'branding',
+        type: "'visible' | 'hidden'",
+        optional: true,
+        description: 'Controls the optional "Powered by WTS Calendar" documentation link.',
       },
       {
         name: 'apikey',
@@ -30133,15 +31066,6 @@ export const CLIENT_SYMBOLS = [
       'validateCalendarConfiguration: (input: unknown, options?: CalendarConfigurationValidationOptions) => CalendarConfigurationReport',
     description: 'Public function export.',
     exportedFrom: ['./developer-tools'],
-    members: [],
-  },
-  {
-    name: 'verifyCalendarLicense',
-    kind: 'Function',
-    signature: 'verifyCalendarLicense: (token: string) => Promise<CalendarLicenseGrant>',
-    description:
-      "Verifies a compact signed WTS license token with the package's pinned Ed25519 public key. Verification must finish before calendar construction.",
-    exportedFrom: ['.', './all'],
     members: [],
   },
   {
@@ -31555,6 +32479,13 @@ export const CLIENT_SYMBOLS = [
           'Maximum visible events per month cell. `false` disables the limit and\n`true` uses the adaptive default of three.',
       },
       {
+        name: 'dayNarrowWidth',
+        type: 'number',
+        optional: true,
+        description:
+          'Day-column width in CSS pixels below which date labels become compact. Default 100; 0 disables.',
+      },
+      {
         name: 'moreLinkClick',
         type: 'CalendarMoreLinkAction',
         optional: true,
@@ -31643,6 +32574,13 @@ export const CLIENT_SYMBOLS = [
         type: 'string',
         optional: true,
         description: 'Global text color used on foreground events.',
+      },
+      {
+        name: 'eventContrastColor',
+        type: 'string',
+        optional: true,
+        description:
+          'Foreground text color, or `auto` to choose black/white against the rendered\nbackground. Unset preserves the theme. Event/source text colors and\n`eventTextColor` take precedence. Background events are unaffected.',
       },
       {
         name: 'backgroundEventColor',
@@ -32114,9 +33052,15 @@ export const CLIENT_SYMBOLS = [
       },
       {
         name: 'license',
-        type: 'CalendarLicenseGrant',
+        type: 'CalendarLicenseSession',
         optional: true,
-        description: 'Verified premium grant returned by `verifyCalendarLicense`.',
+        description: 'Live backend-verified session returned by `connectCalendarLicense`.',
+      },
+      {
+        name: 'branding',
+        type: "'visible' | 'hidden'",
+        optional: true,
+        description: 'Controls the optional "Powered by WTS Calendar" documentation link.',
       },
       {
         name: 'apikey',
@@ -33004,6 +33948,51 @@ export const CLIENT_REFERENCE_TYPES = [
         name: 'multiMonthColumns',
         type: 'number',
         optional: false,
+        description: '',
+      },
+    ],
+  },
+  {
+    name: 'MuiCalendarPalette',
+    kind: 'Interface',
+    signature: 'Interface MuiCalendarPalette',
+    description: 'Supporting type referenced by the public API; not a root package export.',
+    exportedFrom: [],
+    members: [
+      {
+        name: 'mode',
+        type: "'light' | 'dark'",
+        optional: true,
+        description: '',
+      },
+      {
+        name: 'primary',
+        type: '{ main: string; contrastText: string; }',
+        optional: false,
+        description: '',
+      },
+      {
+        name: 'background',
+        type: '{ default: string; paper: string; }',
+        optional: false,
+        description: '',
+      },
+      {
+        name: 'text',
+        type: '{ primary: string; secondary: string; }',
+        optional: false,
+        description: '',
+      },
+      {
+        name: 'divider',
+        type: 'string',
+        optional: false,
+        description: '',
+      },
+      {
+        name: 'action',
+        type: '{ hover?: string; selected?: string; }',
+        optional: true,
         description: '',
       },
     ],

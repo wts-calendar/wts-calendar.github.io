@@ -88,13 +88,27 @@ for (const file of indexFiles()) {
       'Missing integration copy button: ' + route,
     );
     assert.ok(
-      article.querySelector('a[href^="mailto:"]'),
-      'Missing email-only license contact: ' + route,
+      article.querySelector('#licensing button[aria-haspopup="dialog"]'),
+      'Missing license-request dialog trigger: ' + route,
+    );
+    assert.ok(
+      document.querySelector('app-license-request-form dialog:not([open])'),
+      'Missing initially closed license-request dialog: ' + route,
     );
     assert.ok(
       !article.querySelector('a[href$="/pricing"]'),
       'Premium guide must not redirect users to pricing: ' + route,
     );
+  }
+  if (route === 'docs/appearance') {
+    assert.match(document.querySelector('main')?.textContent ?? '', /Available in core 1\.1\.3/);
+    for (const id of ['contrast', 'narrow', 'mui', 'shadcn', 'angular-material']) {
+      assert.ok(
+        document.querySelector('#' + id + ' app-code-card'),
+        'Missing appearance example: ' + id,
+      );
+    }
+    assert.equal(document.querySelectorAll('main app-code-card').length, 6);
   }
   for (const card of document.querySelectorAll('.feature-card[data-tier="Premium"]')) {
     assert.ok(card.querySelector('img.feature-preview'), 'Premium card needs a package screenshot');
@@ -145,7 +159,11 @@ for (const file of indexFiles()) {
 }
 assert.ok(canonicals.size > 4, 'Examples were not prerendered');
 assert.deepEqual(premiumPages, premiumIds, 'Every Premium feature must have a prerendered guide');
-assert.equal(redirects, 5, 'Example-index and four old List routes must remain reachable');
+assert.equal(
+  redirects,
+  7,
+  'Example index, four old List routes, and two former localization/time-zone examples must remain reachable',
+);
 const sitemap = new JSDOM(readFileSync(join(directory, 'sitemap.xml'), 'utf8'), {
   contentType: 'text/xml',
 });

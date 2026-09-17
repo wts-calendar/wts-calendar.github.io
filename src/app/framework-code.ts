@@ -48,10 +48,8 @@ function webOptions(context: CodeContext): string {
     "type InitialOptions = Omit<CalendarOptions, 'container' | 'document' | 'events' | 'resources'>;",
     'function createInitialOptions(',
     '  _getApi: () => WtsCalendar | null,',
-    demo.id === 'event-editor'
-      ? "  _createEvent?: (input: Parameters<CalendarEventEditor['openCreate']>[0]) => void,"
-      : '',
-    demo.id === 'event-editor' ? '  _editEvent?: (id: string, opener: HTMLElement) => void,' : '',
+    "  _createEvent?: (input: Parameters<CalendarEventEditor['openCreate']>[0]) => void,",
+    '  _editEvent?: (id: string, opener: HTMLElement) => void,',
     '): InitialOptions {',
     '  const options: InitialOptions = ' +
       indentCode(codeJson({ ...config, events: undefined }), 2).trimStart() +
@@ -69,9 +67,7 @@ function webOptions(context: CodeContext): string {
     demo.id === 'event-sources'
       ? "  options.eventSources = [{ id: 'sample', loader: async () => sampleEvents }];"
       : '',
-    demo.id === 'event-editor'
-      ? '  options.dateClick = info => _createEvent?.({ start: info.date, allDay: info.allDay, resourceId: info.resource?.id, opener: info.dayEl });\n  options.select = info => { _createEvent?.({ start: info.start, end: info.end, allDay: info.allDay, resourceId: info.resourceId, opener: info.jsEvent?.target instanceof HTMLElement ? info.jsEvent.target : null }); _getApi()?.unselect(); };\n  options.eventClick = info => { if (info.event.id) _editEvent?.(info.event.id, info.el); };'
-      : '',
+    '  options.dateClick = info => _createEvent?.({ start: info.date, allDay: info.allDay, resourceId: info.resource?.id, opener: info.dayEl });\n  options.select = info => { _createEvent?.({ start: info.start, end: info.end, allDay: info.allDay, resourceId: info.resourceId, opener: info.jsEvent?.target instanceof HTMLElement ? info.jsEvent.target : null }); _getApi()?.unselect(); };\n  options.eventClick = info => { if (info.event.id) _editEvent?.(info.event.id, info.el); };',
     '  return options;',
     '}',
   ]
@@ -93,7 +89,7 @@ export function frameworkCode(framework: CodeFramework, context: CodeContext): F
       ],
       supported: true,
     };
-  const editor = demo.id === 'event-editor';
+  const editor = true;
   const coreImports = [
     "import type { CalendarOptions, CalendarEventInput, WtsCalendar } from '@wts-calendar/core';",
     ...setup.imports,
@@ -106,6 +102,7 @@ export function frameworkCode(framework: CodeFramework, context: CodeContext): F
   const options = webOptions(context);
   const notes = [
     'initialOptions is mount-only. Apply runtime changes through the wrapper ref/controller, or pass a new options prop/input. The wrapper owns calendar teardown.',
+    'The event editor mutates the in-memory calendar. Connect its success lifecycle to your API for persistence.',
     ...(demo.id === 'ics'
       ? [
           'Use getApi().importICalendar(icsText) and getApi().exportICalendar() for your own import/export controls.',

@@ -69,6 +69,8 @@ import { resourceSchedulingModule } from '@wts-calendar/core/resource-scheduling
 import { AdvancedResourcePlanner } from '@wts-calendar/core/advanced-resource-planning';
 import { PremiumCalendarInteroperability } from '@wts-calendar/core/premium-interoperability';
 import { EnterpriseCalendarWorkflow } from '@wts-calendar/core/enterprise-workflow';
+import { CalendarTimeMachine } from '@wts-calendar/core/time-machine';
+import { CalendarTimeMachinePanel } from '@wts-calendar/core/time-machine-panel';
 import { CalendarDevTools } from '@wts-calendar/core/developer-tools';
 import { CalendarTestDriver } from '@wts-calendar/core/testing';
 import { CalendarDataClient } from '@wts-calendar/core/data-adapter-sdk';
@@ -135,6 +137,8 @@ Plugin authors can copy the private reference package in
 | `@wts-calendar/core/advanced-resource-planning` | Premium capacity heatmaps, shifts/rotations, dependencies, substitutes, overbooking, forecasting, and critical paths |
 | `@wts-calendar/core/premium-interoperability` | Premium Google, Microsoft 365, CalDAV, ICS reconciliation, date-format migration, and FullCalendar migration toolkit |
 | `@wts-calendar/core/enterprise-workflow` | Premium approvals, state machines, audit history, field policies, offline queues, and customer backend adapters |
+| `@wts-calendar/core/time-machine` | Premium recorded history, version comparison, and guarded selective restore; [guide](docs/TIME-MACHINE.md) |
+| `@wts-calendar/core/time-machine-panel` | Premium visual replay, real calendar preview, and field-level recovery UI; uses the enterprise-workflow entitlement |
 | `@wts-calendar/core/developer-tools` | Free typed data, headless validation/schema, diagnostics, DevTools, profiling, and theme generation |
 | `@wts-calendar/core/testing` | Free deterministic fixtures, drivers, mocks, idle helpers, and assertions |
 | `@wts-calendar/core/data-adapter-sdk` | Free cached/retrying REST, GraphQL, storage, and WebSocket adapter toolkit |
@@ -145,6 +149,9 @@ Plugin authors can copy the private reference package in
 | `@wts-calendar/core/google-calendar` | Public API-key and private OAuth Google Calendar adapter |
 | `@wts-calendar/core/format-moment` | Optional Moment string-format compatibility plugin |
 | `@wts-calendar/core/format-luxon3` | Optional Luxon 3 string-format compatibility plugin |
+| `@wts-calendar/core/theme-mui` | Free Material UI palette, typography, shape, and CSS-variable adapter |
+| `@wts-calendar/core/theme-shadcn` | Free shadcn/ui semantic CSS-variable adapter, including dark mode |
+| `@wts-calendar/core/theme-angular-material` | Free Angular Material 3 system-token adapter, including light/dark mode |
 | `@wts-calendar/core/plugin-sdk` | Third-party ecosystem orchestration and lifecycle |
 | `@wts-calendar/core/web-component` | Standards-based custom-element adapter |
 | `@wts-calendar/core/styles/calendar.css` | Required standard-view stylesheet |
@@ -171,28 +178,32 @@ This renders native iOS/Android controls for month, week, day, and virtualized
 list views. It does not create another core package, mount HTML, or use a
 WebView.
 
-`AdvancedResourcePlanner` is protected by the independent signed
-`advanced-resource-planning` entitlement. It operates entirely on the runtime
-snapshot supplied by the application and does not require or contact a WTS
-backend. See [Advanced resource planning](docs/ADVANCED-RESOURCE-PLANNING.md).
+`AdvancedResourcePlanner` is included in verified package-wide Premium access
+(`advanced-resource-planning` capability). It operates entirely on the runtime
+snapshot supplied by the application; licensing is verified separately online.
+See [Advanced resource planning](docs/ADVANCED-RESOURCE-PLANNING.md).
 
-`PremiumCalendarInteroperability` is protected by the independent signed
-`premium-interoperability` entitlement. It provides runtime-only provider
+`PremiumCalendarInteroperability` is included in verified package-wide Premium
+access (`premium-interoperability` capability). It provides runtime-only provider
 adapters and migration tools and is deliberately not auto-loaded by `/all`.
 See [Premium interoperability](docs/PREMIUM-INTEROPERABILITY.md).
 
-`EnterpriseCalendarWorkflow` is protected by the independent signed
-`enterprise-workflow` entitlement. It supplies runtime-only state and approval
+`EnterpriseCalendarWorkflow` is included in verified package-wide Premium access
+(`enterprise-workflow` capability). It supplies runtime-only state and approval
 governance, optimistic/offline mutation handling, hash-chained audit evidence,
 and a transport-neutral adapter for customer systems. It is deliberately not
-auto-loaded by `/all` and does not require a WTS backend. See
+auto-loaded by `/all`; licensing is verified separately online. See
 [Enterprise workflow](docs/ENTERPRISE-WORKFLOW.md).
 
 The developer entries are normal/free and deliberately absent from both the
 standard and `/all` production graphs. See [Developer tools](docs/DEVELOPER-TOOLS.md),
 [Accessible event editor](docs/EVENT-EDITOR.md),
 [Testing toolkit](docs/TESTING-TOOLKIT.md), and
-[Data adapter SDK](docs/DATA-ADAPTER-SDK.md).
+[Data adapter SDK](docs/DATA-ADAPTER-SDK.md). ASP.NET Core applications can pair
+that client adapter with the official
+[`Wts.Calendar.AspNetCore` NuGet integration](docs/ASP.NET-CORE.md).
+PHP applications can use the matching framework-neutral
+[`wts-calendar/server-php` Composer integration](docs/PHP-SERVER.md).
 
 ### Framework adapters
 
@@ -315,6 +326,13 @@ takes precedence over `aspectRatio`. Sticky table headers activate automatically
 for constrained calendars. The footer scrollbar mirrors the active horizontal
 timeline/resource scroller and supports two-way scrolling.
 
+`dayNarrowWidth` defaults to `100` CSS pixels. Month/DayGrid, MultiMonth/year,
+and TimeGrid date headers switch to compact localized labels when their actual
+day column is narrower than this threshold. Use `0` to disable or
+`calendar.setOption('dayNarrowWidth', 120)` to update it. Day render hooks expose
+`isNarrow`; custom content remains authoritative. See
+[responsive day columns](docs/CONFIGURATION.md#responsive-day-columns).
+
 ### Themes and color schemes
 
 `standard` preserves the existing package appearance. The stock `classic`,
@@ -338,9 +356,31 @@ calendar.setOptions({
 The public CSS custom properties use the `--wts-calendar-*` prefix, including
 `background`, `surface`, `surface-muted`, `text`, `text-muted`, `border`,
 `primary`, `primary-foreground`, `today-background`, `selection-background`,
-`event-background`, `event-text`, `shadow`, `font-family`, and `border-radius`.
+`event-background`, `event-text`, `focus`, `shadow`, `font-family`, and `border-radius`.
 Inline `themeTokens` win over stock palettes; pre-existing host inline styles
 and variables are restored when the calendar is destroyed.
+
+For an existing design system, use `createMuiCalendarTheme(theme)` from
+`@wts-calendar/core/theme-mui` or `createShadcnCalendarTheme()` from
+`@wts-calendar/core/theme-shadcn`, or `createAngularMaterialCalendarTheme()`
+from `@wts-calendar/core/theme-angular-material`. All return options that can be passed to
+`setOptions` or a framework wrapper, without adding UI-library dependencies
+to the core. See [Design-system integrations](docs/THEME-INTEGRATIONS.md)
+for React/Angular examples, live dark mode, overrides, and editor theming.
+
+### Product branding
+
+Branding is optional and independent of licensing. The default
+`branding: 'hidden'` renders no attribution. Set it to `visible` to show a
+borderless **Powered by WTS Calendar** documentation link below the grid:
+
+```typescript
+calendar.setOption('branding', 'visible');
+calendar.setOption('branding', 'hidden');
+```
+
+License verification protects premium capabilities; it does not add or remove
+public-facing attribution.
 
 ### Named custom views
 
@@ -753,32 +793,34 @@ Resource scheduling, including `resource`, `resource-day-grid-day`,
 `resource-day-grid-week`, `resource-time-grid-day`,
 `resource-time-grid-week`, and `resource-timeline`, and the monthly/weekly
 repeated-task views are
-premium features. All resource views use the existing
-`resource-scheduling` license feature; they do not require separate grants.
-Premium access uses a signed Ed25519 license token rather than a plain API key.
+premium features. A verified Premium license unlocks all Premium capabilities
+defined in the installed package; individual backend feature grants are not required.
+`getLicenseStatus().features` lists those local capability IDs. Optional backend
+feature metadata, including display labels, is ignored.
+Premium access is verified online by the licensing backend using a deployment key.
 To obtain one, contact the maintainer using the steps in
 [Premium licensing](docs/PREMIUM-LICENSING.md). That guide lists the information
-to provide, the available entitlement names, and safe browser-only delivery.
+to provide, the available entitlement names, and the backend response contract.
 
-The signed audience remains `wts-calendar-v2` as a stable entitlement protocol
-identifier after migration to the `@wts-calendar/core` npm name. This preserves
-existing customer grants; the audience is not an import or package name and
-must not be mechanically rewritten.
+This is a breaking replacement of the former signed-token implementation.
+Old tokens are not accepted. Standard features do not contact the licensing service.
 
 Example:
 
 ```typescript
 import {
   WtsCalendar,
-  verifyCalendarLicense,
+  connectCalendarLicense,
 } from '@wts-calendar/core';
 import {
   resourceSchedulingModule,
 } from '@wts-calendar/core/resource-scheduling';
 
-// Supply the signed token at runtime. It may come from a customer-controlled
-// backend or runtime configuration; never commit a production token.
-const license = await verifyCalendarLicense(runtimeConfig.wtsCalendarLicense);
+const license = await connectCalendarLicense({
+  licenseKey: runtimeConfig.wtsCalendarLicenseKey,
+});
+// Uses the production WTS verification endpoint; verificationUrl is an optional override.
+// When sharing this session with wrappers or modules, destroy it on app teardown.
 
 const calendar = new WtsCalendar({
   container,
@@ -1249,36 +1291,18 @@ automatic rollback lifecycle. Built-in failures are reported through
 approval is required; synchronous `addEvent` and `updateEvent` enforce the
 declarative resource rules.
 
-`WtsCalendar.createLicensed(options, token)` is an equivalent convenience
-API. Tokens are verified against the public key pinned in the package and may
-be restricted by expiry, feature, and exact browser origin. A fabricated
-grant, a modified token, an expired token, or an unlicensed origin is rejected
-before the premium calendar mutates the DOM. Premium checks also apply to
-later `setView`, `addEvent`, `setEvents`, `updateEvent`, and event-source
-operations. The deprecated `apikey` option is rejected because a public API
-key is not a meaningful browser-side guard.
+Use `await WtsCalendar.create(options, { licenseKey })` to
+verify before rendering and automatically stop license timers when the calendar
+is destroyed. The backend, not the package, issues and validates deployment keys.
+The default endpoint is
+`https://package-portal.dedicateddevelopers.us/api/public/licenses/verify`;
+set `verificationUrl` only for a trusted staging or proxy endpoint.
+See [Premium licensing](docs/PREMIUM-LICENSING.md) for refresh, expiry, outage,
+and migration behavior. No offline signed-token fallback remains.
 
-The signing private key must exist only in a secrets manager or isolated
-licensing service. Never place it in a browser bundle, repository, CI artifact,
-or customer application. To create and sign a local development key from this
-package directory:
-
-```bash
-npm run license:keygen
-npm run license:sign -- \
-  .license-private/wts-calendar-ed25519-private.pem \
-  test/fixtures/license-claims.json \
-  .license-private/development-license.token
-```
-
-The `.license-private` directory is ignored by version control. Replace the
-development signing key and token before publishing a production release.
-Standard and premium implementations intentionally ship together in
-`@wts-calendar/core`. Runtime verification raises the cost of casual misuse, but
-client-side code can always be patched by a determined attacker. Stronger
-commercial enforcement should therefore come from the licensing service:
-short-lived signed tokens, account and origin binding, controlled renewal,
-revocation, and purchase-entitlement checks.
+Browser-side enforcement is not tamper-proof. Server APIs must enforce their
+own access policies. Deployment keys embedded in a browser are public, not
+privileged backend credentials.
 
 ## Visible dates and working hours
 
@@ -1478,8 +1502,12 @@ opacity with inherited CSS variables:
 Rendering can be controlled globally and overridden per event. `eventDisplay`
 and an event's `display` accept `auto`, `block`, `list-item`, `background`,
 `inverse-background`, and `none`. The event-level value wins. `eventColor`,
-`eventTextColor`, and `backgroundEventColor` provide calendar-wide defaults;
-event `color` and `textColor` remain local overrides.
+`eventTextColor`, `eventContrastColor`, and `backgroundEventColor` provide
+calendar-wide defaults; event `color` and `textColor` remain local overrides.
+Set `eventContrastColor: 'auto'` to select black or white text based on the
+rendered background, or pass a CSS color for a fixed default. Explicit event,
+source, and `eventTextColor` values take precedence. Unset keeps existing theme
+styling. See [automatic event contrast](docs/CONFIGURATION.md#automatic-event-contrast).
 
 `eventOrder` accepts a comma-separated field list, a comparator, or an array
 containing either. Prefix a field with `-` for descending order. Custom fields

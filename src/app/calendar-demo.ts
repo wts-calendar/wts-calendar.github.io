@@ -41,14 +41,16 @@ import {
 } from './runtime-option-schema';
 import { DEMO_DATE, sampleEvents } from './sample-data';
 import type { Demo } from './site-data';
-import { SearchableSelect, type SearchChoice } from './searchable-select';
+import type { SearchChoice } from './searchable-select';
 import type { LocaleChoice } from './intl-options';
+import { recurrenceEditorBridge } from './recurrence-editor-bridge';
 
 @Component({
   selector: 'app-calendar-demo',
   host: { ngSkipHydration: 'true' },
-  imports: [WtsCalendarAngularComponent, SearchableSelect, RuntimeOptions, CodeCard],
-  template: ` <div class="calendar-demo" [class.compact]="compact">
+  imports: [WtsCalendarAngularComponent, RuntimeOptions, CodeCard],
+  template: ` <div class="calendar-workspace" [class.compact]="compact">
+    <div class="calendar-demo" [class.compact]="compact">
     @if (!hasViewToolbar) {
       <div class="calendar-toolbar">
         <div class="calendar-nav">
@@ -69,56 +71,23 @@ import type { LocaleChoice } from './intl-options';
           </button>
         </div>
         <h2>{{ title() }}</h2>
-        <span class="badge">LIVE · {{ demo.title }}</span>
+        <span class="calendar-toolbar-balance" aria-hidden="true"></span>
       </div>
     }
     @if (!compact) {
       <div class="demo-tools">
-        @if (demo.id === 'time-zones') {
-          <app-searchable-select
-            controlId="demo-time-zone"
-            label="Display time zone"
-            placeholder="Search a city or time-zone ID…"
-            [choices]="timeZoneChoices()"
-            [value]="selectedTimeZone()"
-            [disabled]="!controller.ready()"
-            (valueChange)="setTimeZone($event)"
-          />
-          <p class="intl-demo-note">
-            All time zones supported by your browser, plus UTC and browser local time. Event
-            instants stay the same; their displayed times change.
-          </p>
-        }
-        @if (demo.id === 'locale-rtl') {
-          <app-searchable-select
-            controlId="demo-locale"
-            label="Language / locale"
-            placeholder="Search a language or locale code…"
-            [choices]="localeChoices()"
-            [value]="selectedLocale()"
-            [disabled]="!controller.ready()"
-            (valueChange)="setLocale($event)"
-          />
-          <p class="intl-demo-note">
-            {{ localePackCount() }} package language packs, plus browser-supported date locales from
-            Unicode CLDR. Other locales keep English UI labels. Text direction follows the selected
-            locale; sample event titles remain unchanged.
-          </p>
-        }
-        @if (demo.id === 'event-editor') {
-          <button
-            class="button primary small"
-            (click)="openEditor($event)"
-            [disabled]="!editorReady()"
-          >
-            Create event</button
-          ><button (click)="history('undo')" [disabled]="!controller.ready()">Undo</button
-          ><button (click)="history('redo')" [disabled]="!controller.ready()">Redo</button
-          ><span
-            >Click an empty cell or select a range to create. Click an event to edit, duplicate, or
-            delete.</span
-          >
-        }
+        <button
+          class="button primary small"
+          (click)="openEditor($event)"
+          [disabled]="!editorReady()"
+        >
+          Create event</button
+        ><button (click)="history('undo')" [disabled]="!controller.ready()">Undo</button
+        ><button (click)="history('redo')" [disabled]="!controller.ready()">Redo</button
+        ><span
+          >Click an empty cell or select a range to create. Click an event to edit, duplicate, or
+          delete.</span
+        >
         @if (demo.id === 'ics') {
           <button (click)="importIcs()" [disabled]="!controller.ready() || imported()">
             Import sample ICS</button
@@ -133,14 +102,6 @@ import type { LocaleChoice } from './intl-options';
           ><span>Tab into the calendar. Use its keyboard hints to navigate; Escape cancels.</span>
         }
       </div>
-      <app-runtime-options
-        [demoId]="demo.id"
-        [view]="activeView() || demo.view"
-        [options]="runtimeOptions()"
-        [changed]="hasRuntimeChanges()"
-        (apply)="option($event)"
-        (reset)="resetOptions()"
-      />
     }
     @if (error()) {
       <p class="notice error" role="alert">{{ error() }}</p>
@@ -159,7 +120,22 @@ import type { LocaleChoice } from './intl-options';
       <div class="loading-state" role="status">Loading calendar…</div>
     }
     <div class="demo-status" role="status">{{ status() }}</div>
+    </div>
     @if (!compact) {
+      <aside class="calendar-config-panel" aria-label="Configurable calendar options">
+        <app-runtime-options
+          [demoId]="demo.id"
+          [view]="activeView() || demo.view"
+          [options]="runtimeOptions()"
+          [changed]="hasRuntimeChanges()"
+          (apply)="option($event)"
+          (reset)="resetOptions()"
+        />
+      </aside>
+    }
+  </div>
+  @if (!compact) {
+    <div class="calendar-demo-extras">
       <details class="activity">
         <summary>Callback activity ({{ activity().length }} recent)</summary>
         <ol>
@@ -172,7 +148,8 @@ import type { LocaleChoice } from './intl-options';
         <summary>Current configuration & code</summary>
         <p>
           Updates with the active view, date, and options. The setup includes the original sample
-          events; event edits are not exported. Site navigation and callback logging are separate.
+          events and editor callbacks; saved event edits are not exported. Site navigation and
+          callback logging are separate.
         </p>
         <div class="framework-tabs" role="group" aria-label="Code framework">
           @for (framework of frameworks; track framework.id) {
@@ -213,8 +190,8 @@ import type { LocaleChoice } from './intl-options';
           }
         }
       </details>
-    }
-  </div>`,
+    </div>
+  }`,
 })
 export class CalendarDemo implements OnInit, OnDestroy {
   @Input({ required: true }) demo!: Demo;
@@ -249,7 +226,6 @@ export class CalendarDemo implements OnInit, OnDestroy {
   readonly timeZoneChoices = signal<SearchChoice[]>([]);
   readonly selectedLocale = signal('en-US');
   readonly selectedTimeZone = signal('UTC');
-  readonly localePackCount = signal(0);
   private editor?: CalendarEventEditor;
   private setup?: DemoSetup;
   private initialRuntime?: RuntimeSnapshot;
@@ -261,17 +237,13 @@ export class CalendarDemo implements OnInit, OnDestroy {
       return;
     }
     try {
-      if (this.demo.id === 'locale-rtl' || this.demo.id === 'time-zones') {
+      if (!this.compact) {
         const catalogs = await import('./intl-options');
         if (this.destroyed) return;
-        if (this.demo.id === 'locale-rtl') {
-          const { calendarLocales } = await import('@wts-calendar/core');
-          if (this.destroyed) return;
-          this.localePackCount.set(calendarLocales.length);
-          this.localeChoices.set(
-            catalogs.createLocaleChoices(calendarLocales, navigator.languages),
-          );
-        } else this.timeZoneChoices.set(catalogs.createTimeZoneChoices());
+        this.timeZoneChoices.set(catalogs.createTimeZoneChoices());
+        const { calendarLocales } = await import('@wts-calendar/core');
+        if (this.destroyed) return;
+        this.localeChoices.set(catalogs.createLocaleChoices(calendarLocales, navigator.languages));
       }
       const setup = await createDemoSetup(this.demo.id, this.demo.view, () =>
         this.navigate('sample'),
@@ -316,18 +288,24 @@ export class CalendarDemo implements OnInit, OnDestroy {
     this.initialRuntime = readRuntimeOptions(api);
     this.syncRuntimeState(api);
     this.log(api.getEvents().length + ' events loaded · sample dates in September 2026');
-    if (this.demo.id === 'event-editor') {
-      try {
-        const module = await import('@wts-calendar/core/event-editor');
-        if (this.destroyed) return;
-        this.editor = module.createCalendarEventEditor(api, {
-          presentation: 'dialog',
-          onSuccess: () => this.log('Event change saved in memory'),
-        });
-        this.editorReady.set(true);
-      } catch (error) {
-        this.failed(error);
-      }
+    try {
+      const module = await import('@wts-calendar/core/event-editor');
+      if (this.destroyed) return;
+      const recurrenceOptions = (
+        module.CalendarEventEditor as typeof module.CalendarEventEditor & {
+          supportsRecurrenceControls?: boolean;
+        }
+      ).supportsRecurrenceControls
+        ? {}
+        : recurrenceEditorBridge();
+      this.editor = module.createCalendarEventEditor(api, {
+        presentation: 'dialog',
+        ...recurrenceOptions,
+        onSuccess: () => this.log('Event change saved in memory'),
+      });
+      this.editorReady.set(true);
+    } catch (error) {
+      this.failed(error);
     }
   }
   navigate(direction: 'previous' | 'next' | 'sample'): void {
@@ -365,9 +343,16 @@ export class CalendarDemo implements OnInit, OnDestroy {
     this.activeView.set(view.type);
     this.runtimeOptions.set(current);
     this.runtimeChanges.set(changes);
-    this.selectedLocale.set(
-      typeof current.locale === 'string' ? current.locale : (current.locale?.code ?? 'en-US'),
-    );
+    const currentLocale =
+      typeof current.locale === 'string' ? current.locale : (current.locale?.code ?? 'en-US');
+    let selectedLocale = currentLocale;
+    try {
+      const language = new Intl.Locale(currentLocale).language;
+      if (this.localeChoices().some((choice) => choice.value === language)) selectedLocale = language;
+    } catch {
+      /* Keep the configured value when it is not a valid Intl locale. */
+    }
+    this.selectedLocale.set(selectedLocale);
     this.selectedTimeZone.set(current.timeZone ?? 'UTC');
     this.code.set(demoCode(this.setup, this.demo, changes, view.type, date));
     this.changesCode.set(runtimeCode(changes, view.type, date, this.demo.view));
@@ -416,7 +401,7 @@ export class CalendarDemo implements OnInit, OnDestroy {
   }
   dateClick(info: CalendarDateClickInfo): void {
     this.log('dateClick: ' + info.date.toISOString());
-    if (this.demo.id !== 'event-editor' || !this.editor) return;
+    if (!this.editor) return;
     this.editor.openCreate({
       start: info.date,
       allDay: info.allDay,
@@ -426,7 +411,7 @@ export class CalendarDemo implements OnInit, OnDestroy {
   }
   select(info: CalendarSelection): void {
     this.log('select: ' + info.start.toISOString() + ' → ' + info.end.toISOString());
-    if (this.demo.id !== 'event-editor' || !this.editor) return;
+    if (!this.editor) return;
     const target = info.jsEvent?.target;
     this.editor.openCreate({
       start: info.start,
@@ -439,7 +424,7 @@ export class CalendarDemo implements OnInit, OnDestroy {
   }
   eventClick(info: CalendarEventClickInfo): void {
     this.log('eventClick: ' + info.event.title);
-    if (this.demo.id === 'event-editor' && this.editor && info.event.id)
+    if (this.editor && info.event.id)
       this.editor.openEdit(info.event.id, { opener: info.el });
   }
   history(action: 'undo' | 'redo'): void {

@@ -1,7 +1,7 @@
 # Premium interoperability
 
 `@wts-calendar/core/premium-interoperability` is an explicit, optional integration
-toolkit protected by the signed `premium-interoperability` entitlement. It is
+toolkit included in verified package-wide Premium access (`premium-interoperability` capability). It is
 not auto-loaded by the standard entry or `/all`, and WTS does not operate a
 credential, token, cursor, or calendar-data backend.
 
@@ -10,11 +10,13 @@ Provider API keys and OAuth tokens are separate credentials and are not issued
 by WTS Calendar.
 
 ```ts
-import { verifyCalendarLicense } from '@wts-calendar/core';
+import { connectCalendarLicense } from '@wts-calendar/core';
 import { PremiumCalendarInteroperability } from
   '@wts-calendar/core/premium-interoperability';
 
-const license = await verifyCalendarLicense(entitlementToken);
+const license = await connectCalendarLicense({
+  licenseKey: deploymentConfig.licenseKey,
+});
 const interoperability = new PremiumCalendarInteroperability({ license });
 ```
 

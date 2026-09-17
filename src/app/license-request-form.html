@@ -1,0 +1,181 @@
+<dialog
+  #requestDialog
+  class="license-request-dialog"
+  aria-labelledby="request-heading"
+  aria-describedby="request-intro"
+  (close)="onClosed()"
+>
+  <form class="request-form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+    <header class="request-header">
+      <div>
+        <h2 id="request-heading">{{ requestHeading() }}</h2>
+        <p id="request-intro">Share the details we need to respond to your request.</p>
+      </div>
+      <button
+        type="button"
+        class="close-request"
+        aria-label="Close pricing request"
+        (click)="close()"
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path
+            d="m6 6 12 12M18 6 6 18"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+          />
+        </svg>
+      </button>
+    </header>
+
+    <div class="request-body">
+      <div class="request-fields">
+        <div class="request-field">
+          <label for="request-type">Request type</label>
+          <select id="request-type" formControlName="requestType" autofocus>
+            <option value="PRICE_QUOTE">Pricing quote</option>
+            <option value="NEW_ACCESS">New Premium access</option>
+            <option value="RENEWAL">Renewal</option>
+          </select>
+        </div>
+        <div class="request-field">
+          <label for="request-period">License period</label>
+          <select id="request-period" formControlName="period">
+            <option value="ONE_YEAR">One year</option>
+          </select>
+        </div>
+        <div class="request-field">
+          <label for="request-name">Full name <span aria-hidden="true">*</span></label>
+          <input
+            id="request-name"
+            data-request-field="name"
+            formControlName="name"
+            autocomplete="name"
+            placeholder="Your name"
+            maxlength="100"
+            required
+            [attr.aria-invalid]="invalid('name')"
+            [attr.aria-describedby]="invalid('name') ? 'request-name-error' : null"
+          />
+          @if (invalid('name')) {
+            <p class="field-error" id="request-name-error">
+              Enter your name (up to 100 characters).
+            </p>
+          }
+        </div>
+        <div class="request-field">
+          <label for="request-email">Email address <span aria-hidden="true">*</span></label>
+          <input
+            id="request-email"
+            data-request-field="email"
+            formControlName="email"
+            type="email"
+            autocomplete="email"
+            placeholder="you@company.com"
+            maxlength="254"
+            required
+            [attr.aria-invalid]="invalid('email')"
+            [attr.aria-describedby]="invalid('email') ? 'request-email-error' : null"
+          />
+          @if (invalid('email')) {
+            <p class="field-error" id="request-email-error">Enter a valid email address.</p>
+          }
+        </div>
+        <div class="request-field full-width">
+          <label for="request-company">Company <span class="optional">optional</span></label>
+          <input
+            id="request-company"
+            data-request-field="company"
+            formControlName="company"
+            autocomplete="organization"
+            placeholder="Company or team name"
+            maxlength="120"
+            [attr.aria-invalid]="invalid('company')"
+            [attr.aria-describedby]="invalid('company') ? 'request-company-error' : null"
+          />
+          @if (invalid('company')) {
+            <p class="field-error" id="request-company-error">
+              Keep the company name under 120 characters.
+            </p>
+          }
+        </div>
+      </div>
+
+      <div class="request-field">
+        <label for="request-website"
+          >Websites / application origins <span class="optional">optional</span></label
+        >
+        <textarea
+          id="request-website"
+          data-request-field="website"
+          formControlName="website"
+          rows="2"
+          maxlength="2000"
+          placeholder="https://app.example.com&#10;https://admin.example.com"
+          spellcheck="false"
+          [attr.aria-invalid]="invalid('website')"
+          aria-describedby="request-website-help request-website-error"
+        ></textarea>
+        <p class="field-help" id="request-website-help">
+          Optional for this inquiry, but required before deployment. Add one origin per line without
+          a page path. Registered HTTP localhost origins are allowed for development.
+        </p>
+        <p class="field-error" id="request-website-error">
+          @if (invalid('website')) {
+            Use up to 20 HTTPS origins (or HTTP localhost), without paths, queries or credentials.
+          }
+        </p>
+      </div>
+      <div class="request-field">
+        <label for="request-message">Message <span aria-hidden="true">*</span></label>
+        <textarea
+          id="request-message"
+          data-request-field="message"
+          formControlName="message"
+          rows="3"
+          maxlength="2000"
+          placeholder="I want premium access for this package."
+          required
+          [attr.aria-invalid]="invalid('message')"
+          aria-describedby="request-message-help request-message-error"
+        ></textarea>
+        <p class="field-help" id="request-message-help">
+          Don’t include license keys, passwords, or confidential information.
+        </p>
+        <p class="field-error" id="request-message-error">
+          @if (invalid('message')) {
+            Enter a message of up to 2,000 characters.
+          }
+        </p>
+      </div>
+      @if (submissionMessage()) {
+        <p
+          class="request-feedback"
+          [class.success]="submissionState() === 'success'"
+          [class.error]="submissionState() === 'error'"
+          role="status"
+          aria-live="polite"
+        >
+          {{ submissionMessage() }}
+        </p>
+      }
+    </div>
+
+    <footer class="request-footer">
+      <button type="button" class="cancel-request" (click)="close()">Cancel</button>
+      <button
+        type="submit"
+        class="button primary"
+        [disabled]="submissionState() === 'submitting' || submissionState() === 'success'"
+      >
+        @if (submissionState() === 'submitting') {
+          Sending…
+        } @else if (submissionState() === 'success') {
+          Request sent
+        } @else {
+          Submit request →
+        }
+      </button>
+    </footer>
+  </form>
+</dialog>

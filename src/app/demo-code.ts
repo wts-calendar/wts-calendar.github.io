@@ -42,9 +42,7 @@ export function demoCode(
   const display = demoConfiguration(setup, demo, changes, view, viewDate);
   return [
     "import { WtsCalendar } from '@wts-calendar/core';",
-    demo.id === 'event-editor'
-      ? "import { createCalendarEventEditor } from '@wts-calendar/core/event-editor';"
-      : '',
+    "import { createCalendarEventEditor } from '@wts-calendar/core/event-editor';",
     "import '@wts-calendar/core/styles/calendar.css';",
     ...setup.imports,
     '',
@@ -65,9 +63,7 @@ export function demoCode(
     demo.id === 'event-sources'
       ? 'const data = options.events;\noptions.events = [];\noptions.eventSources = [{ id: "sample", loader: async () => data }];'
       : '',
-    demo.id === 'event-editor'
-      ? 'let editor;\noptions.dateClick = info => editor?.openCreate({ start: info.date, allDay: info.allDay, resourceId: info.resource?.id, opener: info.dayEl });\noptions.select = info => { editor?.openCreate({ start: info.start, end: info.end, allDay: info.allDay, resourceId: info.resourceId, opener: info.jsEvent?.target instanceof HTMLElement ? info.jsEvent.target : null }); calendar.unselect(); };\noptions.eventClick = info => { if (info.event.id) editor?.openEdit(info.event.id, { opener: info.el }); };'
-      : '',
+    'let editor;\noptions.dateClick = info => editor?.openCreate({ start: info.date, allDay: info.allDay, resourceId: info.resource?.id, opener: info.dayEl });\noptions.select = info => { editor?.openCreate({ start: info.start, end: info.end, allDay: info.allDay, resourceId: info.resourceId, opener: info.jsEvent?.target instanceof HTMLElement ? info.jsEvent.target : null }); calendar.unselect(); };\noptions.eventClick = info => { if (info.event.id) editor?.openEdit(info.event.id, { opener: info.el }); };',
     'const calendar = new WtsCalendar({ ...options,',
     "  container: document.querySelector('#calendar'),",
     '  plugins: [' + setup.pluginNames.join(', ') + '],',
@@ -75,12 +71,8 @@ export function demoCode(
     demo.id === 'ics'
       ? '// calendar.importICalendar(icsText);\n// const exported = calendar.exportICalendar();'
       : '',
-    demo.id === 'event-editor'
-      ? "editor = createCalendarEventEditor(calendar, { presentation: 'dialog' });\n// The editor uses in-memory calendar mutations unless you add a persistence adapter."
-      : '',
-    '\n// On unmount: ' +
-      (demo.id === 'event-editor' ? 'editor.destroy(); ' : '') +
-      'calendar.destroy();',
+    "editor = createCalendarEventEditor(calendar, { presentation: 'dialog' });\n// The editor uses in-memory calendar mutations unless you add a persistence adapter.",
+    '\n// On unmount: editor.destroy(); calendar.destroy();',
   ]
     .filter((line) => line !== '')
     .join('\n');

@@ -1,7 +1,8 @@
 import { Component, computed, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { DOCS_BASE, LICENSE_REQUEST, PREMIUM_FEATURES } from './site-data';
+import { DOCS_BASE, PREMIUM_FEATURES } from './site-data';
+import { LicenseRequestForm } from './license-request-form';
 import { PremiumNavigation } from './premium-navigation';
 import { NotFoundPage } from './not-found-page';
 import content from './premium-feature-data.json';
@@ -14,7 +15,7 @@ const examples = new Map(integrations.map((example) => [example.id, example]));
 
 @Component({
   selector: 'app-premium-feature-page',
-  imports: [RouterLink, PremiumNavigation, NotFoundPage, CodeCard],
+  imports: [RouterLink, PremiumNavigation, NotFoundPage, CodeCard, LicenseRequestForm],
   template: `
     @if (selected(); as page) {
       <div class="premium-document-layout container">
@@ -78,7 +79,9 @@ const examples = new Map(integrations.map((example) => [example.id, example]));
             </ol>
             <p class="premium-integration-note">
               Copy this TypeScript into your application, not the browser console. Replace
-              YOUR_WTS_LICENSE_KEY with an entitlement issued for your deployment origin. A WTS
+              YOUR_WTS_LICENSE_KEY with a deployment key authorized for your origin. A verified
+              Calendar Premium key enables the package's complete Premium capability bundle; the
+              backend does not select individual Calendar features. A WTS
               license is not a Google, Microsoft or CalDAV credential. These examples are
               documentation only and never execute on this page.
             </p>
@@ -99,6 +102,10 @@ const examples = new Map(integrations.map((example) => [example.id, example]));
               [code]="page.integration.code"
             />
             <h3>Application responsibilities</h3>
+            <p class="premium-integration-note">
+              Reuse one verified session where appropriate, then call <code>license.destroy()</code>
+              after every consumer using that session has been disposed.
+            </p>
             @for (note of page.integration.notes; track note) {
               <p class="premium-integration-note">{{ note }}</p>
             }
@@ -137,22 +144,33 @@ const examples = new Map(integrations.map((example) => [example.id, example]));
                   <dd>{{ '@wts-calendar/core/' + page.guide.module }}</dd>
                 </div>
                 <div>
-                  <dt>Signed entitlement</dt>
-                  <dd>{{ page.guide.entitlement }}</dd>
+                  <dt>Local capability ID</dt>
+                  <dd>{{ page.guide.entitlement }} · enabled by package-wide Premium</dd>
                 </div>
               </dl>
               <p>
-                Request the required features and deployment origins by email. Pricing and terms are
-                confirmed privately. A WTS license is separate from provider credentials; do not
-                send passwords or production access tokens.
+                Use the request form to describe your project and deployment origins. Pricing and
+                terms are confirmed privately. A WTS license is separate from provider credentials;
+                do not send passwords or production access tokens.
               </p>
-              @if (licenseRequest) {
-                <a class="button primary" [href]="licenseRequest">Email for a license key →</a>
-              }
+              <button
+                type="button"
+                class="button primary"
+                aria-haspopup="dialog"
+                (click)="requestForm.open('NEW_ACCESS')"
+              >
+                Request a license →
+              </button>
             </div>
           </section>
           <div class="premium-document-footer">
-            <a [href]="docs + page.guide.guide" class="text-link">Package reference ↗</a>
+            <a
+              [href]="docs + page.guide.guide"
+              class="text-link"
+              target="_blank"
+              rel="noopener noreferrer"
+              >Package reference ↗</a
+            >
             <a routerLink="/features" class="text-link">Browse all features →</a>
           </div>
           <p class="fine-print">
@@ -163,12 +181,12 @@ const examples = new Map(integrations.map((example) => [example.id, example]));
     } @else {
       <app-not-found-page />
     }
+    <app-license-request-form #requestForm />
   `,
 })
 export class PremiumFeaturePage {
   private readonly params = toSignal(inject(ActivatedRoute).paramMap);
   readonly docs = DOCS_BASE;
-  readonly licenseRequest = LICENSE_REQUEST;
   readonly selected = computed(() => {
     const feature = PREMIUM_FEATURES.find((item) => item.id === this.params()?.get('id'));
     const guide = feature && guides.get(feature.id);

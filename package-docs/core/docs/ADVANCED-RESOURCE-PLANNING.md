@@ -1,18 +1,20 @@
 # Advanced resource planning
 
 `@wts-calendar/core/advanced-resource-planning` is an optional premium runtime
-engine. It is protected by the signed `advanced-resource-planning` entitlement,
+engine. It requires verified package-wide Premium access (`advanced-resource-planning` capability),
 is excluded from the standard entry, and never sends or stores the resources,
 events, profiles, or demand records supplied to it.
 
 To obtain the entitlement, follow [Premium licensing](PREMIUM-LICENSING.md).
 
 ```ts
-import { verifyCalendarLicense } from '@wts-calendar/core';
+import { connectCalendarLicense } from '@wts-calendar/core';
 import { AdvancedResourcePlanner } from
   '@wts-calendar/core/advanced-resource-planning';
 
-const license = await verifyCalendarLicense(entitlementToken);
+const license = await connectCalendarLicense({
+  licenseKey: deploymentConfig.licenseKey,
+});
 const planner = new AdvancedResourcePlanner({
   license,
   timeZone: 'Asia/Kolkata',

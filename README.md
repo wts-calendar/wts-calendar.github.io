@@ -2,7 +2,24 @@
 
 A feature directory, interactive examples, framework setup guides, and pricing for [WTS Calendar](https://www.npmjs.com/package/@wts-calendar/core). Built with Angular 22 and the published Angular adapter.
 
-## Run locally
+## Appearance documentation
+
+`/docs/appearance` documents the published MUI, shadcn/ui and Angular Material
+adapters, `dayNarrowWidth`, and `eventContrastColor` in core 1.1.3. The
+searchable API and live configuration panel are generated from that installed
+release.
+
+Regenerate/check the installed API reference after a core dependency update:
+
+```bash
+npm run docs:api:generate
+npm run docs:api:check
+```
+
+The portal remains pinned to a published package rather than to the development
+checkout.
+
+## Local development
 
 Use Node.js 22.22.3+ or a compatible Node 24 release.
 
@@ -18,11 +35,12 @@ Open [the local preview](http://localhost:4200).
 - Home: `/`
 - Feature catalogue: `/features/` — search, category, and Standard/Premium filters. Only Premium features carry a badge.
 - Premium guides: `/premium/resource-grid/` and 30 other feature-specific routes — actual-package screenshots, configuration, integration steps, behavior, and limitations.
-- Examples: `/examples/month/` — 22 examples, with live runtime controls, copyable current configuration, and callback activity.
+- Examples: `/examples/month/` — 14 directory entries, with live runtime controls, copyable current configuration, and callback activity.
 - List: `/examples/list/` — Day / Week / Month / Year controls in the package-native header. Older list URLs redirect here with their initial range preserved.
-- Interaction: `/examples/interactions/` — Month / Week / Day toolbar controls with editing and selection enabled across views.
+- Interaction: every grid example supports event creation/editing, undo/redo, drag, resize, selection, and an optional business-hours policy.
 - Multi-month and year: day-cell height follows the panel width through `--month-day-cell-min-height`; one event is shown per cell and a compact count opens the remaining events.
-- Pricing: `/pricing/` — Standard/MIT and separately entitled Premium capabilities.
+- Pricing: `/pricing/` — Standard/MIT capabilities and package-wide Premium authorization.
+- Contact: `/contact/` — general product and integration inquiries sent to the contact-request API.
 - Setup guides: `/docs/` — JavaScript, Angular, React, Vue, Web Component, and React Native.
 - API reference: `/docs/api/` — 248 client options, 95 public APIs, 78 event names, 447 exported symbol records across 23 entrypoints, and complete PHP/ASP.NET Core route settings.
 
@@ -76,15 +94,15 @@ Native UI screenshots show the actual package rendering with sample data. API-on
 features show real return values in clearly labeled, application-owned capture
 tables—not invented built-in product screens. Provider adapters run against local
 test responses; screenshots do not imply a live provider connection.
-Each guide documents configuration, integration steps, behavior, limits, module,
-and entitlement, with an email-only license request button. Every guide includes a
+Each guide documents configuration, integration steps, behavior, limits, its module,
+and local capability ID, with a direct Premium request form. Every guide includes a
 copyable TypeScript integration example with an install command, host markup where
 needed, and application responsibilities. These are inert documentation strings:
 there are no live premium examples, license-token fields, or provider credential
 forms. Optional premium modules are not imported or executed by the app.
 
-The [integration examples](src/app/premium-integration-data.json) use placeholder
-entitlements and runtime credential callbacks. The showcase check type-checks all
+The [integration examples](src/app/premium-integration-data.json) use a placeholder
+deployment key and runtime credential callbacks. The showcase check type-checks all
 31 snippets against the installed package declarations without executing them.
 Provider samples preview changes before a caller explicitly approves a write;
 workflow samples state which behavior is memory-only and which adapters customers
@@ -125,13 +143,23 @@ dimensions, capture types, fixture fingerprint, and the local package build used
 Checks reject missing, duplicated, modified, or obsolete preview assets. The current
 captures use an unpublished local build; this work does not publish an npm package.
 
-The licensing contact is **email-only**. Set the owner's confirmed public email
-in `PREMIUM_CONTACT_EMAIL` in [site-data.ts](src/app/site-data.ts). A blank value
-intentionally shows a pre-publication notice rather than a fake address or a
-GitHub issue link. The release check fails until that address is configured.
-The contact button opens a mail client; this static site does not send email.
+Pricing and Premium guide buttons open the shared request dialog in
+[license-request-form.ts](src/app/license-request-form.ts). It collects contact
+details, request purpose, optional origins, and project notes.
 
-A WTS license key is a signed feature entitlement, **not** a Google API key or
+The form posts its documented payload to the production Premium-request endpoint.
+It reports validation, loading, success, rate-limit, and service errors without
+persisting personal details. Closing the dialog clears its in-memory values. The
+request endpoint is separate from license verification and does not automatically
+issue a key.
+
+The general Contact page posts name, email, optional phone/company, subject, and
+message to the production contact-request endpoint. It automatically supplies
+`@wts-calendar/core`, the WTS Calendar website source, and the canonical Contact
+page URL; these metadata fields are not user-editable. Tests mock both request APIs
+and never send real inquiries.
+
+A WTS license key is a package deployment credential, **not** a Google API key or
 provider OAuth token. No price, support SLA, renewal policy, or automatic license
 issuance is promised here. These terms are confirmed by email.
 
@@ -142,10 +170,10 @@ reload or when switching examples. Event-source loading uses a local async
 function; no remote provider is contacted. ICS import uses a bundled sample.
 Only each example's relevant optional modules are loaded.
 
-Each standard example includes **Configure live options**: searchable public API
-settings grouped by the active view. Controls call `setOptions()` on the existing
+Each standard example includes a persistent **Configurable options** side panel:
+searchable public API settings grouped by the active view. Controls call `setOptions()` on the existing
 calendar, validate changes, and restore the previous input value if an update is
-rejected. Interaction controls are offered only when their module is loaded.
+rejected. Interaction controls are available on every supported grid view.
 The focused group keeps the preview nearby; **All options** shows every offered
 setting for that view. Construction-only settings, credentials, and premium
 runtime features are not editable here.
@@ -156,7 +184,7 @@ JavaScript, Angular, React, and Vue targets use the same current configuration,
 with their actual wrapper lifecycle and ref/controller APIs. The React Native
 target maps supported options to the native renderer; it explicitly marks
 unsupported browser layouts/features and mount-only settings instead of copying
-DOM APIs. Native examples use core/native 1.1.1 and the published React Native
+DOM APIs. Native examples use core/native 1.1.3 and the published React Native
 1.1.0 wrapper; the browser portal uses the same core release.
 Setup snippets contain the original sample events, not in-session event edits.
 **Reset options** restores the example defaults without replacing its calendar,
@@ -166,7 +194,7 @@ leave the code available for manual selection and copying.
 The published core's explicit `dayView.hourSegment` and `weekView.hourSegment`
 take precedence over `slotDuration`; the control updates all three public options
 together. List time formatting uses `listView.eventTimeFormat`. Native toolbar
-navigation and view switching use core 1.1.1 directly, including after runtime
+navigation and view switching use core 1.1.3 directly, including after runtime
 option changes. The old toolbar-click/order workaround has been removed.
 The dependency is installed from npm; no local build or package patch is used.
 Customized toolbar titles and buttons use the package's theme tokens, including
@@ -206,7 +234,7 @@ npm run build:pages
 npm run build:pages:org
 ```
 
-Tests mount all 22 examples against the installed published packages, exercise
+Tests mount all 20 examples against the installed published packages, exercise
 source refresh, ICS import/export, themes, locale direction, and the event editor,
 and verify navigation and premium-only presentation. These checks do not replace
 manual screen-reader, touch, cross-browser, or native-device validation.
@@ -292,6 +320,6 @@ output directory. Do not overwrite it when preparing hosting artifacts.
 
 ## Packages and licensing
 
-This app pins the published `@wts-calendar/core@1.1.1`
+This app pins the published `@wts-calendar/core@1.1.3`
 and `@wts-calendar/angular@1.0.1` releases. Standard capabilities are MIT; Premium features
-have separate entitlement requirements. This site showcases WTS Calendar.
+use package-wide backend authorization. This site showcases WTS Calendar.

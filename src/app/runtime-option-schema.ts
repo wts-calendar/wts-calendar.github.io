@@ -1,5 +1,16 @@
-import type { CalendarOptionChanges, CalendarOptions, WtsCalendar } from '@wts-calendar/core';
-export type RuntimeSnapshot = Readonly<Partial<CalendarOptions>>;
+import type {
+  CalendarBusinessHours,
+  CalendarOptionChanges,
+  CalendarOptions,
+  WtsCalendar,
+} from '@wts-calendar/core';
+import { CLIENT_OPTIONS, CLIENT_PACKAGE } from './api-reference-data.generated';
+export interface AppearancePreviewOptions {
+  dayNarrowWidth?: number;
+  eventContrastColor?: string;
+}
+export type RuntimeSnapshot = Readonly<Partial<CalendarOptions & AppearancePreviewOptions>>;
+type RuntimeKey = keyof (CalendarOptionChanges & AppearancePreviewOptions);
 
 type Value = string | number | boolean;
 type Scope = 'all' | 'grid' | 'month' | 'time-grid' | 'list' | 'gallery' | 'interaction' | 'source';
@@ -8,8 +19,15 @@ export interface RuntimeChoice {
   value: Value;
 }
 export interface RuntimeControl {
-  key: keyof CalendarOptionChanges;
+  key: RuntimeKey;
+  unreleased?: boolean;
   member?: string;
+  preset?:
+    | 'business-hours-policy'
+    | 'business-hours-days'
+    | 'business-hours-start'
+    | 'business-hours-end'
+    | 'event-contrast';
   label: string;
   help: string;
   group: string;
@@ -24,6 +42,33 @@ const named = (pairs: readonly (readonly [string, Value])[]): RuntimeChoice[] =>
 // Curated public runtime options. Construction-only settings, arbitrary code,
 // credentials, and premium modules are deliberately not part of this editor.
 export const RUNTIME_CONTROLS: readonly RuntimeControl[] = [
+  {
+    key: 'dayNarrowWidth',
+    label: 'Compact day labels',
+    group: 'Appearance',
+    scope: 'interaction',
+    help: 'Actual day-column threshold; 0 disables. Does not reduce column widths.',
+    choices: named([
+      ['Off', 0],
+      ['100 px (default)', 100],
+      ['120 px', 120],
+      ['150 px', 150],
+    ]),
+  },
+  {
+    key: 'eventContrastColor',
+    label: 'Event text contrast',
+    group: 'Appearance',
+    scope: 'all',
+    preset: 'event-contrast',
+    help: 'Auto chooses black/white text. Explicit event/source/global text colors win.',
+    choices: named([
+      ['Theme default', 'theme-default'],
+      ['Automatic', 'auto'],
+      ['Black', '#000000'],
+      ['White', '#ffffff'],
+    ]),
+  },
   {
     key: 'height',
     label: 'Calendar height',
@@ -281,6 +326,38 @@ export const RUNTIME_CONTROLS: readonly RuntimeControl[] = [
     scope: 'interaction',
   },
   {
+    key: 'businessHours',
+    preset: 'business-hours-policy',
+    label: 'Enforce business hours',
+    help: 'Show the configured schedule and restrict event edits and selections to it.',
+    group: 'Interaction',
+    scope: 'interaction',
+  },
+  {
+    key: 'businessHours',
+    preset: 'business-hours-days',
+    label: 'Business days',
+    help: 'Choose the weekdays included in the primary business-hours interval.',
+    group: 'Interaction',
+    scope: 'interaction',
+  },
+  {
+    key: 'businessHours',
+    preset: 'business-hours-start',
+    label: 'Starts at',
+    help: 'Inclusive start time for the primary business-hours interval.',
+    group: 'Interaction',
+    scope: 'interaction',
+  },
+  {
+    key: 'businessHours',
+    preset: 'business-hours-end',
+    label: 'Ends at',
+    help: 'Exclusive end time for the primary business-hours interval.',
+    group: 'Interaction',
+    scope: 'interaction',
+  },
+  {
     key: 'lazyFetching',
     label: 'Cache covered date ranges',
     help: 'Reuse a loaded source range when navigating inside it. Refetch still forces a request.',
@@ -291,17 +368,78 @@ export const RUNTIME_CONTROLS: readonly RuntimeControl[] = [
 
 export const RUNTIME_OPTION_KEYS = [
   ...new Set([
-    ...RUNTIME_CONTROLS.map((control) => control.key),
+    ...RUNTIME_CONTROLS.filter(controlAvailable).map((control) => control.key),
     'locale',
     'direction',
     'timeZone',
+    'eventConstraint',
+    'selectConstraint',
     'dayView',
     'weekView',
   ]),
 ] as readonly (keyof CalendarOptionChanges)[];
+export function controlAvailable(control: RuntimeControl): boolean {
+  return (
+    !control.unreleased || CLIENT_OPTIONS.some((option) => String(option.name) === control.key)
+  );
+}
+export const RUNTIME_PACKAGE_VERSION = CLIENT_PACKAGE.version;
 export const RUNTIME_NESTED_KEYS = ['dayView', 'weekView', 'multiMonth', 'listView'] as const;
 
+const DEFAULT_BUSINESS_HOURS: CalendarBusinessHours = {
+  daysOfWeek: [1, 2, 3, 4, 5],
+  startTime: '09:00',
+  endTime: '17:00',
+};
+const ALL_WEEKDAYS = [0, 1, 2, 3, 4, 5, 6] as const;
+
+function primaryBusinessHours(options: RuntimeSnapshot | null): CalendarBusinessHours {
+  const configured = options?.businessHours;
+  const primary = Array.isArray(configured)
+    ? configured[0]
+    : configured && configured !== true
+      ? configured
+      : undefined;
+  return {
+    daysOfWeek: [
+      ...(primary ? (primary.daysOfWeek ?? ALL_WEEKDAYS) : DEFAULT_BUSINESS_HOURS.daysOfWeek!),
+    ],
+    startTime: primary?.startTime ?? DEFAULT_BUSINESS_HOURS.startTime,
+    endTime: primary?.endTime ?? DEFAULT_BUSINESS_HOURS.endTime,
+    ...(primary?.resourceIds ? { resourceIds: [...primary.resourceIds] } : {}),
+  };
+}
+
+function updatePrimaryBusinessHours(
+  options: RuntimeSnapshot | null,
+  changes: Partial<CalendarBusinessHours>,
+): CalendarBusinessHours | readonly CalendarBusinessHours[] {
+  const updated = { ...primaryBusinessHours(options), ...changes };
+  return Array.isArray(options?.businessHours)
+    ? [updated, ...options.businessHours.slice(1)]
+    : updated;
+}
+
+function minutes(value: string): number {
+  const [hours, minutes] = value.split(':').map(Number);
+  return hours * 60 + minutes;
+}
+
+function assertBusinessHours(schedule: CalendarBusinessHours): void {
+  const startPattern = /^(?:[01]\d|2[0-3]):[0-5]\d$/;
+  const endPattern = /^(?:(?:[01]\d|2[0-3]):[0-5]\d|24:00)$/;
+  if (!startPattern.test(schedule.startTime) || !endPattern.test(schedule.endTime))
+    throw new Error('Enter business hours in HH:mm format.');
+  if (minutes(schedule.startTime) >= minutes(schedule.endTime))
+    throw new Error('Business hours must end after they start.');
+  if (!schedule.daysOfWeek?.length) throw new Error('Choose at least one business day.');
+}
+
 export function controlId(control: RuntimeControl): string {
+  if (control.preset === 'business-hours-policy') return 'businessHoursPolicy';
+  if (control.preset === 'business-hours-days') return 'businessHours.daysOfWeek';
+  if (control.preset === 'business-hours-start') return 'businessHours.startTime';
+  if (control.preset === 'business-hours-end') return 'businessHours.endTime';
   return control.member ? control.key + '.' + control.member : control.key;
 }
 export function controlValue(
@@ -309,6 +447,18 @@ export function controlValue(
   control: RuntimeControl,
   view?: string,
 ): unknown {
+  if (control.preset === 'event-contrast') return options?.eventContrastColor ?? 'theme-default';
+  if (control.key === 'dayNarrowWidth') return options?.dayNarrowWidth ?? 100;
+  if (control.preset === 'business-hours-policy')
+    return (
+      options?.businessHours !== false &&
+      options?.businessHours !== undefined &&
+      options?.eventConstraint === 'businessHours' &&
+      options?.selectConstraint === 'businessHours'
+    );
+  if (control.preset === 'business-hours-days') return primaryBusinessHours(options).daysOfWeek;
+  if (control.preset === 'business-hours-start') return primaryBusinessHours(options).startTime;
+  if (control.preset === 'business-hours-end') return primaryBusinessHours(options).endTime;
   // Show the effective duration, not a global default overridden by this view.
   if (control.key === 'slotDuration' && (view === 'day' || view === 'week')) {
     const perView = view === 'day' ? options?.dayView : options?.weekView;
@@ -324,9 +474,7 @@ export function controlsForView(demoId: string, view: string): readonly RuntimeC
   const dayGrid = month || view.startsWith('day-grid') || view === 'work-week';
   const timeGrid = view === 'week' || view === 'day';
   const list = view.startsWith('list');
-  const interaction = ['interactions', 'constraints', 'event-editor', 'accessibility'].includes(
-    demoId,
-  );
+  const interaction = dayGrid || timeGrid;
   return RUNTIME_CONTROLS.filter((control) => {
     // Month overflow and event-time toggles do not control TimeGrid layout.
     if (control.key === 'dayMaxEvents') return dayGrid;
@@ -345,7 +493,48 @@ export function controlsForView(demoId: string, view: string): readonly RuntimeC
     }[control.scope];
   });
 }
-export function runtimeChange(control: RuntimeControl, value: unknown): CalendarOptionChanges {
+export function runtimeChange(
+  control: RuntimeControl,
+  value: unknown,
+  options: RuntimeSnapshot | null = null,
+): CalendarOptionChanges {
+  if (!controlAvailable(control))
+    throw new Error('Unreleased option; unavailable in core ' + CLIENT_PACKAGE.version + '.');
+  if (control.preset === 'business-hours-policy') {
+    if (typeof value !== 'boolean')
+      throw new Error('Choose a supported value for ' + control.label + '.');
+    return {
+      businessHours: value ? updatePrimaryBusinessHours(options, {}) : false,
+      eventConstraint: value ? 'businessHours' : undefined,
+      selectConstraint: value ? 'businessHours' : undefined,
+    };
+  }
+  if (control.preset === 'business-hours-days') {
+    if (!Array.isArray(value) || value.some((day) => !Number.isInteger(day) || day < 0 || day > 6))
+      throw new Error('Choose supported weekdays for ' + control.label + '.');
+    const schedule = updatePrimaryBusinessHours(options, {
+      daysOfWeek: [...new Set(value as number[])].sort((a, b) => a - b),
+    });
+    assertBusinessHours(Array.isArray(schedule) ? schedule[0] : schedule);
+    return {
+      businessHours: schedule,
+      eventConstraint: 'businessHours',
+      selectConstraint: 'businessHours',
+    };
+  }
+  if (control.preset === 'business-hours-start' || control.preset === 'business-hours-end') {
+    if (typeof value !== 'string')
+      throw new Error('Choose a supported value for ' + control.label + '.');
+    const schedule = updatePrimaryBusinessHours(options, {
+      [control.preset === 'business-hours-start' ? 'startTime' : 'endTime']: value,
+    });
+    assertBusinessHours(Array.isArray(schedule) ? schedule[0] : schedule);
+    return {
+      businessHours: schedule,
+      eventConstraint: 'businessHours',
+      selectConstraint: 'businessHours',
+    };
+  }
   if (
     control.choices
       ? !control.choices.some((choice) => choice.value === value)
@@ -360,6 +549,11 @@ export function runtimeChange(control: RuntimeControl, value: unknown): Calendar
       dayView: { hourSegment: value as number },
       weekView: { hourSegment: value as number },
     };
+  if (control.preset === 'event-contrast') {
+    return {
+      [control.key]: value === 'theme-default' ? undefined : value,
+    } as CalendarOptionChanges;
+  }
   return {
     [control.key]: control.member ? { [control.member]: value } : value,
   } as CalendarOptionChanges;

@@ -37,22 +37,25 @@ export function createLocaleChoices(
   }
   const englishNames = new Intl.DisplayNames(['en'], { type: 'language' });
   const packsByLanguage = new Set(packs.map((pack) => new Intl.Locale(pack.code).language));
-  return Intl.DateTimeFormat.supportedLocalesOf([...candidates], { localeMatcher: 'lookup' })
-    .map((code) => {
-      const english = englishNames.of(code) ?? code;
-      const native = new Intl.DisplayNames([code], { type: 'language' }).of(code) ?? code;
-      const packageTranslations = packsByLanguage.has(new Intl.Locale(code).language);
-      const direction = localeDirection(code);
+  const localesByLanguage = new Map<string, string[]>();
+  for (const code of Intl.DateTimeFormat.supportedLocalesOf([...candidates], {
+    localeMatcher: 'lookup',
+  })) {
+    const language = new Intl.Locale(code).language;
+    const aliases = localesByLanguage.get(language) ?? [];
+    aliases.push(code);
+    localesByLanguage.set(language, aliases);
+  }
+  return [...localesByLanguage.entries()]
+    .map(([language, aliases]) => {
+      const native =
+        new Intl.DisplayNames([language], { type: 'language' }).of(language) ?? language;
+      const packageTranslations = packsByLanguage.has(language);
+      const direction = localeDirection(language);
       return {
-        value: code,
-        label: english === native ? english : english + ' · ' + native,
-        detail:
-          code +
-          ' · ' +
-          (packageTranslations ? 'Package translations' : 'Date formatting; English UI labels') +
-          ' · ' +
-          direction.toUpperCase(),
-        keywords: direction,
+        value: language,
+        label: englishNames.of(language) ?? language,
+        keywords: [native, ...aliases].join(' '),
         direction,
         packageTranslations,
       };
@@ -75,14 +78,12 @@ export function createTimeZoneChoices(): SearchChoice[] {
     {
       value: 'local',
       label: 'Browser local time',
-      detail: localZone,
       keywords: localZone + ' system device automatic',
     },
     {
       value: 'UTC',
-      label: 'UTC — Coordinated Universal Time',
-      detail: 'UTC',
-      keywords: 'GMT universal zero',
+      label: 'UTC',
+      keywords: 'GMT Coordinated Universal Time universal zero',
     },
   ];
   // Preserve the existing Kolkata choice across engines that still enumerate Calcutta.
@@ -97,7 +98,6 @@ export function createTimeZoneChoices(): SearchChoice[] {
       choices.push({
         value,
         label: value.replaceAll('_', ' '),
-        detail: value,
         keywords: canonical + (value === 'Asia/Kolkata' ? ' Calcutta India' : ''),
       });
     } catch {

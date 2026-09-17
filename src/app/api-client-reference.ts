@@ -26,6 +26,8 @@ import {
 } from './api-guidance';
 import { CodeCard } from './code-card';
 
+const documentedOptions = [...CLIENT_OPTIONS].sort((a, b) => a.name.localeCompare(b.name));
+
 interface Member {
   name: string;
   type: string;
@@ -376,8 +378,8 @@ export function optionExample(name: string): string | undefined {
             }
             @if (entry.premium) {
               <p class="reference-note">
-                Premium runtime features require the relevant optional module and a valid
-                entitlement. <a routerLink="/features">Find the feature guide</a> for its
+                Premium runtime features require the relevant optional module and a verified
+                package-wide Premium session. <a routerLink="/features">Find the feature guide</a> for its
                 integration and licensing requirements.
               </p>
             }
@@ -453,7 +455,7 @@ export class ApiClientReference {
     path: routes[kind],
     label: titles[kind],
   }));
-  readonly categories = [...new Set(CLIENT_OPTIONS.map((o) => o.category))].sort();
+  readonly categories = [...new Set(documentedOptions.map((o) => o.category))].sort();
   readonly title = computed(() => titles[this.kind()] || 'API reference');
   readonly path = computed(() => routes[this.kind()] || '/docs/api');
   readonly query = signal('');
@@ -487,7 +489,7 @@ export class ApiClientReference {
   }
   readonly entries = computed<Entry[]>(() => {
     if (this.kind() === 'options')
-      return CLIENT_OPTIONS.map((o) => {
+      return documentedOptions.map((o) => {
         const guide = optionGuide(o.name);
         const verified = VERIFIED_DEFAULTS[o.name as keyof typeof VERIFIED_DEFAULTS];
         return {

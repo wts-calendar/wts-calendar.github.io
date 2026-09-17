@@ -38,7 +38,7 @@ describe('Framework-specific current configuration', () => {
   for (const id of [
     'themes',
     'rrule',
-    'locale-rtl',
+    'month',
     'multi-month',
     'event-editor',
     'event-sources',
@@ -59,12 +59,10 @@ describe('Framework-specific current configuration', () => {
         for (const plugin of input.setup.pluginNames) expect(code.setup).toContain(plugin);
         expect(code.runtime).toContain('calendar.setOptions(');
         expect(code.install).toContain('@wts-calendar/' + framework);
-        if (id === 'event-editor') {
-          expect(code.setup).toContain('createCalendarEventEditor');
-          expect(code.setup).toContain('options.dateClick');
-          expect(code.setup).toContain('options.select');
-          expect(code.setup).toContain('options.eventClick');
-        }
+        expect(code.setup).toContain('createCalendarEventEditor');
+        expect(code.setup).toContain('options.dateClick');
+        expect(code.setup).toContain('options.select');
+        expect(code.setup).toContain('options.eventClick');
         if (id === 'event-sources')
           expect(code.setup).toContain('loader: async () => sampleEvents');
         syntax(code.setup, framework);

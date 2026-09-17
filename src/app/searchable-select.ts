@@ -79,7 +79,9 @@ export function normalizeSearch(value: string): string {
                 (click)="choose(choice)"
               >
                 <bdi>{{ choice.label }}</bdi>
-                <small>{{ choice.detail || choice.value }}</small>
+                @if (choice.detail) {
+                  <small>{{ choice.detail }}</small>
+                }
               </div>
             }
           </div>

@@ -20,14 +20,7 @@ import {
   SERVER_ROUTES,
   SERVER_STORAGE_METHODS,
 } from './server-api-reference';
-import {
-  DEMOS,
-  LIST_VIEWS,
-  FEATURES,
-  LICENSE_REQUEST,
-  PREMIUM_CONTACT_EMAIL,
-  PREMIUM_FEATURES,
-} from './site-data';
+import { DEMOS, LIST_VIEWS, FEATURES, PREMIUM_CONTACT_EMAIL, PREMIUM_FEATURES } from './site-data';
 import premiumContent from './premium-feature-data.json';
 import {
   BROWSER_SERVER_ADAPTER,
@@ -51,15 +44,15 @@ beforeAll(() => {
 describe('Showcase contract', () => {
   it('publishes a generated complete client and server API reference', () => {
     expect(CLIENT_API_COUNTS).toEqual({
-      options: 248,
+      options: 251,
       methods: 95,
       events: 78,
-      symbols: 447,
-      entrypoints: 23,
+      symbols: 475,
+      entrypoints: 28,
     });
     expect(new Set(CLIENT_OPTIONS.map(({ name }) => name)).size).toBe(CLIENT_OPTIONS.length);
     expect(new Set(CLIENT_METHODS.map(({ name }) => name)).size).toBe(CLIENT_METHODS.length);
-    expect(new Set(CLIENT_SYMBOLS.map(({ name }) => name)).size).toBe(446);
+    expect(new Set(CLIENT_SYMBOLS.map(({ name }) => name)).size).toBe(474);
     expect(CLIENT_OPTIONS.find(({ name }) => name === 'container')).toMatchObject({
       required: true,
       runtime: false,
@@ -160,13 +153,6 @@ describe('Showcase contract', () => {
       expect(guide?.limits.length).toBeGreaterThanOrEqual(2);
     }
   });
-  it('never uses a public issue tracker for a license request', () => {
-    if (PREMIUM_CONTACT_EMAIL)
-      expect(LICENSE_REQUEST).toBe(
-        'mailto:' + PREMIUM_CONTACT_EMAIL + '?subject=WTS%20Calendar%20premium%20license%20request',
-      );
-    else expect(LICENSE_REQUEST).toBe('');
-  });
 });
 
 describe('Feature catalogue', () => {
@@ -239,7 +225,12 @@ describe('Free examples', () => {
         expect(api.getView().type).toBe(demo.view);
         expect(fixture.nativeElement.querySelector('.wts-calender')).toBeTruthy();
         expect(api.getEvents().length).toBeGreaterThan(0);
-        if (demo.id === 'list' || demo.id === 'interactions' || demo.group === 'Customization') {
+        expect(fixture.componentInstance.timeZoneChoices().length).toBeGreaterThan(300);
+        expect(fixture.componentInstance.localeChoices().length).toBeGreaterThan(100);
+        if (
+          ['month', 'day-grid-week', 'list', 'interactions'].includes(demo.id) ||
+          demo.group === 'Customization'
+        ) {
           const root = fixture.nativeElement.querySelector('.wts-calender');
           const eventIds = api.getEvents().map((event) => event.id);
           const eventStarts = api.getEvents().map((event) => String(event.start));
@@ -249,8 +240,10 @@ describe('Free examples', () => {
               colorScheme: 'dark',
               weekends: false,
             });
-          if (demo.id === 'locale-rtl') fixture.componentInstance.setLocale('ar');
-          if (demo.id === 'time-zones') fixture.componentInstance.setTimeZone('Asia/Kolkata');
+          if (demo.id === 'themes') {
+            fixture.componentInstance.setLocale('ar');
+            fixture.componentInstance.setTimeZone('Asia/Kolkata');
+          }
           const clickToolbar = async (action: string) => {
             const button = fixture.nativeElement.querySelector(
               '[data-calendar-toolbar-action="' + action + '"]',
@@ -263,7 +256,9 @@ describe('Free examples', () => {
           const views =
             demo.id === 'list'
               ? LIST_VIEWS
-              : ['interactions', 'background'].includes(demo.id)
+              : demo.id === 'day-grid-week'
+                ? ['day-grid-week', 'day-grid-day']
+                : ['month', 'interactions', 'background'].includes(demo.id)
                 ? ['month', 'week', 'day']
                 : ['month', 'week', 'day', 'list-week'];
           expect(
@@ -297,19 +292,11 @@ describe('Free examples', () => {
               expect(api.getOption('theme')).toBe('breezy');
               expect(api.getOption('colorScheme')).toBe('dark');
               expect(api.getOption('weekends')).toBe(false);
-            }
-            if (demo.id === 'locale-rtl') {
               expect(api.getOption('locale')).toBe('ar');
               expect(api.getOption('direction')).toBe('rtl');
+              expect(api.getOption('timeZone')).toBe('Asia/Kolkata');
               expect(root.style.direction).toBe('rtl');
               expect(fixture.componentInstance.selectedLocale()).toBe('ar');
-            }
-            if (demo.id === 'time-zones') {
-              expect(api.getOption('timeZone')).toBe('Asia/Kolkata');
-              expect(api.formatIso(api.getDate(), { omitTime: true })).toBe('2026-09-07');
-              expect(fixture.componentInstance.selectedTimeZone()).toBe('Asia/Kolkata');
-              expect(api.getOption('slotMinTime')).toBe('00:00');
-              expect(api.getOption('slotMaxTime')).toBe('24:00');
             }
             if (demo.id === 'background') {
               expect(api.getEvents().find((event) => event.id === 'quiet-time')?.display).toBe(
@@ -344,7 +331,13 @@ describe('Free examples', () => {
               api.unselect();
             }
           }
-          await clickToolbar(demo.id === 'list' ? 'list-week' : 'week');
+          await clickToolbar(
+            demo.id === 'list'
+              ? 'list-week'
+              : demo.id === 'day-grid-week'
+                ? 'day-grid-week'
+                : 'week',
+          );
           const initialTitle = api.getView().title;
           const initialDate = api.getDate().getTime();
           await clickToolbar('next');
@@ -365,8 +358,10 @@ describe('Free examples', () => {
             'options.customButtons.sampleDates.click',
           );
           // Further assertions below exercise controls from the example's initial state.
-          if (demo.id === 'locale-rtl') fixture.componentInstance.setLocale('en-US');
-          if (demo.id === 'time-zones') fixture.componentInstance.setTimeZone('UTC');
+          if (demo.id === 'themes') {
+            fixture.componentInstance.setLocale('en-US');
+            fixture.componentInstance.setTimeZone('UTC');
+          }
           await clickToolbar(demo.view);
         }
         expect(api.getOption('weekDaysFormat')).toBe('EEE');
@@ -419,13 +414,8 @@ describe('Free examples', () => {
           expect(api.getOption('theme')).toBe('breezy');
           expect(api.getOption('weekends')).toBe(false);
         }
-        if (demo.id === 'locale-rtl') {
-          expect(fixture.componentInstance.localeChoices().length).toBeGreaterThan(200);
-          expect(fixture.nativeElement.querySelector('[role="combobox"]')).toBeTruthy();
-          expect(fixture.nativeElement.querySelectorAll('#demo-locale').length).toBe(1);
-          expect(fixture.nativeElement.querySelector('label[for="demo-locale"]').control).toBe(
-            fixture.nativeElement.querySelector('[role="combobox"]'),
-          );
+        if (demo.id === 'month') {
+          expect(fixture.componentInstance.localeChoices().length).toBeGreaterThan(100);
           fixture.componentInstance.setLocale('ar');
           expect(api.getOption('direction')).toBe('rtl');
           fixture.componentInstance.setLocale('he');
@@ -435,18 +425,15 @@ describe('Free examples', () => {
           fixture.componentInstance.setLocale('bn');
           expect(api.getOption('locale')).toBe('bn');
           expect(api.getOption('direction')).toBe('ltr');
-          fixture.componentInstance.setLocale('en-US');
+          fixture.componentInstance.setLocale('en');
           expect(api.getOption('direction')).toBe('ltr');
           fixture.componentInstance.setLocale('not_an_offered_locale');
-          expect(api.getOption('locale')).toBe('en-US');
-          expect(fixture.componentInstance.selectedLocale()).toBe('en-US');
-        }
-        if (demo.id === 'time-zones') {
+          expect(api.getOption('locale')).toBe('en');
+          expect(fixture.componentInstance.selectedLocale()).toBe('en');
           expect(fixture.componentInstance.timeZoneChoices().length).toBeGreaterThan(300);
-          expect(api.getOption('slotMinTime')).toBe('00:00');
-          expect(api.getOption('slotMaxTime')).toBe('24:00');
           const instants = api.getEvents().map((event) => String(event.start));
           const visibleDate = api.formatIso(api.getDate(), { omitTime: true });
+          const visibleStart = api.formatIso(api.getView().currentStart, { omitTime: true });
           for (const zone of [
             'America/New_York',
             'Pacific/Auckland',
@@ -459,9 +446,7 @@ describe('Free examples', () => {
             expect(api.getOption('timeZone')).toBe(zone);
             expect(fixture.componentInstance.selectedTimeZone()).toBe(zone);
             expect(api.formatIso(api.getDate(), { omitTime: true })).toBe(visibleDate);
-            expect(api.formatIso(api.getView().currentStart, { omitTime: true })).toBe(
-              '2026-09-07',
-            );
+            expect(api.formatIso(api.getView().currentStart, { omitTime: true })).toBe(visibleStart);
             expect(api.getEvents().map((event) => String(event.start))).toEqual(instants);
           }
           fixture.componentInstance.setTimeZone('Not/A_Zone');
@@ -508,7 +493,7 @@ describe('Free examples', () => {
         // This case rebuilds every view and several full-day IANA time zones.
         // Allow the complete integration flow to run alongside the other suites.
       },
-      demo.id === 'time-zones' ? 15000 : 5000,
+      demo.id === 'month' ? 15000 : 5000,
     );
   }
 });
@@ -546,6 +531,15 @@ describe('Navigation and pricing', () => {
     const fixture = TestBed.createComponent(App);
     fixture.detectChanges();
     expect(fixture.nativeElement.querySelector('main')).toBeTruthy();
+    const githubLinks = [
+      ...fixture.nativeElement.querySelectorAll('a[href*="github.com"]'),
+    ] as HTMLAnchorElement[];
+    expect(githubLinks.length).toBeGreaterThan(0);
+    for (const link of githubLinks) {
+      expect(link.target).toBe('_blank');
+      expect(link.rel).toContain('noopener');
+      expect(link.rel).toContain('noreferrer');
+    }
     const menu = fixture.nativeElement.querySelector('.menu-toggle') as HTMLButtonElement;
     menu.click();
     fixture.detectChanges();
@@ -555,15 +549,54 @@ describe('Navigation and pricing', () => {
     TestBed.configureTestingModule({ providers: [provideRouter(routes)] });
     const harness = await RouterTestingHarness.create();
     await harness.navigateByUrl('/examples');
-    expect(harness.routeNativeElement?.textContent).toContain('A familiar month grid');
+    expect(harness.routeNativeElement?.textContent).toContain(
+      'Switch one calendar between month, hourly week, and hourly day views.',
+    );
     expect(harness.routeNativeElement?.querySelector('.example-heading .badge')).toBeNull();
     expect(harness.routeNativeElement?.textContent).not.toMatch(/\bfree\b/i);
+    await vi.waitFor(() => {
+      harness.detectChanges();
+      expect(harness.routeNativeElement?.querySelector('#sidebar-locale')).toBeTruthy();
+      expect(harness.routeNativeElement?.querySelector('#sidebar-time-zone')).toBeTruthy();
+      expect(
+        harness.routeNativeElement?.querySelector('#sidebar-locale')?.hasAttribute('disabled'),
+      ).toBe(false);
+      expect(
+        harness.routeNativeElement?.querySelector('#sidebar-time-zone')?.hasAttribute('disabled'),
+      ).toBe(false);
+    });
+    expect(
+      harness.routeNativeElement?.querySelector('a[href="/examples/time-zones"]'),
+    ).toBeNull();
+    expect(
+      harness.routeNativeElement?.querySelector('a[href="/examples/locale-rtl"]'),
+    ).toBeNull();
+    for (const consolidated of [
+      'day-grid-day',
+      'time-grid-week',
+      'time-grid-day',
+      'event-editor',
+      'interactions',
+      'constraints',
+    ])
+      expect(
+        harness.routeNativeElement?.querySelector('a[href="/examples/' + consolidated + '"]'),
+      ).toBeNull();
+    expect(
+      [...harness.routeNativeElement!.querySelectorAll('[data-calendar-toolbar-view]')].map(
+        (button) => button.getAttribute('data-calendar-toolbar-view'),
+      ),
+    ).toEqual(['month', 'week', 'day']);
+    await harness.navigateByUrl('/examples/locale-rtl');
+    expect(harness.routeNativeElement?.querySelector('h1')?.textContent).toBe(
+      'Month, week & day',
+    );
     await harness.navigateByUrl('/examples/resource-timeline');
     expect(harness.routeNativeElement?.textContent).toContain('Example not found');
     await harness.navigateByUrl('/pricing');
     expect(harness.routeNativeElement?.textContent).toContain('Contact for pricing');
     await harness.navigateByUrl('/docs');
-    expect(harness.routeNativeElement?.textContent).toContain('Your own stack.');
+    expect(harness.routeNativeElement?.textContent).toContain('Build with WTS Calendar');
     await harness.navigateByUrl('/docs/api');
     expect(harness.routeNativeElement?.textContent).toContain('Client options');
     const apiSearch = harness.routeNativeElement?.querySelector(
@@ -589,22 +622,23 @@ describe('Navigation and pricing', () => {
     await harness.navigateByUrl('/not-a-page');
     expect(harness.routeNativeElement?.textContent).toContain('PAGE NOT FOUND');
   });
-  it('has no premium runtime, credential form, checkout or public license request link', async () => {
+  it('has a closed request form but no premium runtime, checkout or public issue request', async () => {
     await TestBed.configureTestingModule({
       imports: [PricingPage],
       providers: [provideRouter([])],
     }).compileComponents();
     const fixture = TestBed.createComponent(PricingPage);
     fixture.detectChanges();
-    expect(
-      fixture.nativeElement.querySelector('wts-calendar-angular,input,form,pre,code'),
-    ).toBeNull();
+    expect(fixture.nativeElement.querySelector('wts-calendar-angular,pre,code')).toBeNull();
+    expect(fixture.nativeElement.querySelector('dialog[open]')).toBeNull();
+    expect(fixture.nativeElement.querySelector('form')).toBeTruthy();
+    expect(fixture.nativeElement.querySelector('input[type="password"]')).toBeNull();
     expect(fixture.nativeElement.querySelector('a[href*="issues/new"]')).toBeNull();
     expect(fixture.nativeElement.querySelector('.plan:not(.premium-plan) .badge')).toBeNull();
     expect(fixture.nativeElement.querySelector('.premium-plan .badge.premium')).toBeTruthy();
     expect(fixture.nativeElement.textContent).not.toMatch(/\bfree\b/i);
   });
-  it('hides the email address while keeping the license button as a mailto link', async () => {
+  it('replaces email actions with dialog buttons and does not show the contact email', async () => {
     await TestBed.configureTestingModule({
       imports: [PricingPage],
       providers: [provideRouter([])],
@@ -613,12 +647,11 @@ describe('Navigation and pricing', () => {
     fixture.detectChanges();
     const request = fixture.nativeElement.querySelector(
       '.premium-plan .button',
-    ) as HTMLAnchorElement;
-    expect(request.tagName).toBe('A');
-    expect(request.textContent).toContain('Email for a license key');
-    expect(request.getAttribute('href')).toBe(
-      'mailto:suman.mandal@webskitters.com?subject=WTS%20Calendar%20premium%20license%20request',
-    );
+    ) as HTMLButtonElement;
+    expect(request.tagName).toBe('BUTTON');
+    expect(request.textContent).toContain('Request pricing');
+    expect(request.getAttribute('aria-haspopup')).toBe('dialog');
+    expect(fixture.nativeElement.querySelector('a[href^="mailto:"]')).toBeNull();
     expect(fixture.nativeElement.querySelector('.license-email')).toBeNull();
     expect(fixture.nativeElement.textContent).not.toContain(PREMIUM_CONTACT_EMAIL);
     expect(fixture.nativeElement.textContent).not.toContain('email will be added');

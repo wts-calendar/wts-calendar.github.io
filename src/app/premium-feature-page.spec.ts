@@ -38,9 +38,10 @@ describe('Premium feature documentation', () => {
       expect(article.querySelectorAll('#boundaries li').length).toBe(guide.limits.length);
       expect(article.textContent).toContain('@wts-calendar/core/' + guide.module);
       expect(article.textContent).toContain(guide.entitlement);
-      expect(article.querySelector('a[href^="mailto:"]')?.getAttribute('href')).toContain(
-        PREMIUM_CONTACT_EMAIL,
-      );
+      expect(article.querySelector('a[href^="mailto:"]')).toBeNull();
+      expect(
+        article.querySelector('#licensing button[aria-haspopup="dialog"]')?.textContent,
+      ).toContain('Request a license');
       expect(article.textContent).not.toContain(PREMIUM_CONTACT_EMAIL);
       expect(article.querySelector('input,form,wts-calendar-angular,.wts-calender')).toBeNull();
       const integration = integrations.find((item) => item.id === feature.id)!;
