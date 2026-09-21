@@ -386,9 +386,12 @@ describe('Free examples', () => {
           more.focus();
           more.click();
           const popover = document.querySelector('[role="dialog"]');
+          expect(popover?.getAttribute('aria-modal')).toBe('false');
+          expect(document.querySelector('.wts-modal-backdrop-overlay')).toBeNull();
           expect(popover?.textContent).toContain('Design workshop');
           expect(popover?.textContent).toContain('Customer catch-up');
-          (popover?.querySelector('[aria-label="Close event list"]') as HTMLButtonElement).click();
+          expect(popover?.querySelector('.wts-btn-modal-close')).toBeNull();
+          document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
           expect(document.querySelector('[role="dialog"]')).toBeNull();
           expect(document.activeElement).toBe(more);
           expect(api.getEvents().length).toBe(8);

@@ -6,6 +6,9 @@ import ts from 'typescript';
 
 // Generate downloadable projects from the same files displayed in the docs.
 const root = resolve(import.meta.dirname, '..');
+const portalPackage = JSON.parse(await readFile(join(root, 'package.json'), 'utf8'));
+const coreVersion = portalPackage.dependencies['@wts-calendar/core'];
+const angularVersion = portalPackage.dependencies['@angular/core'];
 const source = (await readFile(join(root, 'src/app/quick-starts.ts'), 'utf8')).replace(
   "import { DOCS_BASE, DOCS_ROOT } from './site-data';",
   'const DOCS_BASE = ""; const DOCS_ROOT = "";',
@@ -32,7 +35,7 @@ try {
       );
     };
     const angular = id === 'angular';
-    const dependencies = { '@wts-calendar/core': '1.1.3' };
+    const dependencies = { '@wts-calendar/core': coreVersion };
     const devDependencies = { typescript: '~6.0.2' };
     if (id === 'react')
       Object.assign(dependencies, {
@@ -44,17 +47,17 @@ try {
     if (angular) {
       Object.assign(dependencies, {
         '@wts-calendar/angular': '1.0.1',
-        '@angular/core': '22.1.3',
-        '@angular/common': '22.1.3',
-        '@angular/compiler': '22.1.3',
-        '@angular/platform-browser': '22.1.3',
+        '@angular/core': angularVersion,
+        '@angular/common': angularVersion,
+        '@angular/compiler': angularVersion,
+        '@angular/platform-browser': angularVersion,
         rxjs: '~7.8.0',
         tslib: '^2.3.0',
       });
       Object.assign(devDependencies, {
-        '@angular/build': '22.1.3',
-        '@angular/cli': '22.1.3',
-        '@angular/compiler-cli': '22.1.3',
+        '@angular/build': angularVersion,
+        '@angular/cli': angularVersion,
+        '@angular/compiler-cli': angularVersion,
       });
       await write('angular.json', {
         version: 1,

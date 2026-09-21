@@ -33,7 +33,7 @@ The fresh 2026-08-26 release-candidate matrix completed with all 75 checks
 passing: 25 each in Chromium, Firefox, and WebKit. It covers every canonical
 view, virtualized resources, roving focus and keyboard actions, programmatic
 selection, runtime shortcut/instruction metadata, reduced motion, forced
-colors, and more-events dialog focus trapping/restoration. Automated success
+colors, and more-events popover focus/restoration. Automated success
 does not replace the manual assistive-technology gate below.
 
 ## Manual gate
@@ -63,8 +63,8 @@ be collected, so this attempt is not a pass and the matrix remains pending.
 2. Confirm the view title, grid/table structure, dates, times, resources, event
    names, all-day state, selected state, unavailable state, and live updates are
    announced without redundant speech.
-3. Open and close the more-events dialog; verify initial focus, focus trap,
-   Escape, and focus restoration.
+3. Open and close the more-events popover; verify initial focus, non-modal
+   Tab navigation, outside-click dismissal, Escape, and focus restoration.
 4. Create a selection, keyboard-drag an event, resize it, cancel, and commit;
    verify instructions, grabbed state, proposed time, validation failures, and
    completion are announced.

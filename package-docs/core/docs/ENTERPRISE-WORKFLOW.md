@@ -5,7 +5,7 @@ governed calendar mutations. It provides configurable state machines,
 multi-stage approvals, field-level policies, optimistic/offline queues,
 hash-chained audit history, and a backend-neutral adapter contract.
 
-The entry requires the separately signed `enterprise-workflow` entitlement.
+The entry requires verified package-wide Premium access (`enterprise-workflow` capability).
 It is not loaded by the standard entry or by `/all`, and it does not contact a
 WTS service. Applications supply actors, rules, events, and any persistence or
 transport adapter.

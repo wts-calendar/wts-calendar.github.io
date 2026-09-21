@@ -1707,8 +1707,8 @@ cell in the current row or time column, and Tab to leave the grid.
 
 Selection, event movement, resize results, validation failures, navigation,
 and cancellations are announced through a polite live region. Opening the
-more-events dialog traps focus inside it; Escape closes the dialog and restores
-focus to its trigger. Moving and resizing always have keyboard alternatives,
+more-events popover keeps the page usable; Escape closes it and restores focus
+to its trigger. Moving and resizing always have keyboard alternatives,
 so drag gestures are not required.
 
 ## Range selection

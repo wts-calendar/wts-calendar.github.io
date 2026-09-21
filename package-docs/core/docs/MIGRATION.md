@@ -14,9 +14,12 @@ The official wrappers are `@wts-calendar/react`, `@wts-calendar/react-native`,
 organization. Version `1.0.0` begins the scoped package line; it does not imply
 API compatibility with an unrelated unscoped `1.x` package.
 
-Existing signed premium grants remain valid. Their `wts-calendar-v2` audience
-is a stable licensing-protocol identifier and intentionally does not match the
-new npm package name.
+The unreleased backend-licensing replacement does not accept existing signed
+premium tokens. Exchange them for a backend deployment key, then use
+`await WtsCalendar.create(options, { licenseKey })` or `connectCalendarLicense`.
+The production verification endpoint is selected by default. See
+[Premium licensing](PREMIUM-LICENSING.md) for the breaking migration and exact
+package-version coverage rules; published 1.x behavior is unchanged.
 
 Licensed migrations can use
 `PremiumCalendarInteroperability.migrateFullCalendarOptions()` to produce a

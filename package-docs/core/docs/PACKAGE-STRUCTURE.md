@@ -47,6 +47,8 @@ Credential acquisition and browser safety are covered in
 │   ├── action and field-level policies
 │   ├── optimistic/offline mutation queues
 │   └── customer backend adapter interfaces
+├── time-machine (premium, DOM-free replay, diff, selective restore)
+├── time-machine-panel (premium, optional web history and recovery UI)
 ├── developer-tools (free, development opt-in)
 │   ├── typed event/resource facades and JSON Schema
 │   ├── diagnostics, profiling, and DevTools panel
@@ -66,6 +68,9 @@ Credential acquisition and browser safety are covered in
 ├── google-calendar
 ├── format-moment (optional Moment peer)
 ├── format-luxon3 (optional Luxon peer)
+├── theme-mui (free Material UI theme adapter, no MUI runtime dependency)
+├── theme-shadcn (free shadcn/ui CSS-variable theme adapter)
+├── theme-angular-material (free Angular Material 3 system-token adapter)
 ├── plugin-sdk
 ├── web-component
 └── all

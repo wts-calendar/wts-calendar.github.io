@@ -300,7 +300,7 @@ export const FEATURES: readonly Feature[] = [
       'month',
     ],
     ['Undo, redo & transactions', 'Reversible event mutations with history state.', 'month'],
-    ['Overflow popovers', 'Accessible overflow controls and dismissible event lists.', 'month'],
+    ['Overflow popovers', 'Anchored, non-modal event lists that reposition around the trigger and keep the page usable.', 'month'],
   ]),
   ...entries('Customization', 'Free', [
     ['Declarative toolbar', 'Compose navigation, title, view, and custom controls.'],

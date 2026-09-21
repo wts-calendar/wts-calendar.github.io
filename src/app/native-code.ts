@@ -35,9 +35,9 @@ export function nativeCode(context: CodeContext): FrameworkCode {
     unsupportedExamples[demo.id] ??
     (!nativeView ? 'The native renderer does not provide the "' + view + '" layout.' : '');
   const base = {
-    install: 'npm install @wts-calendar/core@^1.1.3 @wts-calendar/react-native@^1.1.0',
+    install: 'npm install @wts-calendar/core@1.1.4 @wts-calendar/react-native@^1.1.0',
     notes: [
-      'Uses native iOS/Android controls, not a WebView. Uses the same core 1.1.3 release as this portal with the published React Native 1.1.0 wrapper.',
+      'Uses native iOS/Android controls, not a WebView. Uses the same core 1.1.4 release as this portal with the published React Native 1.1.0 wrapper.',
       'Native week/day layouts are agenda-style, not the browser TimeGrid. Browser CSS, toolbar configuration, slot sizing, formatting strings, and interaction options are not interchangeable.',
       'Locale, time zone, firstDay, hiddenDays, and listDayCount are mount-only. Use the generated initialOptions on a deliberate remount; the native controller has no setOptions() method. Theme and events props can update reactively.',
       ...(Object.keys(changes).length

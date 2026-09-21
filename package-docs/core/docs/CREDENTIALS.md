@@ -1,7 +1,7 @@
 # API keys, OAuth, and browser credentials
 
 This guide covers third-party provider credentials. A WTS Calendar premium
-license is a separate signed feature entitlement, not an API key. To obtain and
+license is a backend-verified deployment entitlement, separate from provider API keys. To obtain and
 use one, see [Premium licensing](PREMIUM-LICENSING.md).
 
 WTS Calendar ships no API key, OAuth token, client secret, or provider account.

@@ -18,7 +18,7 @@ export const QUICK_STARTS: readonly QuickStart[] = [
   {
     name: 'JavaScript',
     install:
-      'npm create vite@latest my-calendar -- --template vanilla-ts\ncd my-calendar\nnpm install\nnpm install @wts-calendar/core@1.1.3\nnpm run dev',
+      'npm create vite@latest my-calendar -- --template vanilla-ts\ncd my-calendar\nnpm install\nnpm install @wts-calendar/core@1.1.4\nnpm run dev',
     url: DOCS_BASE + 'README.md',
     note: 'Create a Vite TypeScript project, then replace these files. The fixed view date keeps the sample event visible whenever you try it.',
     files: [
@@ -51,7 +51,7 @@ if (import.meta.hot) import.meta.hot.dispose(() => calendar.destroy());
   {
     name: 'Angular',
     install:
-      'npx @angular/cli@22 new my-calendar --standalone --routing=false --style=css --skip-git\ncd my-calendar\nnpm install @wts-calendar/core@1.1.3 @wts-calendar/angular@1.0.1\nnpm start',
+      'npx @angular/cli@22 new my-calendar --standalone --routing=false --style=css --skip-git\ncd my-calendar\nnpm install @wts-calendar/core@1.1.4 @wts-calendar/angular@1.0.1\nnpm start',
     url: DOCS_ROOT + 'angular/README.md',
     note: 'In an Angular standalone application, replace src/app/app.ts and put the stylesheet import in global src/styles.css. The wrapper handles cleanup.',
     files: [
@@ -77,7 +77,7 @@ export class App {
   {
     name: 'React',
     install:
-      'npm create vite@latest my-calendar -- --template react-ts\ncd my-calendar\nnpm install\nnpm install @wts-calendar/core@1.1.3 @wts-calendar/react@1.0.1\nnpm run dev',
+      'npm create vite@latest my-calendar -- --template react-ts\ncd my-calendar\nnpm install\nnpm install @wts-calendar/core@1.1.4 @wts-calendar/react@1.0.1\nnpm run dev',
     url: 'https://www.npmjs.com/package/@wts-calendar/react',
     note: 'Replace App.tsx and index.css in a Vite React project. Keep Vite’s main.tsx. The wrapper owns mounting and cleanup, including React Strict Mode.',
     files: [
@@ -98,7 +98,7 @@ export default function App() {
   {
     name: 'Vue',
     install:
-      'npm create vite@latest my-calendar -- --template vue-ts\ncd my-calendar\nnpm install\nnpm install @wts-calendar/core@1.1.3 @wts-calendar/vue@1.0.1\nnpm run dev',
+      'npm create vite@latest my-calendar -- --template vue-ts\ncd my-calendar\nnpm install\nnpm install @wts-calendar/core@1.1.4 @wts-calendar/vue@1.0.1\nnpm run dev',
     url: 'https://www.npmjs.com/package/@wts-calendar/vue',
     note: 'Replace App.vue and style.css in a Vite Vue 3 project. Keep Vite’s main.ts. The wrapper handles mounting and cleanup.',
     files: [
@@ -120,7 +120,7 @@ const events = ${events};
   {
     name: 'Web Component',
     install:
-      'npm create vite@latest my-calendar -- --template vanilla-ts\ncd my-calendar\nnpm install\nnpm install @wts-calendar/core@1.1.3\nnpm run dev',
+      'npm create vite@latest my-calendar -- --template vanilla-ts\ncd my-calendar\nnpm install\nnpm install @wts-calendar/core@1.1.4\nnpm run dev',
     url: DOCS_BASE + 'README.md',
     note: 'Keep Vite’s index.html with its #app element. The custom element connects when appended and cleans up when removed.',
     files: [
@@ -143,7 +143,7 @@ if (import.meta.hot) import.meta.hot.dispose(() => calendar.remove());`,
   },
   {
     name: 'React Native',
-    install: 'npm install @wts-calendar/core@1.1.3 @wts-calendar/react-native@1.1.0',
+    install: 'npm install @wts-calendar/core@1.1.4 @wts-calendar/react-native@1.1.0',
     url: 'https://www.npmjs.com/package/@wts-calendar/react-native',
     note: 'Add this screen to an existing React Native 0.76+ application with React 18 or 19. Run it with your project’s Android/iOS workflow. Native screens do not import browser CSS.',
     files: [

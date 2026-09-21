@@ -5,6 +5,9 @@ import { JSDOM } from 'jsdom';
 import { baseHref, directory, indexFiles, parse, siteOrigin } from './pages-lib.mjs';
 
 const titles = new Set();
+const coreVersion = JSON.parse(
+  readFileSync(new URL('../node_modules/@wts-calendar/core/package.json', import.meta.url), 'utf8'),
+).version;
 for (const id of ['javascript', 'react', 'vue', 'web-component', 'angular']) {
   const archive = readFileSync(join(directory, 'starters', id + '.tar.gz'));
   assert.equal(archive.readUInt16BE(0), 0x1f8b, 'Missing or invalid starter archive: ' + id);
@@ -101,7 +104,10 @@ for (const file of indexFiles()) {
     );
   }
   if (route === 'docs/appearance') {
-    assert.match(document.querySelector('main')?.textContent ?? '', /Available in core 1\.1\.3/);
+    assert.ok(
+      (document.querySelector('main')?.textContent ?? '').includes(`Available in core ${coreVersion}`),
+      'Appearance guide must show the installed core version.',
+    );
     for (const id of ['contrast', 'narrow', 'mui', 'shadcn', 'angular-material']) {
       assert.ok(
         document.querySelector('#' + id + ' app-code-card'),

@@ -1,7 +1,8 @@
 # Troubleshooting
 
-- Blank or unlicensed premium view: verify the license audience, origin, time
-  claims, feature claim, and pinned key ID; never ship a private signing key.
+- Blank or unlicensed premium view: verify the backend response's package,
+  installed version, origin, PERPETUAL_VERSION model, and explicit features.
+  Check HTTPS/CORS and the single-schema contract in PREMIUM-LICENSING.md.
 - Event appears on the wrong date: distinguish floating local date/time from an
   instant with offset and set the calendar timezone explicitly.
 - Remote source fails: listen for the matching `*-source-failure` event and

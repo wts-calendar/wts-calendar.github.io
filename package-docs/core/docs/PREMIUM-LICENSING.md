@@ -1,12 +1,12 @@
-# Backend premium licensing
+# Backend premium licensing (breaking replacement)
 
-Core 1.1.3 uses live backend authorization instead of the former signed-token system.
+Core 1.1.4 uses live backend verification instead of the former signed-token system.
 There are no pinned signing keys, token verification, signing scripts, or
-offline token fallback. Consumers upgrading from the older token API must migrate.
+offline token fallback. Consumers of the older token API must migrate.
 Nothing in this document changes commercial purchase terms.
 
-Request pricing or Premium access through the
-[WTS Calendar request form](https://wts-calendar.github.io/pricing/). The package defaults to
+Request a deployment key through the
+[WTS Calendar pricing form](https://wts-calendar.github.io/pricing/). The package defaults to
 `https://package-portal.dedicateddevelopers.us/api/public/licenses/verify`.
 A browser-visible key is
 a public deployment credential, never a privileged server secret or Google,
@@ -79,7 +79,8 @@ The default endpoint is
 There is one request schema. There is no
 contractVersion selector or legacy fallback. The backend must migrate stored
 entitlements and route all requests through the package-specific evaluator.
-See [the backend migration handoff](BACKEND-LICENSING-HANDOFF.md).
+The backend's trusted release catalog must include the exact installed version
+before Premium activation can succeed.
 
 ```json
 {
@@ -90,8 +91,9 @@ See [the backend migration handoff](BACKEND-LICENSING-HANDOFF.md).
 }
 ```
 
-The package sends its actual installed version; this example does not establish
-that a particular customer owns that release. The server checks the key,
+The package sends its actual installed version (1.1.4 for this portal); the
+1.1.3 JSON example below illustrates an older covered release, not a request
+made by this portal or proof that a customer owns that release. The server checks the key,
 package grant, exact origin, administrative state, and trusted release catalog.
 It selects the commercial model from stored grant data, never request input.
 
@@ -185,8 +187,9 @@ subscription client.
   Your deployment key is sent to that URL, so never take it from untrusted user
   input. Invalid overrides fail instead of falling back to production, and
   redirects are rejected. The SDK never calls the premium/contact request APIs.
-- Production readiness still requires testing the deployed backend contract with a
-  designated integration key for the intended origin and published package version.
+- Core 1.1.4 is published under npm's `next` tag. Before using Premium with
+  that version, the backend must register its trusted release and verify
+  activation for an authorized deployment key and origin.
 
 ## Development and production boundaries
 

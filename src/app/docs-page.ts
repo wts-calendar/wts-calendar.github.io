@@ -49,7 +49,7 @@ import {
         <p>
           Web starters require Node.js 22.22.3 or a compatible version supported by your framework.
           If you already have an application, install the WTS packages from the command below and
-          adapt the component files. The examples use published core 1.1.3.
+          adapt the component files. The examples use published core 1.1.4.
         </p>
         <div class="segmented" aria-label="Framework">
           @for (item of frameworks; track item.name) {

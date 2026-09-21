@@ -5,6 +5,96 @@ Versioning.
 
 ## [Unreleased]
 
+## [1.1.4] - 2026-09-21
+
+### Improved
+
+- Month-view `+more` now opens a non-modal popover anchored to its trigger,
+  repositioning to fit the viewport. Its compact agenda list has aligned times,
+  event-color accents, and a pointer, without a backdrop or close button.
+- The popover inherits calendar surface, text, shape, and accent tokens, including
+  scoped theme variables and dark mode. Escape and outside-click dismissal and
+  keyboard focus restoration remain available.
+
+## [1.1.3] - 2026-09-17
+
+This release retains the licensing migration below despite remaining on the 1.x
+line.
+
+### Breaking
+
+- Replace offline signed tokens with backend-verification sessions. Use
+  `WtsCalendar.create(options, connection)` or `connectCalendarLicense(connection)`.
+  Remove `verifyCalendarLicense`, `createLicensed`, signed claims/grants, pinned
+  signing keys, and local key-generation/signing scripts. Existing 1.x tokens
+  must be exchanged for backend deployment keys. Review this migration before
+  upgrading; the 1.1.3 version number does not imply licensing API compatibility.
+- Use one backend request schema with installed package version and no legacy
+  contract selector. Validate the returned package, version, origin, commercial
+  model, and explicit package-wide Premium authorization.
+- Verified Calendar Premium/Enterprise licenses unlock all Premium capabilities
+  defined by the installed package. Backend `features` metadata is no longer an
+  authorization input; no per-key feature selection or label migration is needed.
+  Domain, version coverage, tier, revocation and perpetual-policy checks remain.
+- Covered Calendar releases retain perpetual runtime rights after maintenance
+  expiry and during current-session outages. Explicit revocation or uncovered
+  versions deny premium authorization without clearing calendar data. Other
+  packages' subscription grants are not treated as perpetual Calendar licenses.
+
+### Added
+
+- Production license verification defaults to the WTS package portal, so callers
+  need only a deployment key. A trusted `verificationUrl` override remains
+  available for staging/proxy deployments; Standard calendars remain offline.
+
+- Optional `eventContrastColor: 'auto'` selects black/white event text using
+  rendered-background luminance, including theme variables and alpha colors.
+  Explicit text overrides remain authoritative; CSS colors and runtime changes
+  are supported across standard and resource event views.
+
+- Responsive `dayNarrowWidth` (default 100px; 0 disables) for Month/DayGrid,
+  TimeGrid date headers, and MultiMonth/year. Actual column resizing updates
+  localized compact labels and `isNarrow` date-hook state without recreating
+  events; custom labels and full accessible dates are preserved.
+
+- Optional Angular Material 3 theme adapter with inherited system colors,
+  typography family, shape, elevation, and CSS-driven light/dark switching.
+
+- First-party optional MUI and shadcn/ui theme adapters, with inherited CSS
+  variables, light/dark switching, custom tokens, and integration examples.
+  The calendar's shared theme tokens now also reach standard view borders,
+  list surfaces, default event colors, and keyboard focus rings.
+
+- Premium Time Machine: immutable recorded snapshots, time lookup, field-level
+  diffs, selective restores with current authorization/validation, expected-head
+  conflict checks, and a customer-owned atomic storage contract. Uses the
+  existing `enterprise-workflow` entitlement; no standard-bundle import.
+- Separate optional Time Machine panel with real read-only calendar previews,
+  accessible comparison and confirmation, and preservation of unselected work.
+  Branching and scenario merging are not part of this first release.
+
+### Fixed
+
+- Dense TimeGrid updates no longer allocate hidden lanes beyond `eventMaxStack`.
+  Preserve visible lane reuse, strict ordering and complete overflow/popover data.
+- Reuse event-order collation rules across comparisons to reduce dense Month
+  and TimeGrid sorting cost without changing numeric, case or accent ordering.
+- Share identical Month date-span and grid-bucket calculations during indexing;
+  edits, navigation and time-zone changes retain their normal invalidation.
+- Themed month date labels now use the active text tokens, including past dates
+  and today, so legacy cell colors cannot make dark previews unreadable.
+
+## [1.1.2] - 2026-09-10
+
+### Fixed
+
+- Align simultaneous week TimeGrid events in horizontal lanes without vertical
+  stacking (Suman201/wts-calendar-angular-example#1).
+- Keep one vertical time-grid scroller when height or contentHeight is set,
+  including day view, expanded rows, and runtime resizing.
+- This CSS-only hotfix preserves the published 1.1.1 JavaScript, types, exports,
+  and dependencies. Unreleased features above are not included.
+
 ## [1.1.1] - 2026-08-31
 
 ### Changed

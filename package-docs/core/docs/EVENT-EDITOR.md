@@ -20,6 +20,17 @@ editor.openCreate({ start: new Date(), opener: addButton });
 editor.openDelete(event, { opener: deleteButton });
 ```
 
+The create and duplicate forms include built-in recurrence controls for daily,
+weekly, monthly, and yearly events. Developers can set the interval, choose one
+or more weekdays for weekly events, and add an optional inclusive end date. The
+editor writes the package-native `recurring` event model, so this common flow
+does not require the optional RRULE plugin. Existing custom RRULE events remain
+read-only at the rule level and continue to use their original rule.
+
+Set `allowRecurrence: false` to hide these controls. The public editor snapshot
+and `mapToEvent` values expose `recurrenceFrequency`, `recurrenceInterval`,
+`recurrenceDaysOfWeek`, and `recurrenceEndDate` for custom persistence mapping.
+
 The editor uses the calendar's transactional mutation APIs. Successful changes
 participate in undo/redo, calendar constraints, async mutation validation, and
 mutation lifecycle events. Recurring events expose occurrence, future, and
