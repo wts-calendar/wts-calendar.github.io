@@ -137,7 +137,11 @@ for (const file of indexFiles()) {
   assert.equal(schemas.length, 1, 'Missing/duplicate structured data: ' + route);
   const schema = JSON.parse(schemas[0].textContent);
   assert.equal(schema['@context'], 'https://schema.org');
-  assert.equal(schema['@graph'].find((item) => item['@type'] === 'WebPage')?.url, canonical);
+  const webPage = schema['@graph'].find((item) => {
+    const type = item['@type'];
+    return type === 'WebPage' || (Array.isArray(type) && type.includes('WebPage'));
+  });
+  assert.equal(webPage?.url, canonical);
   assert.ok(
     !/"aggregateRating"|"review"|"price"/.test(schemas[0].textContent),
     'Unverified commercial schema',
