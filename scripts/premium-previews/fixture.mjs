@@ -23,20 +23,22 @@ let license;
 function el(tag, text, parent = content, className) { const node = document.createElement(tag); if (text !== undefined) node.textContent = String(text); if (className) node.className = className; parent.append(node); return node; }
 function note(text, warning = false) { el('p', text, content, warning ? 'result warning' : 'result'); }
 function table(title, columns, rows) {
-  el('h2', title); const t = el('table'); const tr = el('tr', undefined, el('thead', undefined, t));
+  el('h2', title); const wrap = el('div', undefined, content, 'premium-result-table'); const t = el('table', undefined, wrap); const tr = el('tr', undefined, el('thead', undefined, t));
   columns.forEach(column => el('th', column, tr)); const body = el('tbody', undefined, t);
   rows.forEach(row => { const tr = el('tr', undefined, body); row.forEach(value => el('td', typeof value === 'object' ? JSON.stringify(value) : value ?? '—', tr)); });
   evidence.push({ title, columns, rows });
 }
 async function calendar(options = {}, short = false) {
   const host = el('div', undefined, content, short ? 'calendar short' : 'calendar');
-  const height = short ? 320 : options.view === 'weekly-repeated-task' ? 560 : 450;
-  host.style.height = height + 'px'; host.style.setProperty('--calendar-height', height + 'px'); host.style.setProperty('--calendar-body-height', (height - 80) + 'px');
+  const view = options.view ?? 'resource-timeline';
+  const height = options.height ?? (short ? 320 : view === 'weekly-repeated-task' ? 560 : view === 'resource-timeline' || view === 'resource' ? 'auto' : 450);
+  if (height === 'auto') { host.style.height = 'auto'; host.style.setProperty('--calendar-height', 'auto'); host.style.removeProperty('--calendar-body-height'); }
+  else { host.style.height = height + 'px'; host.style.setProperty('--calendar-height', height + 'px'); host.style.setProperty('--calendar-body-height', (height - 80) + 'px'); }
   const c = new WtsCalendar({ container: host, document, license, view: 'resource-timeline', viewDate: D, timeZone: 'UTC', locale: 'en-US', startOfWeek: 1, weekends: false,
     ...(options.view === 'weekly-repeated-task' ? { headerToolbar: { start: 'prev', center: 'title', end: 'next' } } : {}),
     resources, events: !options.view ? events.map((e, i) => ({ ...e, start: '2026-09-0' + (7 + i), end: '2026-09-' + (10 + i), isAllDay: true })) : events, height, slotMinTime: '08:00', slotMaxTime: '14:00', resourceTimeGrid: { columnWidth: 340 },
     dayView: { hourSegment: 60, segmentHeight: 44 }, weekView: { hourSegment: 60, segmentHeight: 44 },
-    resourceTimeline: { durationDays: 7, slotWidth: 174, rowMinHeight: 66, resourceAreaWidth: 220 }, ...options });
+    resourceTimeline: { durationDays: 7, slotWidth: 174, rowMinHeight: 66, resourceAreaWidth: 220 }, footerScrollbarSticky: false, ...options });
   calendars.push(c); await c.whenIdle(); evidence.push({ view: c.viewName, events: c.getEvents().length, resources: c.getResources().length }); return c;
 }
 function planner(overrides = {}) {
@@ -58,19 +60,19 @@ const providerIds = new Set(['two-way-google-calendar-synchronization', 'microso
 
 async function render(id) {
   if (id === 'resource-grid') return calendar({ view: 'resource', events: events.map((e, i) => ({ ...e, start: '2026-09-0' + (7 + i), end: '2026-09-' + (10 + i), isAllDay: true })) });
-  if (id === 'resource-daygrid') return calendar({ view: 'resource-day-grid-day', events });
+  if (id === 'resource-daygrid') return calendar({ view: 'resource-day-grid-day', height: 'auto', resourceTimeGrid: { columnWidth: 230 }, events });
   if (id === 'resource-timegrid') return calendar({ view: 'resource-time-grid-day' });
   if (id === 'resource-non-resource-timeline') return calendar({ events: events.map((e, i) => ({ ...e, start: '2026-09-0' + (7 + i), end: '2026-09-' + (10 + i), isAllDay: true })) });
   if (id === 'dates-above-resources') {
     const options = { view: 'resource-time-grid-week', hiddenDays: [0, 3, 4, 5, 6], resources: resources.slice(0, 2).map((r, i) => ({ ...r, title: 'Room ' + (i ? 'B' : 'A') })), events: events.slice(0, 2), resourceTimeGrid: { columnWidth: 250 }, slotMinTime: '09:00', slotMaxTime: '11:00' };
-    el('h2', 'Date-first headings'); await calendar({ ...options, datesAboveResources: true }, true);
-    el('h2', 'Resource-first headings'); return calendar({ ...options, datesAboveResources: false }, true);
+    el('h2', 'Date-first headings'); await calendar({ ...options, height: 'auto', datesAboveResources: true }, true);
+    el('h2', 'Resource-first headings'); return calendar({ ...options, height: 'auto', datesAboveResources: false }, true);
   }
   if (id === 'resource-crud-sources') {
     const c = await calendar({ resources: [], events: [], resourceSources: [{ id: 'local-directory', loader: async () => resources }] });
     c.addResource({ id: 'support', title: 'Support desk', capacity: 2 });
-    c.updateResource('support', { title: 'Support — updated through API' });
-    c.addEvent(event('support-shift', 'Support shift', 'support'));
+    c.updateResource('support', { title: 'Support — updated' });
+    c.addEvent({ id: 'support-shift', title: 'Support shift', resourceId: 'support', start: '2026-09-07', end: '2026-09-10', isAllDay: true });
     table('Actual resource API snapshot', ['ID', 'Title', 'Capacity'], c.getResources().map(r => [r.id, r.title, r.capacity])); return;
   }
   if (id === 'resource-hierarchy') return calendar({ resources: [{ id: 'delivery', title: 'Product delivery' }, ...resources.map(r => ({ ...r, parentId: 'delivery' })), { id: 'support', title: 'Customer support' }] });
@@ -87,10 +89,10 @@ async function render(id) {
     table('Actual assignment validation', ['Request', 'Package result'], rows); return;
   }
   if (id === 'resource-virtualization-print') {
-    const c = await calendar({ resources: Array.from({ length: 300 }, (_, i) => ({ id: 'r' + i, title: 'Resource ' + String(i + 1).padStart(3, '0') })), events: Array.from({ length: 8 }, (_, i) => ({ ...event('task' + i, 'Scheduled work ' + (i + 1), 'r' + i), end: '2026-09-09T11:00:00Z' })), resourceTimeline: { durationDays: 30, slotWidth: 100, rowMinHeight: 42, resourceAreaWidth: 200, resourceVirtualizationThreshold: 20, resourceOverscan: 2, slotVirtualizationThreshold: 15, slotOverscan: 2 } });
+    const c = await calendar({ height: 450, resources: Array.from({ length: 300 }, (_, i) => ({ id: 'r' + i, title: 'Resource ' + String(i + 1).padStart(3, '0') })), events: Array.from({ length: 8 }, (_, i) => ({ id: 'task' + i, title: 'Scheduled work ' + (i + 1), resourceId: 'r' + i, start: '2026-09-07', end: '2026-09-10', isAllDay: true })), resourceTimeline: { durationDays: 30, slotWidth: 100, rowMinHeight: 42, resourceAreaWidth: 200, resourceVirtualizationThreshold: 20, resourceOverscan: 2, slotVirtualizationThreshold: 15, slotOverscan: 2 } });
     return c;
   }
-  if (id === 'repeated-task-views') return calendar({ view: 'weekly-repeated-task', resources: [], events: [], task: ['Equipment checks', 'Team reviews', 'Inventory'].map((title, i) => ({ id: 'category' + i, name: 'category' + i, title, enable: true, color: resources[i].color, icon: '', data: Array.from({ length: 4 }, (_, day) => ({ id: 'task' + i + day, start: '2026-09-' + String(7 + day).padStart(2, '0'), end: '2026-09-' + String(7 + day).padStart(2, '0'), reason: ['Safety inspection', 'Review checklist', 'Stock count'][i], status: day < 2 ? 'completed' : 'pending' })) })) });
+  if (id === 'repeated-task-views') return calendar({ view: 'weekly-repeated-task', height: 'auto', resources: [], events: [], task: ['Equipment checks', 'Team reviews', 'Inventory'].map((title, i) => ({ id: 'category' + i, name: 'category' + i, title, enable: true, color: resources[i].color, icon: '', data: Array.from({ length: 4 }, (_, day) => ({ id: 'task' + i + day, start: '2026-09-' + String(7 + day).padStart(2, '0'), end: '2026-09-' + String(7 + day).padStart(2, '0'), reason: ['Safety inspection', 'Review checklist', 'Stock count'][i], status: day < 2 ? 'completed' : 'pending' })) })) });
   if (id === 'utilization-capacity-heatmaps') {
     const heatmap = planner().createCapacityHeatmap({ ...range, bucketMinutes: 60 });
     table('createCapacityHeatmap() — actual returned buckets', ['Resource', 'UTC hour', 'Booked / usable', 'Utilization', 'State'], heatmap.cells.filter(c => c.resourceId === 'design' || c.resourceId === 'engineering').map(c => [c.resourceId, c.start.toISOString().slice(11, 16), c.bookedUnits + ' / ' + c.usableCapacity, (c.utilizationPercent ?? 0) + '%', c.state])); return;
@@ -198,6 +200,7 @@ try {
   const feature = catalog.find(f => f.id === id); if (!feature) throw new Error('Select a feature from the capture catalog');
   license = await verifyCalendarLicense(token);
   const kind = nativeIds.has(id) ? 'package-ui' : providerIds.has(id) ? 'adapter-output' : 'api-output';
+  content.dataset.demoKind = kind;
   document.querySelector('#title').textContent = feature.visual.title;
   document.querySelector('#subtitle').textContent = kind === 'package-ui' ? 'Actual package UI • Sample data • September 2026' : 'Actual package API results • Read-only capture table, not a built-in product screen';
   document.querySelector('#provenance').textContent = build.package + '@' + build.version + ' / ' + feature.module + ' · Local unpublished build';

@@ -115,5 +115,5 @@ console.log(
     docs.length +
     ' local guide targets, ' +
     premium.length +
-    ' Premium guides, safe static fallbacks, sandboxed live demos, private request-form contact.',
+    ' Premium guides, inline live demos, private request-form contact.',
 );

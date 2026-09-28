@@ -3,7 +3,7 @@
 
 export const CLIENT_PACKAGE = {
   name: '@wts-calendar/core',
-  version: '1.1.5',
+  version: '1.1.6',
   entrypoints: [
     '.',
     './native',

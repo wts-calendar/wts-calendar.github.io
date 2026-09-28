@@ -6,13 +6,60 @@ import { LicenseRequestForm } from './license-request-form';
 import { PremiumNavigation } from './premium-navigation';
 import { NotFoundPage } from './not-found-page';
 import content from './premium-feature-data.json';
-import { premiumScreenshot } from './premium-screenshots';
 import { CodeCard } from './code-card';
 import integrations from './premium-integration-data.json';
 import { PremiumLiveDemo } from './premium-live-demo';
 
+function compactIntegrationCode(source: string): string {
+  const usesCalendar = source.includes('new WtsCalendar({');
+  let code = source
+    .replace(
+      "import { WtsCalendar, connectCalendarLicense } from '@wts-calendar/core';",
+      "import { WtsCalendar } from '@wts-calendar/core';",
+    )
+    .replace("import { connectCalendarLicense } from '@wts-calendar/core';\n", '')
+    .replace(
+      /const license = await connectCalendarLicense\(\{ licenseKey: 'YOUR_WTS_LICENSE_KEY' \}\);\n?/,
+      '',
+    )
+    .replace("const container = document.querySelector<HTMLElement>('#calendar');\n", '')
+    .replace(/if \(!container\) throw new Error\('Calendar container not found'\);\n?/, '')
+    .replace(/\n?await calendar\.whenIdle\(\);\n?/, '\n')
+    .replace(
+      /\n\/\/ Call from your component's unmount\/destroy hook\.\nexport function dispose\(\) \{\n  calendar\.destroy\(\);\n  license\.destroy\(\);\n\}\s*$/,
+      '',
+    )
+    .replace(
+      /\nexport function dispose\(\) \{\n  calendar\.destroy\(\);\n  license\.destroy\(\);\n\}\s*$/,
+      '',
+    );
+
+  if (usesCalendar) {
+    code = code
+      .replace('const calendar = new WtsCalendar({\n', 'const calendar = new WtsCalendar({\n  ...premiumCalendarOptions,\n')
+      .replace(/^  container,\n/gm, '')
+      .replace(/^  license,\n/gm, '')
+      .replace(/^  viewDate: .*\n/gm, '')
+      .replace(/^  timeZone: .*\n/gm, '')
+      .replace(/^  startOfWeek: .*\n/gm, '')
+      .replace(/^  height: .*\n/gm, '')
+      .replace(/^  headerToolbar: \{ start: .*\n/gm, '');
+  } else {
+    code = code
+      .replace(/^  license,\n/gm, '  license: premiumLicense,\n')
+      .replace(/\{ license \}/g, '{ license: premiumLicense }');
+  }
+
+  return code.replace(/\n{3,}/g, '\n\n').trim();
+}
+
 const guides = new Map(content.map((guide) => [guide.id, guide]));
-const examples = new Map(integrations.map((example) => [example.id, example]));
+const examples = new Map(
+  integrations.map((example) => [
+    example.id,
+    { ...example, code: compactIntegrationCode(example.code) },
+  ]),
+);
 
 @Component({
   selector: 'app-premium-feature-page',
@@ -43,9 +90,6 @@ const examples = new Map(integrations.map((example) => [example.id, example]));
           <app-premium-live-demo
             [featureId]="page.feature.id"
             [title]="page.feature.title"
-            [screenshotFile]="page.screenshot.file"
-            [screenshotWidth]="page.screenshot.width"
-            [screenshotHeight]="page.screenshot.height"
           />
           <nav class="premium-section-links" aria-label="On this page">
             <a [routerLink]="[]" fragment="configuration">Configuration</a>
@@ -74,42 +118,17 @@ const examples = new Map(integrations.map((example) => [example.id, example]));
             class="premium-doc-section"
             aria-labelledby="integration-heading"
           >
-            <h2 id="integration-heading">Integration code example</h2>
-            <ol>
-              @for (step of page.guide.steps; track step) {
-                <li>{{ step }}</li>
-              }
-            </ol>
+            <h2 id="integration-heading">Essential integration</h2>
             <p class="premium-integration-note">
-              Copy this TypeScript into your application, not the browser console. Replace
-              YOUR_WTS_LICENSE_KEY with a deployment key authorized for your origin. The key enables
-              the complete Premium bundle. Google, Microsoft, and CalDAV credentials are configured
-              separately by your application.
+              This assumes the shared <a routerLink="/docs">Quick start</a> already provides
+              <code>premiumLicense</code> and, for UI views,
+              <code>premiumCalendarOptions</code>. Only the feature-specific setup is shown.
             </p>
             <app-code-card
-              label="Install command"
-              kind="premium-install"
-              [code]="page.integration.install"
-            />
-            @if (page.integration.markup; as markup) {
-              <app-code-card label="Host markup" kind="premium-markup" [code]="markup" />
-            }
-            @if (page.integration.stylesheet; as stylesheet) {
-              <app-code-card label="Global CSS / SCSS" kind="premium-styles" [code]="stylesheet" />
-            }
-            <app-code-card
-              label="TypeScript integration"
+              label="Feature-specific TypeScript"
               kind="premium-integration"
               [code]="page.integration.code"
             />
-            <h3>Application responsibilities</h3>
-            <p class="premium-integration-note">
-              Reuse one verified session where appropriate, then call <code>license.destroy()</code>
-              after every consumer using that session has been disposed.
-            </p>
-            @for (note of page.integration.notes; track note) {
-              <p class="premium-integration-note">{{ note }}</p>
-            }
           </section>
           <section id="behavior" class="premium-doc-section" aria-labelledby="behavior-heading">
             <h2 id="behavior-heading">Behavior and lifecycle</h2>
@@ -194,7 +213,7 @@ export class PremiumFeaturePage {
     const guide = feature && guides.get(feature.id);
     const integration = feature && examples.get(feature.id);
     return feature && guide && integration
-      ? { feature, guide, integration, screenshot: premiumScreenshot(feature.id) }
+      ? { feature, guide, integration }
       : null;
   });
 }

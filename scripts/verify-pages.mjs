@@ -70,11 +70,10 @@ for (const file of indexFiles()) {
       article.querySelector('app-premium-live-demo'),
       'Missing live Premium demo host: ' + route,
     );
-    assert.equal(
-      article.querySelector('.premium-feature-figure img')?.getAttribute('src'),
-      'previews/premium/' + id + '.jpg',
+    assert.ok(
+      !article.querySelector('app-premium-live-demo img,app-premium-live-demo iframe'),
+      'Premium guides must mount the package directly without image or frame fallbacks: ' + route,
     );
-    assert.ok(article.querySelector('.premium-feature-figure img')?.getAttribute('alt'));
     for (const section of ['configuration', 'integration', 'behavior', 'boundaries', 'licensing'])
       assert.ok(
         article.querySelector('#' + section)?.textContent.trim().length > 60,
@@ -85,10 +84,10 @@ for (const file of indexFiles()) {
       'Premium runtime must remain client-only and credential forms are forbidden: ' + route,
     );
     assert.ok(
-      article
+      !article
         .querySelector('#integration pre[data-code-kind="premium-integration"] code')
         ?.textContent.includes('YOUR_WTS_LICENSE_KEY'),
-      'Missing static integration code: ' + route,
+      'Feature examples must reuse the shared license bootstrap: ' + route,
     );
     assert.ok(
       article.querySelector('#integration button.copy-code-button'),

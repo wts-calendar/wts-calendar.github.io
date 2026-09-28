@@ -1151,6 +1151,9 @@ tbody th {
   gap: 48px;
   padding-top: 36px;
 }
+.docs-main {
+  min-width: 0;
+}
 .docs-main h2 {
   font-size: 25px;
   margin: 40px 0 22px;
@@ -3174,7 +3177,7 @@ app-calendar-demo {
   .premium-banner,
   .pricing-grid,
   .docs-layout {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
   .view-cards {
     gap: 18px;

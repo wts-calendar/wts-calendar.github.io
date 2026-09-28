@@ -5,7 +5,7 @@ A feature directory, interactive examples, framework setup guides, and pricing f
 ## Appearance documentation
 
 `/docs/appearance` documents the published MUI, shadcn/ui and Angular Material
-adapters, `dayNarrowWidth`, and `eventContrastColor` in core 1.1.5. The
+adapters, `dayNarrowWidth`, and `eventContrastColor` in core 1.1.6. The
 searchable API and live configuration panel are generated from that installed
 release.
 
@@ -88,27 +88,27 @@ are linked to a source-generated, searchable API reference.
 
 ### Premium presentation
 
-Every Premium capability has its **own real package demo, package-generated screenshot fallback,
-and documentation page**.
+Every Premium capability has its **own real package demo and documentation page**.
 Feature cards and Premium sidebar links open that guide, not the pricing page.
-Native UI screenshots show the actual package rendering with sample data. API-only
-features show real return values in clearly labeled, application-owned capture
-tables—not invented built-in product screens. Provider adapters run against local
-test responses; neither live demos nor screenshots imply a live provider connection.
-Each guide documents configuration, integration steps, behavior, limits, its module,
-and local capability ID, with a direct Premium request form. Every guide includes a
-copyable TypeScript integration example with an install command, host markup where
-needed, and application responsibilities. The code cards remain inert documentation strings, while
-a sandboxed, lazy-loaded frame runs the installed Premium package against deterministic sample
-data. There are no license-token fields or provider credential forms.
+UI features render the installed package with deterministic sample data. API-only
+features show real return values in clearly labeled, application-owned tables—not
+invented built-in product screens. Provider adapters run against local test responses;
+the live demos do not imply a live provider connection. Each guide documents
+configuration, behavior, limits, its module, and local capability ID, with a direct
+Premium request form. Every guide includes one concise, feature-specific TypeScript
+example and links to the shared Quick Start for installation, licensing, and lifecycle
+setup. The code cards remain inert documentation strings, while
+the installed Premium package mounts its examples directly in each guide. There are no
+license-token fields or provider credential forms.
 
 The deployment workflow supplies `WTS_CALENDAR_DEMO_LICENSE_KEY` from a GitHub Actions secret of
 the same name. This is a browser-visible deployment credential, not an admin/server secret; the
 licensing backend must restrict it to `@wts-calendar/core` and the approved portal/localhost
 origins. Static prerendering never requires the key. If configuration or verification fails, the
-verified screenshot remains visible. `scripts/prepare-premium-runtime.mjs` generates the sandboxed
-runtime from the installed package during builds, so the live examples and documentation cannot
-silently drift to different package versions.
+guide shows a compact failure message and keeps the integration instructions available.
+`scripts/prepare-premium-runtime.mjs` generates the browser runtime from the installed package
+during builds, so the live examples and documentation cannot silently drift to different package
+versions.
 
 The [integration examples](src/app/premium-integration-data.json) use a placeholder
 deployment key and runtime credential callbacks. The showcase check type-checks all
@@ -193,7 +193,7 @@ JavaScript, Angular, React, and Vue targets use the same current configuration,
 with their actual wrapper lifecycle and ref/controller APIs. The React Native
 target maps supported options to the native renderer; it explicitly marks
 unsupported browser layouts/features and mount-only settings instead of copying
-DOM APIs. Native examples use core/native 1.1.5 and the published React Native
+DOM APIs. Native examples use core/native 1.1.6 and the published React Native
 1.1.0 wrapper; the browser portal uses the same core release.
 Setup snippets contain the original sample events, not in-session event edits.
 **Reset options** restores the example defaults without replacing its calendar,
@@ -203,7 +203,7 @@ leave the code available for manual selection and copying.
 The published core's explicit `dayView.hourSegment` and `weekView.hourSegment`
 take precedence over `slotDuration`; the control updates all three public options
 together. List time formatting uses `listView.eventTimeFormat`. Native toolbar
-navigation and view switching use core 1.1.5 directly, including after runtime
+navigation and view switching use core 1.1.6 directly, including after runtime
 option changes. The old toolbar-click/order workaround has been removed.
 The dependency is installed from npm; no local build or package patch is used.
 Customized toolbar titles and buttons use the package's theme tokens, including
@@ -331,7 +331,7 @@ output directory. Do not overwrite it when preparing hosting artifacts.
 
 ## Packages and licensing
 
-This app pins the published `@wts-calendar/core@1.1.5`
+This app pins the published `@wts-calendar/core@1.1.6`
 and `@wts-calendar/angular@1.0.1` releases. Standard capabilities are MIT; Premium features
 use package-wide backend authorization. This site showcases WTS Calendar.
 The core dependency is pinned explicitly to the registry's `latest` tag release.

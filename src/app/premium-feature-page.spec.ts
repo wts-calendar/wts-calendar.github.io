@@ -5,7 +5,6 @@ import { describe, expect, it } from 'vitest';
 import { routes } from './app.config';
 import { PREMIUM_CONTACT_EMAIL, PREMIUM_FEATURES } from './site-data';
 import premiumContent from './premium-feature-data.json';
-import { premiumScreenshot } from './premium-screenshots';
 import integrations from './premium-integration-data.json';
 
 describe('Premium feature documentation', () => {
@@ -21,18 +20,10 @@ describe('Premium feature documentation', () => {
       expect(article.querySelector('h1')?.textContent).toBe(feature.title);
       expect(article.querySelector('.badge.premium')?.textContent).toBe('Premium');
       expect(article.querySelector('app-premium-live-demo')).toBeTruthy();
-      expect(article.querySelector('img')?.getAttribute('src')).toBe(
-        'previews/premium/' + feature.id + '.jpg',
-      );
+      expect(article.querySelector('app-premium-live-demo img')).toBeNull();
       expect(article.querySelector('figcaption')).toBeNull();
-      expect(article.querySelector('img')?.getAttribute('width')).toBe(
-        String(premiumScreenshot(feature.id).width),
-      );
-      expect(article.querySelector('img')?.getAttribute('height')).toBe(
-        String(premiumScreenshot(feature.id).height),
-      );
       expect(article.querySelectorAll('#configuration dt').length).toBe(guide.configuration.length);
-      expect(article.querySelectorAll('#integration li').length).toBe(guide.steps.length);
+      expect(article.querySelectorAll('#integration li').length).toBe(0);
       expect(article.querySelectorAll('#behavior li').length).toBe(guide.behavior.length);
       expect(article.querySelectorAll('#boundaries li').length).toBe(guide.limits.length);
       expect(article.textContent).toContain('@wts-calendar/core/' + guide.module);
@@ -43,23 +34,25 @@ describe('Premium feature documentation', () => {
       ).toContain('Request a license');
       expect(article.textContent).not.toContain(PREMIUM_CONTACT_EMAIL);
       expect(article.querySelector('input,form,wts-calendar-angular,.wts-calender')).toBeNull();
-      expect(article.querySelector('app-premium-live-demo iframe')?.getAttribute('src')).toContain(
-        'premium-runtime/demo.html?feature=' + feature.id,
-      );
+      expect(article.querySelector('app-premium-live-demo iframe')).toBeNull();
+      expect(article.querySelector('.premium-demo-host')).toBeTruthy();
       const integration = integrations.find((item) => item.id === feature.id)!;
       expect(
         article.querySelector('[data-code-kind="premium-integration"] code')?.textContent,
-      ).toBe(integration.code);
-      expect(article.querySelector('[data-code-kind="premium-install"] code')?.textContent).toBe(
-        integration.install,
+      ).not.toContain('connectCalendarLicense');
+      expect(article.querySelector('[data-code-kind="premium-install"]')).toBeNull();
+      expect(article.querySelector('[data-code-kind="premium-markup"]')).toBeNull();
+      expect(article.querySelector('[data-code-kind="premium-styles"]')).toBeNull();
+      expect(article.querySelectorAll('#integration .copy-code-button').length).toBe(1);
+      expect(article.querySelector('#integration')?.textContent).not.toContain(
+        'YOUR_WTS_LICENSE_KEY',
       );
-      expect(article.querySelectorAll('#integration .copy-code-button').length).toBe(
-        integration.markup ? 4 : 2,
-      );
-      expect(article.querySelector('#integration')?.textContent).toContain('YOUR_WTS_LICENSE_KEY');
       expect(article.querySelector('#integration')?.textContent).toContain(
-        'credentials are configured separately',
+        'Only the feature-specific setup is shown',
       );
+      expect(
+        article.querySelector('[data-code-kind="premium-integration"] code')?.textContent.length,
+      ).toBeLessThan(integration.code.length);
       expect(article.querySelector('.premium-live-demo-header')).toBeNull();
       expect(article.querySelector('.premium-demo-note')).toBeNull();
       expect(article.querySelector('a[href="/pricing"]')).toBeNull();
@@ -70,7 +63,7 @@ describe('Premium feature documentation', () => {
       );
     });
   }
-  it('updates the guide, screenshot, and provenance when navigating between Premium features', async () => {
+  it('updates the guide and live demo when navigating between Premium features', async () => {
     TestBed.configureTestingModule({ providers: [provideRouter(routes)] });
     const harness = await RouterTestingHarness.create();
     await harness.navigateByUrl('/premium/resource-grid');
@@ -80,9 +73,7 @@ describe('Premium feature documentation', () => {
     expect(harness.routeNativeElement?.querySelector('h1')?.textContent).toBe(
       'Immutable audit history',
     );
-    expect(harness.routeNativeElement?.querySelector('img')?.getAttribute('src')).toContain(
-      'immutable-audit-history.jpg',
-    );
+    expect(harness.routeNativeElement?.querySelector('app-premium-live-demo img')).toBeNull();
     const code = harness.routeNativeElement?.querySelector(
       '[data-code-kind="premium-integration"] code',
     )?.textContent;
