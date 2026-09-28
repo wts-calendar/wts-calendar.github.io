@@ -56,7 +56,7 @@ assert.ok(
 assert.match(
   read('src/app/premium-feature-page.ts'),
   /app-premium-live-demo/,
-  'Premium guides must enhance their verified screenshots with a live package demo',
+  'Premium guides must mount a live package demo',
 );
 assert.match(
   read('scripts/prepare-premium-runtime.mjs'),
