@@ -88,18 +88,27 @@ are linked to a source-generated, searchable API reference.
 
 ### Premium presentation
 
-Every Premium capability has its **own package-generated screenshot and documentation page**.
+Every Premium capability has its **own real package demo, package-generated screenshot fallback,
+and documentation page**.
 Feature cards and Premium sidebar links open that guide, not the pricing page.
 Native UI screenshots show the actual package rendering with sample data. API-only
 features show real return values in clearly labeled, application-owned capture
 tables—not invented built-in product screens. Provider adapters run against local
-test responses; screenshots do not imply a live provider connection.
+test responses; neither live demos nor screenshots imply a live provider connection.
 Each guide documents configuration, integration steps, behavior, limits, its module,
 and local capability ID, with a direct Premium request form. Every guide includes a
 copyable TypeScript integration example with an install command, host markup where
-needed, and application responsibilities. These are inert documentation strings:
-there are no live premium examples, license-token fields, or provider credential
-forms. Optional premium modules are not imported or executed by the app.
+needed, and application responsibilities. The code cards remain inert documentation strings, while
+a sandboxed, lazy-loaded frame runs the installed Premium package against deterministic sample
+data. There are no license-token fields or provider credential forms.
+
+The deployment workflow supplies `WTS_CALENDAR_DEMO_LICENSE_KEY` from a GitHub Actions secret of
+the same name. This is a browser-visible deployment credential, not an admin/server secret; the
+licensing backend must restrict it to `@wts-calendar/core` and the approved portal/localhost
+origins. Static prerendering never requires the key. If configuration or verification fails, the
+verified screenshot remains visible. `scripts/prepare-premium-runtime.mjs` generates the sandboxed
+runtime from the installed package during builds, so the live examples and documentation cannot
+silently drift to different package versions.
 
 The [integration examples](src/app/premium-integration-data.json) use a placeholder
 deployment key and runtime credential callbacks. The showcase check type-checks all
@@ -246,13 +255,15 @@ The production build retains the existing Angular bundle budgets.
 ## Clean URLs and SEO
 
 Angular uses its default path routing, without a hash prefix. Build-time prerendering
-creates HTML for all 62 public pages, including 31 Premium guides, so direct links and refreshes work on static
-hosting and crawlers receive real page content. Interactive calendars initialize
+creates HTML for every public page, including the scheduling-library landing page and 31 Premium
+guides, so direct links and refreshes work on static hosting and crawlers receive real page
+content. Interactive calendars initialize
 only in the browser; no Node.js server or application backend is deployed.
 
 Each page has a distinct title and description, one branded canonical URL,
 Open Graph and Twitter cards, and factual JSON-LD website/page/breadcrumb data.
-The build produces a sitemap, robots.txt, a 1200×630 social preview, a real 404 page
+The build produces a sitemap with maintained modification dates for substantially updated pages,
+robots.txt, a 1200×630 social preview, a real 404 page
 with noindex, and redirects for the five legacy example paths. Query-string variants
 share the canonical page. Old `#/docs` and other hash bookmarks redirect safely to
 their clean paths before Angular hydration. Ordinary section anchors are preserved.

@@ -10,6 +10,10 @@ export const routes: Routes = [
   },
   { path: 'features', loadComponent: () => import('./features-page').then((m) => m.FeaturesPage) },
   {
+    path: 'scheduling-calendar',
+    loadComponent: () => import('./scheduling-calendar-page').then((m) => m.SchedulingCalendarPage),
+  },
+  {
     path: 'premium/:id',
     loadComponent: () => import('./premium-feature-page').then((m) => m.PremiumFeaturePage),
   },

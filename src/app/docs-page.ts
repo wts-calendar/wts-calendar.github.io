@@ -26,6 +26,7 @@ import {
           <a routerLink="/docs" fragment="next-steps">Add editing & views</a>
           <a routerLink="/docs" fragment="troubleshooting">Troubleshooting</a>
           <a routerLink="/docs" fragment="backend">Optional backend</a>
+          <a routerLink="/scheduling-calendar">Scheduling calendar overview</a>
           <a routerLink="/docs/booking">Booking & available slots</a>
           <a routerLink="/docs/appearance">Themes & appearance</a>
         </nav>

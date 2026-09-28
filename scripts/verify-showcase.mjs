@@ -53,6 +53,21 @@ assert.ok(
   ),
   'Premium dynamic import in showcase',
 );
+assert.match(
+  read('src/app/premium-feature-page.ts'),
+  /app-premium-live-demo/,
+  'Premium guides must enhance their verified screenshots with a live package demo',
+);
+assert.match(
+  read('scripts/prepare-premium-runtime.mjs'),
+  /WTS_CALENDAR_DEMO_LICENSE_KEY/,
+  'Premium demos must receive their origin-restricted deployment key at build time',
+);
+assert.doesNotMatch(
+  read('scripts/prepare-premium-runtime.mjs'),
+  /licenseKey:\s*['"][^'"]+['"]/,
+  'Do not commit a Premium deployment key',
+);
 assert.ok(
   !/issues\/new/.test(
     read('src/app/site-data.ts') +
@@ -100,5 +115,5 @@ console.log(
     docs.length +
     ' local guide targets, ' +
     premium.length +
-    ' Premium guides, safe static previews, standard-only runtime modules, private request-form contact.',
+    ' Premium guides, safe static fallbacks, sandboxed live demos, private request-form contact.',
 );

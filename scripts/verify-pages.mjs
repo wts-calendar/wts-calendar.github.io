@@ -66,6 +66,10 @@ for (const file of indexFiles()) {
     premiumPages.add(id);
     const article = document.querySelector('[data-premium-feature="' + id + '"]');
     assert.ok(article, 'Missing feature-specific guide: ' + route);
+    assert.ok(
+      article.querySelector('app-premium-live-demo'),
+      'Missing live Premium demo host: ' + route,
+    );
     assert.equal(
       article.querySelector('.premium-feature-figure img')?.getAttribute('src'),
       'previews/premium/' + id + '.jpg',
@@ -77,8 +81,8 @@ for (const file of indexFiles()) {
         'Empty Premium section: ' + route + '#' + section,
       );
     assert.ok(
-      !article.querySelector('wts-calendar-angular,.wts-calender,input,form'),
-      'Premium runtime or credential form: ' + route,
+      !article.querySelector('wts-calendar-angular,.wts-calender,input,form,iframe'),
+      'Premium runtime must remain client-only and credential forms are forbidden: ' + route,
     );
     assert.ok(
       article
@@ -105,7 +109,9 @@ for (const file of indexFiles()) {
   }
   if (route === 'docs/appearance') {
     assert.ok(
-      (document.querySelector('main')?.textContent ?? '').includes(`Available in core ${coreVersion}`),
+      (document.querySelector('main')?.textContent ?? '').includes(
+        `Available in core ${coreVersion}`,
+      ),
       'Appearance guide must show the installed core version.',
     );
     for (const id of ['contrast', 'narrow', 'mui', 'shadcn', 'angular-material']) {
@@ -182,6 +188,17 @@ const locations = [...sitemap.window.document.querySelectorAll('loc')].map(
 );
 assert.deepEqual(new Set(locations), canonicals, 'Sitemap does not match canonical pages');
 assert.equal(locations.length, canonicals.size, 'Duplicate sitemap entries');
+for (const entry of sitemap.window.document.querySelectorAll('url')) {
+  const route = new URL(entry.querySelector('loc').textContent).pathname;
+  const lastModified = entry.querySelector('lastmod')?.textContent;
+  if (lastModified) assert.match(lastModified, /^\d{4}-\d{2}-\d{2}$/, 'Invalid lastmod: ' + route);
+}
+for (const route of ['/', '/features/', '/docs/', '/docs/booking/', '/scheduling-calendar/']) {
+  const entry = [...sitemap.window.document.querySelectorAll('url')].find(
+    (item) => new URL(item.querySelector('loc').textContent).pathname === route,
+  );
+  assert.ok(entry?.querySelector('lastmod'), 'Missing maintained lastmod: ' + route);
+}
 sitemap.window.close();
 assert.match(
   readFileSync(join(directory, 'robots.txt'), 'utf8'),

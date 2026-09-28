@@ -43,7 +43,7 @@ describe('Clean URL routing', () => {
 
 describe('Portal SEO', () => {
   it('gives every public page distinct metadata', () => {
-    expect(SEO_PAGES.length).toBe(DEMOS.length + PREMIUM_FEATURES.length + 12);
+    expect(SEO_PAGES.length).toBe(DEMOS.length + PREMIUM_FEATURES.length + 13);
     expect(new Set(SEO_PAGES.map((page) => page.path)).size).toBe(SEO_PAGES.length);
     expect(new Set(SEO_PAGES.map((page) => page.title)).size).toBe(SEO_PAGES.length);
     expect(new Set(SEO_PAGES.map((page) => page.description)).size).toBe(SEO_PAGES.length);
@@ -60,6 +60,14 @@ describe('Portal SEO', () => {
     expect(page.schemaType).toBe('TechArticle');
     expect(page.topics).toContain('React booking calendar');
     expect(JSON.stringify(structuredData(page))).toContain('available-slot calculation');
+  });
+  it('targets scheduling-library intent with maintained freshness metadata', () => {
+    const page = seoForUrl('/scheduling-calendar');
+    expect(page.noindex).not.toBe(true);
+    expect(page.schemaType).toBe('TechArticle');
+    expect(page.lastModified).toBe('2026-09-28');
+    expect(page.topics).toContain('JavaScript scheduling calendar library');
+    expect(JSON.stringify(structuredData(page))).toContain('dateModified');
   });
   it('normalizes canonical paths and excludes query variants', () => {
     expect(seoForUrl('/docs').path).toBe('/docs/');
@@ -94,6 +102,13 @@ describe('Portal SEO', () => {
     expect(document.head.querySelector('meta[property="og:url"]')?.getAttribute('content')).toBe(
       SITE_ORIGIN + '/docs/',
     );
+    expect(
+      document.head
+        .querySelector('meta[property="article:modified_time"]')
+        ?.getAttribute('content'),
+    ).toBe('2026-09-28');
+    seo.update('/pricing');
+    expect(document.head.querySelector('meta[property="article:modified_time"]')).toBeNull();
     seo.update('/missing');
     expect(document.head.querySelector('meta[name="robots"]')?.getAttribute('content')).toContain(
       'noindex',

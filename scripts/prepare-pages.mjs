@@ -11,7 +11,7 @@ import {
   siteOrigin,
 } from './pages-lib.mjs';
 
-const urls = new Set();
+const urls = new Map();
 let redirects = 0;
 for (const file of indexFiles()) {
   const dom = parse(file);
@@ -53,7 +53,10 @@ for (const file of indexFiles()) {
     const canonical = document.querySelector('link[rel="canonical"]')?.href;
     assert.ok(canonical?.startsWith(siteOrigin + '/'), 'Missing branded canonical: ' + file);
     if (!document.querySelector('meta[name="robots"]')?.content.includes('noindex'))
-      urls.add(canonical);
+      urls.set(
+        canonical,
+        document.querySelector('meta[property="article:modified_time"]')?.content ?? null,
+      );
   }
   dom.window.close();
 }
@@ -63,8 +66,15 @@ writeFileSync(
   '<?xml version="1.0" encoding="UTF-8"?>\n' +
     '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
     [...urls]
-      .sort()
-      .map((url) => '  <url><loc>' + escapeHtml(url) + '</loc></url>')
+      .sort(([left], [right]) => left.localeCompare(right))
+      .map(
+        ([url, lastModified]) =>
+          '  <url><loc>' +
+          escapeHtml(url) +
+          '</loc>' +
+          (lastModified ? '<lastmod>' + escapeHtml(lastModified) + '</lastmod>' : '') +
+          '</url>',
+      )
       .join('\n') +
     '\n</urlset>\n',
 );

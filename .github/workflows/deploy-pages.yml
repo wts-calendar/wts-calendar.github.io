@@ -35,6 +35,10 @@ jobs:
       - name: Test calendar and routing
         run: npm test -- --watch=false
       - name: Build and verify prerendered SEO pages
+        env:
+          # This is a browser-visible deployment credential, restricted by the licensing backend
+          # to @wts-calendar/core and the approved portal/localhost origins. It is not an admin key.
+          WTS_CALENDAR_DEMO_LICENSE_KEY: ${{ secrets.WTS_CALENDAR_DEMO_LICENSE_KEY }}
         run: npm run build:pages:org
       - name: Upload static website
         if: github.event_name != 'pull_request' && github.ref == 'refs/heads/wts/source'

@@ -46,6 +46,11 @@ export class SeoService {
     } else {
       this.meta.removeTag('property="article:section"');
     }
+    if (page.lastModified) {
+      this.meta.updateTag({ property: 'article:modified_time', content: page.lastModified });
+    } else {
+      this.meta.removeTag('property="article:modified_time"');
+    }
     for (const [name, content] of Object.entries({
       'twitter:card': 'summary_large_image',
       'twitter:title': page.title,

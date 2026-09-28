@@ -2,10 +2,10 @@
   "name": "wts-calendar-angular-example",
   "version": "0.0.0",
   "scripts": {
-    "prestart": "node scripts/prepare-starters.mjs",
-    "prebuild": "node scripts/prepare-starters.mjs",
-    "prebuild:pages": "node scripts/prepare-starters.mjs",
-    "prebuild:pages:org": "node scripts/prepare-starters.mjs",
+    "prestart": "node scripts/prepare-starters.mjs && node scripts/prepare-premium-runtime.mjs",
+    "prebuild": "node scripts/prepare-starters.mjs && node scripts/prepare-premium-runtime.mjs",
+    "prebuild:pages": "node scripts/prepare-starters.mjs && node scripts/prepare-premium-runtime.mjs",
+    "prebuild:pages:org": "node scripts/prepare-starters.mjs && node scripts/prepare-premium-runtime.mjs",
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
@@ -32,6 +32,8 @@
     "@angular/ssr": "22.1.7",
     "@wts-calendar/angular": "1.0.1",
     "@wts-calendar/core": "1.1.5",
+    "luxon": "^3.7.2",
+    "moment": "^2.30.1",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"
   },

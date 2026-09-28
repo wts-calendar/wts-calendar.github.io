@@ -18,6 +18,10 @@ import { premiumScreenshot } from './premium-screenshots';
           →</a
         >
       </p>
+      <p>
+        Building appointments or resource allocation?
+        <a routerLink="/scheduling-calendar">See the embedded scheduling calendar guide →</a>
+      </p>
     </section>
     <section class="container catalogue" aria-label="Feature catalogue">
       <div class="filter-bar">

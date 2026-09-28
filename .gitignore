@@ -44,3 +44,7 @@ __screenshots__/
 Thumbs.db
 # Generated from src/app/quick-starts.ts during builds.
 /public/starters/*.tar.gz
+# Generated from the installed package during builds. The config can contain a browser-visible
+# deployment key and must never be committed.
+/public/premium-runtime/
+/public/premium-demo-config.json

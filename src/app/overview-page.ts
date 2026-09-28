@@ -18,6 +18,11 @@ import { DEMOS } from './site-data';
           <a routerLink="/docs" fragment="quickstart" class="button primary">Install and render</a
           ><a routerLink="/examples/event-editor" class="button">Open interactive example</a>
         </div>
+        <p>
+          <a routerLink="/scheduling-calendar" class="text-link"
+            >Explore the JavaScript scheduling calendar library →</a
+          >
+        </p>
         <div class="install-line">
           <span aria-hidden="true">$</span><code>npm install &#64;wts-calendar/core</code>
         </div>
@@ -106,6 +111,8 @@ import { DEMOS } from './site-data';
               hosted backend.
             </p>
             <a routerLink="/examples/event-sources">Event source examples</a>
+            <span aria-hidden="true"> · </span>
+            <a routerLink="/scheduling-calendar">Scheduling calendar guide</a>
           </article>
           <article>
             <span class="benefit-number">03 / CUSTOMIZE</span>

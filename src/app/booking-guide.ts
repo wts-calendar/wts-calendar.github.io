@@ -117,6 +117,10 @@ await bookings.cancel(pending.id, 'Customer requested cancellation');`;
     <article class="container booking-guide">
       <a routerLink="/docs">← Documentation</a>
       <h1>Booking and available-slot integration</h1>
+      <p>
+        New to the package? Start with the
+        <a routerLink="/scheduling-calendar">JavaScript scheduling calendar overview</a>.
+      </p>
       <p class="notice" role="note">
         <strong>Premium, headless, and backend-neutral.</strong>
         The availability calculator and booking scheduler provide policy and workflow APIs. Your
@@ -134,10 +138,11 @@ await bookings.cancel(pending.id, 'Customer requested cancellation');`;
       <section id="architecture">
         <h2>Keep rendering and availability queries bounded</h2>
         <p>
-          The rendered calendar should load only its visible date range. A booking form may search
-          a different bounded range and pass those busy events to <code>calculateAvailableSlots()</code>.
-          The calculator intentionally performs no HTTP request: endpoint paths, authorization,
-          headers, tenant rules, and response mapping belong to the consuming application.
+          The rendered calendar should load only its visible date range. A booking form may search a
+          different bounded range and pass those busy events to
+          <code>calculateAvailableSlots()</code>. The calculator intentionally performs no HTTP
+          request: endpoint paths, authorization, headers, tenant rules, and response mapping belong
+          to the consuming application.
         </p>
         <p>
           Do not download a full year of high-volume bookings just to render one month. Request the
@@ -151,9 +156,9 @@ await bookings.cancel(pending.id, 'Customer requested cancellation');`;
         <h2>Fetch busy events, then calculate slots</h2>
         <app-code-card label="Server-backed available slots" [code]="rangeLoading" />
         <p>
-          Slot results include calendar-zone ISO values, optional customer-zone values, the
-          selected duration, resource ID, and remaining capacity. Existing event times are not
-          changed when buffers are applied.
+          Slot results include calendar-zone ISO values, optional customer-zone values, the selected
+          duration, resource ID, and remaining capacity. Existing event times are not changed when
+          buffers are applied.
         </p>
         <ul>
           <li>Configurable default, allowed, minimum, maximum, and increment durations</li>
@@ -202,8 +207,8 @@ await bookings.cancel(pending.id, 'Customer requested cancellation');`;
         </p>
         <p>
           Separate browsers are not made atomic by client-side calculation. The backend must repeat
-          the time, resource, and capacity check inside a transaction or equivalent atomic write.
-          A rejected server commit leaves the scheduler's previous local state intact.
+          the time, resource, and capacity check inside a transaction or equivalent atomic write. A
+          rejected server commit leaves the scheduler's previous local state intact.
         </p>
       </section>
 

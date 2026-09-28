@@ -15,6 +15,8 @@ export interface PageSeo {
   topics?: readonly string[];
   /** Documentation guides can identify themselves as technical articles. */
   schemaType?: 'WebPage' | 'TechArticle';
+  /** ISO date for a substantial content update; omitted when it cannot be maintained accurately. */
+  lastModified?: string;
   noindex?: boolean;
 }
 
@@ -25,6 +27,7 @@ export const SEO_PAGES: readonly PageSeo[] = [
     title: 'WTS Calendar | JavaScript Calendar & Framework Integrations',
     description:
       'Build interactive calendars with WTS Calendar. Explore Angular, React, Vue, React Native, PHP, Laravel and ASP.NET Core integrations, live examples, and Premium capabilities.',
+    lastModified: '2026-09-28',
   },
   {
     path: '/features/',
@@ -32,6 +35,24 @@ export const SEO_PAGES: readonly PageSeo[] = [
     title: 'Calendar Features & Scheduling Capabilities | WTS Calendar',
     description:
       'Explore WTS Calendar views, recurring events, editing, time zones and developer tools. Compare Standard capabilities with separately licensed Premium features.',
+    lastModified: '2026-09-28',
+  },
+  {
+    path: '/scheduling-calendar/',
+    label: 'JavaScript scheduling calendar',
+    title: 'JavaScript Scheduling Calendar Library | WTS Calendar',
+    description:
+      'Embed a TypeScript scheduling calendar in React, Angular, Vue or JavaScript applications with appointments, time zones, recurring events, booking workflows and resource planning.',
+    schemaType: 'TechArticle',
+    lastModified: '2026-09-28',
+    topics: [
+      'JavaScript scheduling calendar library',
+      'React scheduling calendar component',
+      'TypeScript calendar library',
+      'embedded appointment calendar',
+      'resource scheduling calendar',
+      'booking calendar API',
+    ],
   },
   {
     path: '/pricing/',
@@ -53,6 +74,7 @@ export const SEO_PAGES: readonly PageSeo[] = [
     title: 'Calendar Quickstart: React, Angular, Vue & JavaScript | WTS Calendar',
     description:
       'Build your first WTS Calendar with complete JavaScript, Angular, React, Vue, Web Component and React Native examples. Add editing, troubleshoot setup, and connect optional PHP or .NET APIs.',
+    lastModified: '2026-09-28',
   },
   {
     path: '/docs/api/',
@@ -75,6 +97,7 @@ export const SEO_PAGES: readonly PageSeo[] = [
     description:
       'Build a React or JavaScript booking calendar with available-slot calculation, booking buffers, customer time zones, round-robin staff assignment, capacity, approvals and headless APIs.',
     schemaType: 'TechArticle',
+    lastModified: '2026-09-28',
     topics: [
       'React booking calendar',
       'JavaScript scheduling calendar',
@@ -173,6 +196,7 @@ export function structuredData(page: PageSeo): Record<string, unknown> {
         name: page.title,
         ...(page.schemaType === 'TechArticle' ? { headline: page.title } : {}),
         description: page.description,
+        ...(page.lastModified ? { dateModified: page.lastModified } : {}),
         inLanguage: 'en',
         isPartOf: { '@id': SITE_ORIGIN + '/#website' },
         publisher: { '@id': SITE_ORIGIN + '/#organization' },

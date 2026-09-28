@@ -9,13 +9,21 @@ import content from './premium-feature-data.json';
 import { premiumScreenshot } from './premium-screenshots';
 import { CodeCard } from './code-card';
 import integrations from './premium-integration-data.json';
+import { PremiumLiveDemo } from './premium-live-demo';
 
 const guides = new Map(content.map((guide) => [guide.id, guide]));
 const examples = new Map(integrations.map((example) => [example.id, example]));
 
 @Component({
   selector: 'app-premium-feature-page',
-  imports: [RouterLink, PremiumNavigation, NotFoundPage, CodeCard, LicenseRequestForm],
+  imports: [
+    RouterLink,
+    PremiumNavigation,
+    NotFoundPage,
+    CodeCard,
+    LicenseRequestForm,
+    PremiumLiveDemo,
+  ],
   template: `
     @if (selected(); as page) {
       <div class="premium-document-layout container">
@@ -32,18 +40,14 @@ const examples = new Map(integrations.map((example) => [example.id, example]));
           <span class="badge premium">Premium</span>
           <h1>{{ page.feature.title }}</h1>
           <p class="premium-document-intro">{{ page.guide.overview }}</p>
-          <figure class="premium-feature-figure">
-            <img
-              [src]="'previews/premium/' + page.screenshot.file"
-              [alt]="page.feature.title + ' — ' + page.screenshot.caption"
-              [width]="page.screenshot.width"
-              [height]="page.screenshot.height"
-              fetchpriority="high"
-            />
-            <figcaption>
-              {{ page.screenshot.caption }}
-            </figcaption>
-          </figure>
+          <app-premium-live-demo
+            [featureId]="page.feature.id"
+            [title]="page.feature.title"
+            [screenshotFile]="page.screenshot.file"
+            [screenshotWidth]="page.screenshot.width"
+            [screenshotHeight]="page.screenshot.height"
+            [caption]="page.screenshot.caption"
+          />
           <nav class="premium-section-links" aria-label="On this page">
             <a [routerLink]="[]" fragment="configuration">Configuration</a>
             <a [routerLink]="[]" fragment="integration">Integration</a>
@@ -81,9 +85,10 @@ const examples = new Map(integrations.map((example) => [example.id, example]));
               Copy this TypeScript into your application, not the browser console. Replace
               YOUR_WTS_LICENSE_KEY with a deployment key authorized for your origin. A verified
               Calendar Premium key enables the package's complete Premium capability bundle; the
-              backend does not select individual Calendar features. A WTS
-              license is not a Google, Microsoft or CalDAV credential. These examples are
-              documentation only and never execute on this page.
+              backend does not select individual Calendar features. A WTS license is not a Google,
+              Microsoft or CalDAV credential. The live demo above executes the published package
+              with deterministic local sample data; provider examples use local test responses and
+              never request a visitor's provider credentials.
             </p>
             <app-code-card
               label="Install command"
@@ -174,7 +179,8 @@ const examples = new Map(integrations.map((example) => [example.id, example]));
             <a routerLink="/features" class="text-link">Browse all features →</a>
           </div>
           <p class="fine-print">
-            This public guide does not execute Premium modules or collect license tokens.
+            The live example uses a browser-visible deployment key restricted to this package and
+            approved origins. It does not collect license keys or visitor credentials.
           </p>
         </article>
       </div>

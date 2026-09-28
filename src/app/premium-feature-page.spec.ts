@@ -20,6 +20,7 @@ describe('Premium feature documentation', () => {
       expect(article).toBeTruthy();
       expect(article.querySelector('h1')?.textContent).toBe(feature.title);
       expect(article.querySelector('.badge.premium')?.textContent).toBe('Premium');
+      expect(article.querySelector('app-premium-live-demo')).toBeTruthy();
       expect(article.querySelector('img')?.getAttribute('src')).toBe(
         'previews/premium/' + feature.id + '.jpg',
       );
@@ -44,6 +45,9 @@ describe('Premium feature documentation', () => {
       ).toContain('Request a license');
       expect(article.textContent).not.toContain(PREMIUM_CONTACT_EMAIL);
       expect(article.querySelector('input,form,wts-calendar-angular,.wts-calender')).toBeNull();
+      expect(article.querySelector('app-premium-live-demo iframe')?.getAttribute('src')).toContain(
+        'premium-runtime/demo.html?feature=' + feature.id,
+      );
       const integration = integrations.find((item) => item.id === feature.id)!;
       expect(
         article.querySelector('[data-code-kind="premium-integration"] code')?.textContent,
@@ -56,7 +60,7 @@ describe('Premium feature documentation', () => {
       );
       expect(article.querySelector('#integration')?.textContent).toContain('YOUR_WTS_LICENSE_KEY');
       expect(article.querySelector('#integration')?.textContent).toContain(
-        'never execute on this page',
+        'live demo above executes the published package',
       );
       expect(article.querySelector('a[href="/pricing"]')).toBeNull();
       const selectedLink = root.querySelector('.premium-guide-navigation a[aria-current="page"]');
