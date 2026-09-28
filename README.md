@@ -5,7 +5,7 @@ A feature directory, interactive examples, framework setup guides, and pricing f
 ## Appearance documentation
 
 `/docs/appearance` documents the published MUI, shadcn/ui and Angular Material
-adapters, `dayNarrowWidth`, and `eventContrastColor` in core 1.1.4. The
+adapters, `dayNarrowWidth`, and `eventContrastColor` in core 1.1.5. The
 searchable API and live configuration panel are generated from that installed
 release.
 
@@ -184,7 +184,7 @@ JavaScript, Angular, React, and Vue targets use the same current configuration,
 with their actual wrapper lifecycle and ref/controller APIs. The React Native
 target maps supported options to the native renderer; it explicitly marks
 unsupported browser layouts/features and mount-only settings instead of copying
-DOM APIs. Native examples use core/native 1.1.4 and the published React Native
+DOM APIs. Native examples use core/native 1.1.5 and the published React Native
 1.1.0 wrapper; the browser portal uses the same core release.
 Setup snippets contain the original sample events, not in-session event edits.
 **Reset options** restores the example defaults without replacing its calendar,
@@ -194,7 +194,7 @@ leave the code available for manual selection and copying.
 The published core's explicit `dayView.hourSegment` and `weekView.hourSegment`
 take precedence over `slotDuration`; the control updates all three public options
 together. List time formatting uses `listView.eventTimeFormat`. Native toolbar
-navigation and view switching use core 1.1.4 directly, including after runtime
+navigation and view switching use core 1.1.5 directly, including after runtime
 option changes. The old toolbar-click/order workaround has been removed.
 The dependency is installed from npm; no local build or package patch is used.
 Customized toolbar titles and buttons use the package's theme tokens, including
@@ -320,9 +320,7 @@ output directory. Do not overwrite it when preparing hosting artifacts.
 
 ## Packages and licensing
 
-This app pins the published `@wts-calendar/core@1.1.4`
+This app pins the published `@wts-calendar/core@1.1.5`
 and `@wts-calendar/angular@1.0.1` releases. Standard capabilities are MIT; Premium features
 use package-wide backend authorization. This site showcases WTS Calendar.
-The core dependency is pinned explicitly while 1.1.4 is on npm's `next` tag;
-the registry's `latest` tag remains at 1.1.3 pending exact-version backend
-release-catalog and activation verification.
+The core dependency is pinned explicitly to the registry's `latest` tag release.

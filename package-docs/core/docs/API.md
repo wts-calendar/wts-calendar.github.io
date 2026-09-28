@@ -8,7 +8,7 @@ entry points are `.`, `native`, `time-grid`, `multi-month`, `list`, `interaction
 `resource-scheduling`, `advanced-resource-planning`, `repeated-tasks`,
 `premium-interoperability`, `enterprise-workflow`, `time-machine`,
 `time-machine-panel`, `developer-tools`, `testing`,
-`data-adapter-sdk`, `event-editor`, `plugin-sdk`, `web-component`, and
+`data-adapter-sdk`, `event-editor`, `availability-scheduling`, `plugin-sdk`, `web-component`, and
 `all`. The packed-artifact gate
 loads every entry through both ESM and CommonJS and verifies its declaration
 file.
@@ -55,6 +55,28 @@ and backend-neutral data clients. See [Developer tools](DEVELOPER-TOOLS.md),
 The free opt-in `event-editor` entry supplies an accessible transactional
 create/edit/duplicate/delete dialog or drawer. See
 [Accessible event editor](EVENT-EDITOR.md).
+
+The Premium `availability-scheduling` entry exports `calculateAvailableSlots`,
+`CalendarBookingScheduler`, their immutable appointment/slot contracts, and
+duration, assignment, form-hook, and lifecycle types. The standalone calculator accepts a
+default/allowed/minimum/maximum/increment duration policy, selected duration,
+search range, step, busy events, business hours, time zone, optional recurrence
+plugin, resource capacity and blackouts, event buffers, and minimum notice. It
+requires a backend-verified package-wide Premium session and returns immutable
+candidate records with `Date` values and calendar/customer-zone ISO strings.
+The headless scheduler adds serialized conflict checks, confirmation and
+approval states, reschedule/cancel operations, manual and round-robin staff
+selection, group capacity, booking-form hooks, and lifecycle callbacks. Neither
+API constructs or mutates a rendered calendar; see
+[Available-slot calculation](../README.md#available-slot-calculation) and
+[Headless booking workflow](BOOKING-SCHEDULER.md).
+
+The scheduler's optional `CalendarBookingPersistenceAdapter` is implemented by
+the consumer and supports load/commit, idempotency keys, optimistic revisions,
+structured conflict/rejection results, rollback-safe local state, and abort
+signals. `exportState`, `importState`, `syncAppointments`, `onChange`, and
+`evaluateBooking` cover reloads, live external data, UI listeners, and
+structured form feedback without introducing a WTS backend service.
 
 The formatting entries export optional peer-backed plugins. Add exactly one to
 `plugins` to use Moment or Luxon strings in configured formatting options and

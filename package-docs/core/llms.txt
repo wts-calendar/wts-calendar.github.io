@@ -22,6 +22,8 @@ Use the smallest documented entry point for each feature. Standard scheduling is
 
 ## Developer Integration
 
+- [MUI, shadcn and Angular Material themes](https://github.com/Suman201/wts-calendar-angular-example/blob/main/projects/calendar/docs/THEME-INTEGRATIONS.md): optional design-system theme adapters, live dark mode, React/Angular examples, and scoped editor styling
+
 - [Plugin SDK](https://github.com/Suman201/wts-calendar-angular-example/blob/main/projects/calendar/docs/PLUGIN-SDK.md): third-party plugins, lifecycle, dependencies, and conformance
 - [Data adapter SDK](https://github.com/Suman201/wts-calendar-angular-example/blob/main/projects/calendar/docs/DATA-ADAPTER-SDK.md): REST, GraphQL, storage, and WebSocket adapters
 - [Event editor](https://github.com/Suman201/wts-calendar-angular-example/blob/main/projects/calendar/docs/EVENT-EDITOR.md): accessible opt-in editing UI
@@ -31,9 +33,10 @@ Use the smallest documented entry point for each feature. Standard scheduling is
 ## Credentials and Interoperability
 
 - [API keys, OAuth, and browser credentials](https://github.com/Suman201/wts-calendar-angular-example/blob/main/projects/calendar/docs/CREDENTIALS.md): safe acquisition, restriction, storage, and runtime use
-- [Premium licensing](https://github.com/Suman201/wts-calendar-angular-example/blob/main/projects/calendar/docs/PREMIUM-LICENSING.md): how developers request a signed WTS entitlement and enable premium modules safely
+- [Premium licensing](https://github.com/Suman201/wts-calendar-angular-example/blob/main/projects/calendar/docs/PREMIUM-LICENSING.md): how developers obtain a backend-verified WTS license session and enable premium modules safely
 - [Premium interoperability](https://github.com/Suman201/wts-calendar-angular-example/blob/main/projects/calendar/docs/PREMIUM-INTEROPERABILITY.md): Google Calendar, Microsoft 365, CalDAV, ICS reconciliation, and migration tools
 - [Enterprise workflow](https://github.com/Suman201/wts-calendar-angular-example/blob/main/projects/calendar/docs/ENTERPRISE-WORKFLOW.md): approvals, state machines, policies, audit history, and offline queues
+- [Time Machine](https://github.com/Suman201/wts-calendar-angular-example/blob/main/projects/calendar/docs/TIME-MACHINE.md): optional Premium recorded-state replay, comparison, guarded selective restore, and web panel; enterprise-workflow entitlement; customer storage required for durable recovery
 - [Advanced resource planning](https://github.com/Suman201/wts-calendar-angular-example/blob/main/projects/calendar/docs/ADVANCED-RESOURCE-PLANNING.md): capacity, shifts, dependencies, forecasting, and critical paths
 
 ## Quality and Safety

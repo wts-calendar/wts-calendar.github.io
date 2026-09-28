@@ -26,6 +26,7 @@ import {
           <a routerLink="/docs" fragment="next-steps">Add editing & views</a>
           <a routerLink="/docs" fragment="troubleshooting">Troubleshooting</a>
           <a routerLink="/docs" fragment="backend">Optional backend</a>
+          <a routerLink="/docs/booking">Booking & available slots</a>
           <a routerLink="/docs/appearance">Themes & appearance</a>
         </nav>
         <div class="notice">
@@ -49,7 +50,7 @@ import {
         <p>
           Web starters require Node.js 22.22.3 or a compatible version supported by your framework.
           If you already have an application, install the WTS packages from the command below and
-          adapt the component files. The examples use published core 1.1.4.
+          adapt the component files. The examples use published core 1.1.5.
         </p>
         <div class="segmented" aria-label="Framework">
           @for (item of frameworks; track item.name) {
@@ -118,6 +119,14 @@ import {
               a license.
             </p>
             <a routerLink="/premium/resource-grid">Read the resource planning guide →</a>
+          </section>
+          <section>
+            <h3>Build booking flows <span class="badge premium">Premium</span></h3>
+            <p>
+              Calculate slots, apply booking policies, assign staff, and coordinate appointment
+              lifecycle actions through a headless API.
+            </p>
+            <a routerLink="/docs/booking">Read the booking integration guide →</a>
           </section>
         </div>
         <h2 id="troubleshooting">3. If your first calendar does not appear</h2>
@@ -312,6 +321,7 @@ export class DocsPage {
     { name: 'Configuration', file: 'docs/CONFIGURATION.md' },
     { name: 'Module entry points', file: 'docs/PACKAGE-STRUCTURE.md' },
     { name: 'Event editor', file: 'docs/EVENT-EDITOR.md' },
+    { name: 'Booking scheduler', file: 'docs/BOOKING-SCHEDULER.md' },
     { name: 'Plugin SDK', file: 'docs/PLUGIN-SDK.md' },
     { name: 'Developer tools', file: 'docs/DEVELOPER-TOOLS.md' },
     { name: 'Testing toolkit', file: 'docs/TESTING-TOOLKIT.md' },

@@ -4,8 +4,8 @@ import type {
   CalendarEventEditorValues,
 } from '@wts-calendar/core/event-editor';
 
-// Core 1.1.4 has recurrence support in its event model, but not in its editor UI.
-// This bridge keeps the local example usable until the native editor controls ship.
+// Compatibility fallback for core 1.1.4, which supported recurrence in its event
+// model but not in its editor UI. Core 1.1.5 uses its native recurrence controls.
 type Frequency = 'none' | 'daily' | 'weekly' | 'monthly' | 'annually';
 type RecurrenceDraft = {
   frequency: Frequency;

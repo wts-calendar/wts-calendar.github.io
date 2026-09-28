@@ -19,6 +19,7 @@ export class SeoService {
   update(url: string): void {
     const page = seoForUrl(url);
     const canonicalUrl = SITE_ORIGIN + page.path;
+    const isArticle = page.schemaType === 'TechArticle';
     this.title.setTitle(page.title);
     this.meta.updateTag({ name: 'description', content: page.description });
     this.meta.updateTag({
@@ -26,7 +27,7 @@ export class SeoService {
       content: page.noindex ? 'noindex, follow' : 'index, follow, max-image-preview:large',
     });
     for (const [property, content] of Object.entries({
-      'og:type': 'website',
+      'og:type': isArticle ? 'article' : 'website',
       'og:site_name': SITE_NAME,
       'og:locale': 'en_US',
       'og:title': page.title,
@@ -40,6 +41,11 @@ export class SeoService {
       'og:image:alt': SOCIAL_IMAGE_ALT,
     }))
       this.meta.updateTag({ property, content });
+    if (isArticle) {
+      this.meta.updateTag({ property: 'article:section', content: 'Booking and scheduling' });
+    } else {
+      this.meta.removeTag('property="article:section"');
+    }
     for (const [name, content] of Object.entries({
       'twitter:card': 'summary_large_image',
       'twitter:title': page.title,

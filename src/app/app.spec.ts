@@ -47,12 +47,12 @@ describe('Showcase contract', () => {
       options: 251,
       methods: 95,
       events: 78,
-      symbols: 475,
-      entrypoints: 28,
+      symbols: 534,
+      entrypoints: 29,
     });
     expect(new Set(CLIENT_OPTIONS.map(({ name }) => name)).size).toBe(CLIENT_OPTIONS.length);
     expect(new Set(CLIENT_METHODS.map(({ name }) => name)).size).toBe(CLIENT_METHODS.length);
-    expect(new Set(CLIENT_SYMBOLS.map(({ name }) => name)).size).toBe(474);
+    expect(new Set(CLIENT_SYMBOLS.map(({ name }) => name)).size).toBe(532);
     expect(CLIENT_OPTIONS.find(({ name }) => name === 'container')).toMatchObject({
       required: true,
       runtime: false,

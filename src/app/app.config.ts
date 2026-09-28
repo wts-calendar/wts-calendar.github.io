@@ -29,6 +29,10 @@ export const routes: Routes = [
     path: 'docs/appearance',
     loadComponent: () => import('./appearance-page').then((m) => m.AppearancePage),
   },
+  {
+    path: 'docs/booking',
+    loadComponent: () => import('./booking-guide').then((m) => m.BookingGuide),
+  },
   { path: 'docs', loadComponent: () => import('./docs-page').then((m) => m.DocsPage) },
   { path: 'examples', pathMatch: 'full', redirectTo: 'examples/month' },
   ...['day', 'week', 'month', 'year'].map((period) => ({

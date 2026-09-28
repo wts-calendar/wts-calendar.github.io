@@ -5,6 +5,41 @@ Versioning.
 
 ## [Unreleased]
 
+## [1.1.5] - 2026-09-25
+
+### Added
+
+- Add the opt-in Premium `availability-scheduling` entry with
+  `calculateAvailableSlots()` for time-zone-aware booking searches across
+  business hours, busy and recurring events, resource capacity and blackouts,
+  event buffers, and minimum notice. Slot-duration policies support a default,
+  exact allowed choices, minimum/maximum bounds, increments, and per-search
+  selection. Existing Standard construction, rendering, and API-key validation
+  remain unchanged for current and older customers.
+- Add `CalendarBookingScheduler` to the same Premium entry. The headless,
+  additive API provides serialized conflict prevention, form transforms and
+  validation, confirmation/approval states, reschedule/cancel workflows,
+  manual and round-robin resource selection, capacity-based group booking,
+  customer-zone projections, and lifecycle callbacks. No existing calendar or
+  available-slot API changes are required.
+- Add a consumer-owned persistence adapter contract with pre-local-commit
+  conflict/rejection handling, idempotency keys, optimistic revisions, state
+  hydration, external appointment synchronization, resumable round-robin state,
+  `onChange` UI listeners, structured evaluation issues, and `AbortSignal`
+  support. WTS still provides no booking backend.
+
+### Changed
+
+- Apply deterministic, targeted mangling to the internal licensing enforcement
+  chunk while preserving public API names and TypeScript declarations. Verified
+  license sessions now freeze their public surface and prototype, and the
+  internal license-manager reference uses a native private field to resist
+  simple runtime method replacement.
+- Point npm package metadata at the main WTS Calendar portal and expand accurate
+  scheduling and booking discovery keywords.
+- Remove redundant credential and Premium-license links from the npm README;
+  the documentation portal remains the canonical guide.
+
 ## [1.1.4] - 2026-09-21
 
 ### Improved

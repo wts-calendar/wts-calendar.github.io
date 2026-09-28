@@ -43,7 +43,7 @@ describe('Clean URL routing', () => {
 
 describe('Portal SEO', () => {
   it('gives every public page distinct metadata', () => {
-    expect(SEO_PAGES.length).toBe(DEMOS.length + PREMIUM_FEATURES.length + 11);
+    expect(SEO_PAGES.length).toBe(DEMOS.length + PREMIUM_FEATURES.length + 12);
     expect(new Set(SEO_PAGES.map((page) => page.path)).size).toBe(SEO_PAGES.length);
     expect(new Set(SEO_PAGES.map((page) => page.title)).size).toBe(SEO_PAGES.length);
     expect(new Set(SEO_PAGES.map((page) => page.description)).size).toBe(SEO_PAGES.length);
@@ -52,6 +52,14 @@ describe('Portal SEO', () => {
       expect(page.description.length).toBeLessThanOrEqual(250);
       expect(page.title).toContain('WTS Calendar');
     }
+  });
+
+  it('publishes technical-article metadata for the booking guide', () => {
+    const page = seoForUrl('/docs/booking');
+    expect(page.noindex).not.toBe(true);
+    expect(page.schemaType).toBe('TechArticle');
+    expect(page.topics).toContain('React booking calendar');
+    expect(JSON.stringify(structuredData(page))).toContain('available-slot calculation');
   });
   it('normalizes canonical paths and excludes query variants', () => {
     expect(seoForUrl('/docs').path).toBe('/docs/');

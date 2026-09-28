@@ -2,10 +2,6 @@
 
 A framework-agnostic TypeScript calendar for event and resource scheduling.
 
-Provider credentials and API-key setup are documented separately in
-[API keys, OAuth, and browser credentials](docs/CREDENTIALS.md).
-For paid modules, see [how to request and use a premium license](docs/PREMIUM-LICENSING.md).
-
 ## Install
 
 ```bash
@@ -112,6 +108,116 @@ instance. It does not perform global registration.
 For production bundles, prefer the standard entry plus only the modules the
 application uses.
 
+## Available-slot calculation
+
+`calculateAvailableSlots()` is an additive Premium scheduling API. It
+calculates bookable intervals without constructing a calendar or mutating
+events, resources, or existing calendar options.
+
+```typescript
+import { calculateAvailableSlots } from '@wts-calendar/core/availability-scheduling';
+
+const slots = calculateAvailableSlots({
+  license,
+  start: '2026-09-28',
+  end: '2026-10-03',
+  slotDuration: {
+    defaultMinutes: 30,
+    allowedMinutes: [15, 30, 45, 60],
+    minimumMinutes: 15,
+    maximumMinutes: 60,
+    incrementMinutes: 15,
+  },
+  durationMinutes: selectedDurationMinutes, // optional; defaults to 30
+  stepMinutes: 15,
+  timeZone: 'Asia/Kolkata',
+  customerTimeZone: 'America/New_York', // optional customer projection
+  businessHours: true, // Monday-Friday, 09:00-17:00
+  events: existingEvents,
+  minimumNoticeMinutes: 120,
+  eventBufferBeforeMinutes: 10,
+  eventBufferAfterMinutes: 10,
+});
+
+console.log(slots[0]?.startStr, slots[0]?.endStr);
+console.log(slots[0]?.customerStartStr, slots[0]?.customerEndStr);
+```
+
+Pass `resource` to apply its working hours, exact unavailable ranges, and
+weighted capacity. Use `requestedUnits` for multi-capacity bookings,
+`includeUnassignedEvents` to decide whether unassigned events consume a scoped
+resource, and `rrulePlugin` when the input contains RFC 5545 recurrence.
+`eventFilter` and `slotFilter` provide final synchronous application policies.
+
+The calculator preserves elapsed booking duration across DST transitions and
+returns the selected `durationMinutes` with zone-aware `startStr`/`endStr`
+values. It requires the same backend-verified package-wide Premium session as
+other Premium capabilities; the backend does not manage individual duration
+choices. It is opt-in and does not change Standard construction, rendering,
+event behavior, or API-key validation. Applications on an older package version
+continue unchanged.
+
+### Headless booking workflow
+
+The same Premium entry exports `CalendarBookingScheduler`, an additive headless
+appointment coordinator for booking forms and custom interfaces. It combines
+availability rules with serialized conflict checks, manual or round-robin
+resource assignment, capacity-based group bookings, customer-zone projections,
+confirmation/approval states, rescheduling, cancellation, and lifecycle hooks.
+
+```typescript
+import {
+  CalendarBookingScheduler,
+} from '@wts-calendar/core/availability-scheduling';
+
+const scheduler = new CalendarBookingScheduler({
+  license,
+  timeZone: 'UTC',
+  slotDuration: { defaultMinutes: 30, allowedMinutes: [30, 60] },
+  businessHours: true,
+  minimumNoticeMinutes: 120,
+  eventBufferBeforeMinutes: 10,
+  eventBufferAfterMinutes: 10,
+  resources: staff,
+  events: existingEvents,
+  persistenceAdapter: bookingStorageAdapter, // implemented by your application
+  hooks: {
+    transform: (request) => ({ ...request, title: request.title?.trim() }),
+    validate: ({ request }) =>
+      request.formValues.email ? undefined : 'Email is required.',
+    afterAction: ({ action, appointment }) =>
+      trackBookingAction(action, appointment),
+  },
+});
+
+const appointment = await scheduler.create({
+  title: 'Consultation',
+  start: '2026-10-01T10:00:00',
+  durationMinutes: 30,
+  customerTimeZone: 'Asia/Kolkata',
+  assignment: { mode: 'round-robin' },
+  requestedUnits: 1,
+  requiresApproval: true,
+  formValues: { email: 'customer@example.com' },
+});
+
+await scheduler.confirm(appointment.id);
+await scheduler.approve(appointment.id);
+await scheduler.reschedule(appointment.id, {
+  start: '2026-10-01T11:00:00',
+  durationMinutes: 30,
+});
+```
+
+Mutations are serialized and rechecked inside one scheduler instance. For
+cross-device or multi-server double-booking protection, persist through the
+optional consumer-owned persistence adapter and enforce the final
+capacity/conflict transaction in the application's backend. The package does
+not provide or require a backend. State import/export, external appointment
+synchronization, `onChange` UI listeners, structured issues, idempotency keys,
+optimistic revisions, and `AbortSignal` cancellation are supported. See
+[Headless booking workflow](docs/BOOKING-SCHEDULER.md).
+
 Third-party npm packages can also export arbitrary `CalendarExternalPlugin`
 objects. They may register custom view engines and namespaced options with
 core-owned view lifecycle cleanup. The optional `@wts-calendar/core/plugin-sdk`
@@ -134,6 +240,7 @@ Plugin authors can copy the private reference package in
 | `@wts-calendar/core/list` | List day/week/month/year and custom list views |
 | `@wts-calendar/core/interaction` | External and cross-calendar drag-and-drop plus `makeDraggable` |
 | `@wts-calendar/core/resource-scheduling` | Resource grid, resource day/week time grids, resource timeline, and non-resource timeline |
+| `@wts-calendar/core/availability-scheduling` | Premium availability plus headless booking, approvals, hooks, round-robin assignment, rescheduling, cancellation, and capacity |
 | `@wts-calendar/core/advanced-resource-planning` | Premium capacity heatmaps, shifts/rotations, dependencies, substitutes, overbooking, forecasting, and critical paths |
 | `@wts-calendar/core/premium-interoperability` | Premium Google, Microsoft 365, CalDAV, ICS reconciliation, date-format migration, and FullCalendar migration toolkit |
 | `@wts-calendar/core/enterprise-workflow` | Premium approvals, state machines, audit history, field policies, offline queues, and customer backend adapters |
@@ -795,6 +902,8 @@ Resource scheduling, including `resource`, `resource-day-grid-day`,
 repeated-task views are
 premium features. A verified Premium license unlocks all Premium capabilities
 defined in the installed package; individual backend feature grants are not required.
+Available-slot calculation and slot-duration policies from
+`@wts-calendar/core/availability-scheduling` are also Premium capabilities.
 `getLicenseStatus().features` lists those local capability IDs. Optional backend
 feature metadata, including display labels, is ignored.
 Premium access is verified online by the licensing backend using a deployment key.

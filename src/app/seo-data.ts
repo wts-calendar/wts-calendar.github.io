@@ -11,6 +11,10 @@ export interface PageSeo {
   label: string;
   title: string;
   description: string;
+  /** Adds page-specific semantic topics to structured data. */
+  topics?: readonly string[];
+  /** Documentation guides can identify themselves as technical articles. */
+  schemaType?: 'WebPage' | 'TechArticle';
   noindex?: boolean;
 }
 
@@ -63,6 +67,24 @@ export const SEO_PAGES: readonly PageSeo[] = [
     title: 'Themes & Responsive Appearance | WTS Calendar',
     description:
       'Use WTS Calendar MUI, shadcn/ui and Angular Material adapters, responsive dayNarrowWidth labels, and automatic eventContrastColor in the published package.',
+  },
+  {
+    path: '/docs/booking/',
+    label: 'Booking and available slots',
+    title: 'React Booking Calendar & Available Slots | WTS Calendar',
+    description:
+      'Build a React or JavaScript booking calendar with available-slot calculation, booking buffers, customer time zones, round-robin staff assignment, capacity, approvals and headless APIs.',
+    schemaType: 'TechArticle',
+    topics: [
+      'React booking calendar',
+      'JavaScript scheduling calendar',
+      'available-slot calculation',
+      'appointment scheduling',
+      'round-robin staff assignment',
+      'capacity-based booking',
+      'booking time-zone conversion',
+      'headless booking API',
+    ],
   },
   {
     path: '/docs/api/methods/',
@@ -124,6 +146,7 @@ export function seoForUrl(url: string): PageSeo {
 
 export function structuredData(page: PageSeo): Record<string, unknown> {
   const url = SITE_ORIGIN + page.path;
+  const pageType = page.schemaType === 'TechArticle' ? ['WebPage', 'TechArticle'] : 'WebPage';
   return {
     '@context': 'https://schema.org',
     '@graph': [
@@ -144,14 +167,22 @@ export function structuredData(page: PageSeo): Record<string, unknown> {
         publisher: { '@id': SITE_ORIGIN + '/#organization' },
       },
       {
-        '@type': 'WebPage',
+        '@type': pageType,
         '@id': url + '#webpage',
         url,
         name: page.title,
+        ...(page.schemaType === 'TechArticle' ? { headline: page.title } : {}),
         description: page.description,
         inLanguage: 'en',
         isPartOf: { '@id': SITE_ORIGIN + '/#website' },
+        publisher: { '@id': SITE_ORIGIN + '/#organization' },
         primaryImageOfPage: { '@type': 'ImageObject', url: SOCIAL_IMAGE, width: 1200, height: 630 },
+        ...(page.topics?.length
+          ? {
+              keywords: page.topics.join(', '),
+              about: page.topics.map((name) => ({ '@type': 'Thing', name })),
+            }
+          : {}),
         ...(page.path !== '/' ? { breadcrumb: { '@id': url + '#breadcrumb' } } : {}),
       },
       ...(page.path === '/'
