@@ -43,6 +43,23 @@ writeFileSync(
 
 let fixture = readFileSync(resolve(root, 'scripts/premium-previews/fixture.mjs'), 'utf8');
 fixture = fixture
+  .replaceAll('Actual resource API snapshot', 'Resource API snapshot')
+  .replaceAll('Actual assignment validation', 'Assignment validation')
+  .replaceAll("['Request', 'Package result']", "['Request', 'Result']")
+  .replaceAll('createCapacityHeatmap() — actual returned buckets', 'createCapacityHeatmap()')
+  .replaceAll('forecastDemand() — actual capacity comparison', 'forecastDemand()')
+  .replaceAll('Returned total coverage:', 'Total coverage:')
+  .replaceAll(
+    'loadDateFormattingCompatibility() — real installed peers',
+    'loadDateFormattingCompatibility()',
+  )
+  .replaceAll(
+    "['Plugin', 'Format pattern', 'Returned label']",
+    "['Plugin', 'Format pattern', 'Label']",
+  )
+  .replaceAll('Configuration mapping — actual returned draft', 'Configuration mapping')
+  .replaceAll('submit() / approve() — actual mutation snapshots', 'submit() / approve()')
+  .replaceAll('permissionDecision() — actual policy decisions', 'permissionDecision()')
   .replace(
     "import { WtsCalendar, verifyCalendarLicense } from '/package/all.esm.js';",
     "import { WtsCalendar, connectCalendarLicense } from './package/all.esm.js';",
@@ -63,9 +80,18 @@ if (!token) throw new Error('The live Premium demo key is not configured.');`,
     'license = await verifyCalendarLicense(token);',
     'license = await connectCalendarLicense({ licenseKey: token, document });',
   )
+  .replace("  document.querySelector('#title').textContent = feature.visual.title;\n", '')
+  .replace(
+    "  document.querySelector('#subtitle').textContent = kind === 'package-ui' ? 'Actual package UI • Sample data • September 2026' : 'Actual package API results • Read-only capture table, not a built-in product screen';\n",
+    '',
+  )
+  .replace(
+    "  document.querySelector('#provenance').textContent = build.package + '@' + build.version + ' / ' + feature.module + ' · Local unpublished build';\n",
+    '',
+  )
   .replace(
     "status.dataset.status = 'ready'; status.textContent = 'Captured from the package runtime · ' + (kind === 'package-ui' ? 'Native calendar rendering' : 'Application-owned result table');",
-    `status.dataset.status = 'ready'; status.textContent = 'Running from @wts-calendar/core@' + build.version + ' · ' + (kind === 'package-ui' ? 'Interactive calendar UI' : 'Actual package API results');
+    `status.dataset.status = 'ready'; status.textContent = '';
   window.parent.postMessage({ type: 'wts-premium-demo', state: 'ready', feature: id, height: document.documentElement.scrollHeight }, location.origin);`,
   )
   .replace(
@@ -106,18 +132,16 @@ writeFileSync(
   <style>
     *{box-sizing:border-box}html{background:#fff}body{margin:0;font:14px/1.5 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#17211e;background:#fff}
     main{width:100%;margin:0;padding:16px;background:#fff;display:flow-root}#content{display:flow-root;padding:0}
-    #capture-info{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:0 0 14px;padding:0 0 12px;border-bottom:1px solid #d4ddd8}
-    #capture-info h1{font-size:16px;margin:0}#subtitle,#provenance{display:none}#capture-status{font-size:12px;color:#5d6a65;text-align:right}
-    #capture-status[data-status="error"]{color:#9b2c2c}.calendar{height:450px;--calendar-height:450px;--calendar-body-height:370px;--month-day-cell-height:60px}
+    #capture-info{display:none}.calendar{height:450px;--calendar-height:450px;--calendar-body-height:370px;--month-day-cell-height:60px}
     .calendar.short{height:320px;--calendar-height:320px;--calendar-body-height:250px}h2{font-size:16px;margin:12px 0}
     table{border-collapse:collapse;width:100%;font-size:13px;margin:10px 0 20px;table-layout:fixed}th,td{text-align:left;padding:10px 12px;border:1px solid #d4ddd8;overflow-wrap:anywhere}
     th{background:#f1f4f2;color:#31463f;font-size:11px}tbody tr:nth-child(even){background:#fbfcfa}.result{background:#eaf5ef;padding:11px 14px;border-left:3px solid #0b6b5f;margin:14px 0}
-    .warning{background:#fff7e6;border-left-color:#a87721}@media(max-width:640px){main{padding:10px}#capture-info{align-items:flex-start;flex-direction:column}#capture-status{text-align:left}th,td{padding:8px}.calendar{height:420px;--calendar-height:420px;--calendar-body-height:340px}}
+    .warning{background:#fff7e6;border-left-color:#a87721}@media(max-width:640px){main{padding:10px}th,td{padding:8px}.calendar{height:420px;--calendar-height:420px;--calendar-body-height:340px}}
   </style>
 </head>
 <body>
   <main id="capture" data-presentation="live-demo">
-    <aside id="capture-info" aria-label="Live demo status"><h1 id="title">Loading Premium demo</h1><p id="subtitle"></p><div id="provenance"></div><div id="capture-status" role="status">Verifying demo access…</div></aside>
+    <aside id="capture-info" hidden><h1 id="title"></h1><p id="subtitle"></p><div id="provenance"></div><div id="capture-status"></div></aside>
     <section id="content"></section>
   </main>
   <script type="module" src="./fixture.mjs"></script>

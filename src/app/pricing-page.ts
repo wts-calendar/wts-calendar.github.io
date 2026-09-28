@@ -196,9 +196,8 @@ import { LicenseRequestForm } from './license-request-form';
       <details>
         <summary>Where are the premium examples?</summary>
         <p>
-          Every Premium feature has a dedicated guide with actual package screenshots, configuration
-          reference, integration steps, and limitations. API-result captures are labeled separately
-          from native UI. Public interactive examples cover Standard features only.
+          Every Premium feature has a dedicated guide with an interactive example, configuration
+          reference, integration steps, and limitations.
         </p>
         <a routerLink="/premium/resource-grid">Explore Premium guides →</a>
       </details>

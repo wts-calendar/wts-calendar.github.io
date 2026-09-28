@@ -24,9 +24,7 @@ describe('Premium feature documentation', () => {
       expect(article.querySelector('img')?.getAttribute('src')).toBe(
         'previews/premium/' + feature.id + '.jpg',
       );
-      expect(article.querySelector('figcaption')?.textContent?.trim()).toBe(
-        premiumScreenshot(feature.id).caption,
-      );
+      expect(article.querySelector('figcaption')).toBeNull();
       expect(article.querySelector('img')?.getAttribute('width')).toBe(
         String(premiumScreenshot(feature.id).width),
       );
@@ -60,8 +58,10 @@ describe('Premium feature documentation', () => {
       );
       expect(article.querySelector('#integration')?.textContent).toContain('YOUR_WTS_LICENSE_KEY');
       expect(article.querySelector('#integration')?.textContent).toContain(
-        'live demo above executes the published package',
+        'credentials are configured separately',
       );
+      expect(article.querySelector('.premium-live-demo-header')).toBeNull();
+      expect(article.querySelector('.premium-demo-note')).toBeNull();
       expect(article.querySelector('a[href="/pricing"]')).toBeNull();
       const selectedLink = root.querySelector('.premium-guide-navigation a[aria-current="page"]');
       expect(selectedLink?.getAttribute('href')).toBe('/premium/' + feature.id);

@@ -102,11 +102,6 @@ import { premiumScreenshot } from './premium-screenshots';
           <p>Try a broader search or reset the filters.</p>
         </div>
       }
-      <p class="fine-print">
-        Premium guides include actual package screenshots and documentation. API-only features show
-        real results in clearly labeled capture tables; provider adapters use local test responses.
-        This website does not run Premium examples or collect license tokens.
-      </p>
     </section>`,
 })
 export class FeaturesPage {

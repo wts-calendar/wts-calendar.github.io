@@ -46,7 +46,6 @@ const examples = new Map(integrations.map((example) => [example.id, example]));
             [screenshotFile]="page.screenshot.file"
             [screenshotWidth]="page.screenshot.width"
             [screenshotHeight]="page.screenshot.height"
-            [caption]="page.screenshot.caption"
           />
           <nav class="premium-section-links" aria-label="On this page">
             <a [routerLink]="[]" fragment="configuration">Configuration</a>
@@ -83,12 +82,9 @@ const examples = new Map(integrations.map((example) => [example.id, example]));
             </ol>
             <p class="premium-integration-note">
               Copy this TypeScript into your application, not the browser console. Replace
-              YOUR_WTS_LICENSE_KEY with a deployment key authorized for your origin. A verified
-              Calendar Premium key enables the package's complete Premium capability bundle; the
-              backend does not select individual Calendar features. A WTS license is not a Google,
-              Microsoft or CalDAV credential. The live demo above executes the published package
-              with deterministic local sample data; provider examples use local test responses and
-              never request a visitor's provider credentials.
+              YOUR_WTS_LICENSE_KEY with a deployment key authorized for your origin. The key enables
+              the complete Premium bundle. Google, Microsoft, and CalDAV credentials are configured
+              separately by your application.
             </p>
             <app-code-card
               label="Install command"
